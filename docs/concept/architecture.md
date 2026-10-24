@@ -125,16 +125,19 @@ The UI always shows the save status ("✓ Gespeichert" / "● Nicht in Datei ges
 
 - **Rendering:** SVG, which is sharp at any zoom level and easy to test. Person cards are SVG groups (photo, name, dates).
   Pan/zoom is our own small implementation (drag, mouse wheel, `+`/`−`, "Alles anzeigen"). No library is needed.
-- **Layout algorithm:** our own, in `src/core/layout/` (ADR-0006). Pure functions, so it is unit-testable with fixture families.
-  1. **Generations:** each person gets a row. Partners share a row, and children sit one row below their parents.
+- **Layout algorithm:** our own, in `src/core/layout/` (ADR-0006, which also lists the details). Pure functions, so it is
+  unit-testable with fixture families. Entry point: `computeLayout(project)` → cards, couple lines, child lines.
+  1. **Generations:** each person gets a row. Partners and siblings share a row, and children sit below their parents.
   2. **Family units:** a couple plus their children is drawn as one unit. Children hang from the couple's connecting line.
-  3. **Order within a row:** siblings by birth date, and families arranged so that lines cross as little as possible.
+  3. **Order within a row:** partners stay together as a block, siblings by birth date, and families arranged so that
+     lines cross as little as possible.
   4. **Positions:** parents centered above their children, with no overlaps and compact spacing.
 - **Special cases (progressive disclosure, TREE-04):**
   - Multiple partners: the person stands between or next to their partners, each with their own children.
   - Adoption/step/foster: a dashed line, drawn only where it applies.
   - Unknown parent: the child hangs from the single known parent.
-  - Cousin marriages and other loops: the layout must not break. One person may then have a long connecting line.
+  - Cousin marriages and other loops: the layout must not break. One person may then have a long connecting line,
+    which goes around the cards in the rows it passes.
 - **Focus (TREE-02):** clicking a person highlights their ancestors and descendants and slightly fades everyone else.
   Double-click centers on them.
 - **Performance:** 100 persons is small. The layout is recomputed fully on every change, which is simpler and safe (TREE-05).
