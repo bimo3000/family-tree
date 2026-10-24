@@ -1,4 +1,4 @@
-# Mock-up (phase 3, round 2)
+# Mock-up (phase 3, final)
 
 A clickable prototype of the Stammbaum UI with a fictional family. **Throwaway code**: plain HTML/CSS/JS, no build
 step, fictional data only. Delete this folder once the real UI exists.

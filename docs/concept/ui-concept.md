@@ -1,7 +1,7 @@
 # UI concept (text level)
 
-> Status: **aligned with the user** (2026-10-24). Mock-up round 1 decided the open questions (see the end of this file).
-> Round 2 (style A refined, relation editing) is in [`mockups/`](../../mockups/README.md), waiting for the user's feedback.
+> Status: **aligned with the user** (2026-10-24), including two mock-up rounds. Nothing is open.
+> The clickable reference is [`mockups/index.html`](../../mockups/README.md).
 > The final look and feel is the **user's decision** (DEV-09). This document describes structure and behaviour, not design.
 
 ## 1. Guiding principles
@@ -177,7 +177,8 @@ e.g. a cousin marriage or a person added twice by mistake).
 9. **Additional parents:** a child can have adoptive/step/foster parents in addition to two biological parents (TREE-03).
    They are drawn with their own dashed line. At most two biological parents.
 
-## Still open, to be confirmed with mock-up round 2
+10. **A person losing their last connection** is not deleted automatically. The dialog offers "Nur Verbindung entfernen"
+    or "… ganz löschen" (confirmed after mock-up round 2), so a wrongly attached person can be re-attached without retyping.
+11. **Layout is automatic** and recomputed after every change; cards glide to their new places, no manual dragging (§3).
 
-- Removing the last connection of a person: the user suggested also deleting the person. Round 2 instead offers a
-  choice ("Nur Verbindung entfernen" or "… ganz löschen"), so a wrongly attached person can be re-attached without retyping.
+The mock-up (`mockups/index.html`) is the **visual and interaction reference** for the real UI.
