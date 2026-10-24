@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Privacy guard for the built app (REQ-PRIV): fails if the HTML references anything outside itself.
+// Privacy guard for the built app (PRIV-01/02): fails if the HTML references anything outside itself.
 //
 // Two checks:
 //  1. No tag loads an external or separate file (script src, link href, img src, ...).

@@ -20,7 +20,7 @@ type Fixtures = {
 /**
  * Every E2E test should use `app` instead of `page.goto` directly. After each test it asserts
  * the two privacy/quality invariants automatically:
- *   - no request left the file (REQ-PRIV): anything that is not file:, data: or blob: fails
+ *   - no request left the file (PRIV-01/02): anything that is not file:, data: or blob: fails
  *   - no console errors / uncaught exceptions
  */
 export const test = base.extend<Fixtures>({

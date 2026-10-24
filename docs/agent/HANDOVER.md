@@ -35,10 +35,6 @@
 
 ## Open items for the user
 
-- **`.claude/settings.json` is not committed.** The auto-mode safety check blocks agents from committing their own
-  permission list, even after the user approved it (2026-10-24). The user commits it themselves:
-  `git add .claude/settings.json && git commit -m "chore: claude code project permissions"`. If it is already in
-  `git log`, delete this item.
 - A manual check on a real Mac (Safari) and on Windows, once there is something to see.
 
 ## Pitfalls / environment notes

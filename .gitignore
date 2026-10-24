@@ -21,7 +21,7 @@ blob-report/
 playwright/.cache/
 coverage/
 
-# --- Real family data: NEVER commit (privacy, see REQ-PRIV in docs/requirements) ---
+# --- Real family data: NEVER commit (privacy, see PRIV-03 in docs/requirements) ---
 # Local working folder for your own family-tree projects:
 data/
 # Any project file anywhere in the repo ...

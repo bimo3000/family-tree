@@ -12,7 +12,7 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 export const OUTPUT_FILE = 'Stammbaum.html';
 
 /**
- * Content-Security-Policy for the built app (privacy guard, see ADR-0004).
+ * Content-Security-Policy for the built app (privacy guard, see ADR-0003).
  * The browser itself refuses every network connection and every external resource,
  * so even a bug or a compromised dependency cannot send family data anywhere.
  * Only applied to the production build: the dev server needs a websocket for live reload.

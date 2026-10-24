@@ -4,14 +4,17 @@ import globals from 'globals';
 import ts from 'typescript-eslint';
 import svelteConfig from './svelte.config.js';
 
-/** Browser APIs that could send data off the device. Forbidden in app code (REQ-PRIV). */
+/** Browser APIs that could send data off the device. Forbidden in app code (PRIV-01/02). */
 const NETWORK_GLOBALS = [
   'fetch',
   'XMLHttpRequest',
   'WebSocket',
   'EventSource',
   'RTCPeerConnection',
-].map((name) => ({ name, message: 'Privacy: the app must never use the network (see REQ-PRIV).' }));
+].map((name) => ({
+  name,
+  message: 'Privacy: the app must never use the network (see PRIV-01/02).',
+}));
 
 export default ts.config(
   {
@@ -51,8 +54,12 @@ export default ts.config(
       'no-restricted-globals': ['error', ...NETWORK_GLOBALS],
       'no-restricted-properties': [
         'error',
-        { object: 'navigator', property: 'sendBeacon', message: 'Privacy: no network (REQ-PRIV).' },
-        { object: 'window', property: 'fetch', message: 'Privacy: no network (REQ-PRIV).' },
+        {
+          object: 'navigator',
+          property: 'sendBeacon',
+          message: 'Privacy: no network (PRIV-01/02).',
+        },
+        { object: 'window', property: 'fetch', message: 'Privacy: no network (PRIV-01/02).' },
       ],
     },
   },
