@@ -10,6 +10,7 @@
   } from '../core/model/queries';
   import { removeRelation } from '../core/model/relatives';
   import type { PersonId } from '../core/model/types';
+  import type { Crop } from '../core/photoCrop';
   import AddRelativeDialog, { type RelativeKind } from './dialogs/AddRelativeDialog.svelte';
   import DeleteDialog from './dialogs/DeleteDialog.svelte';
   import HelpDialog from './dialogs/HelpDialog.svelte';
@@ -43,9 +44,9 @@
   const project = $derived(editor.project);
   providePhotos((id) => workspace.photoUrl(id));
 
-  async function addPhoto(id: PersonId, file: File) {
+  async function addPhoto(id: PersonId, file: File, crop?: Crop) {
     try {
-      await workspace.addPhoto(id, file);
+      await workspace.addPhoto(id, file, crop);
     } catch (e) {
       showToast(
         e instanceof UnreadablePictureError
@@ -256,7 +257,7 @@
       person={dialogPerson}
       onchange={(person, key) => editor.apply((p) => updatePerson(p, person), key)}
       onfocus={() => editor.seal()}
-      onphoto={(file) => addPhoto(dialogPerson.id, file)}
+      onphoto={(file, crop) => addPhoto(dialogPerson.id, file, crop)}
       onphotoremove={() => editor.apply((p) => removePhoto(p, dialogPerson.id))}
       onclose={closePersonDialog}
     />

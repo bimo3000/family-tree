@@ -8,6 +8,7 @@ import { APP_VERSION } from '../../core/app-info';
 import { setPhoto } from '../../core/model/operations';
 import { newId } from '../../core/model/project';
 import type { PersonId, Project } from '../../core/model/types';
+import type { Crop } from '../../core/photoCrop';
 import {
   canSaveInPlace,
   download,
@@ -121,9 +122,9 @@ export class Workspace {
     return 'saved';
   }
 
-  /** PERS-03, DATA-07. Throws UnreadablePictureError for pictures the browser can't read. */
-  async addPhoto(personId: PersonId, file: Blob): Promise<void> {
-    const { blob, width, height } = await preparePicture(file);
+  /** PERS-03, PERS-08, DATA-07. Throws UnreadablePictureError for pictures the browser can't read. */
+  async addPhoto(personId: PersonId, file: Blob, crop?: Crop): Promise<void> {
+    const { blob, width, height } = await preparePicture(file, crop);
     const id = newId('img');
     await workingCopy.putImage(id, blob);
     this.#images.set(id, blob);

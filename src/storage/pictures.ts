@@ -1,7 +1,10 @@
 /**
- * Preparing a photo when it is added (DATA-07, architecture §3.4): decoded by the browser, scaled
- * down to at most 2000 px on the long side and stored as JPEG. Small photos keep their size.
+ * Preparing a photo when it is added (DATA-07, architecture §3.4): decoded by the browser, cut to the
+ * chosen part (PERS-08), scaled down to at most 2000 px on the long side and stored as JPEG.
+ * Small photos keep their size.
  */
+import type { Crop } from '../core/photoCrop';
+
 export const MAX_PICTURE_SIDE = 2000;
 const JPEG_QUALITY = 0.85;
 
@@ -28,14 +31,16 @@ export function scaledSize(width: number, height: number, max = MAX_PICTURE_SIDE
   };
 }
 
-export async function preparePicture(file: Blob): Promise<Picture> {
+/** Without a crop the whole picture is kept. */
+export async function preparePicture(file: Blob, crop?: Crop): Promise<Picture> {
   let bitmap: ImageBitmap;
   try {
     bitmap = await createImageBitmap(file);
   } catch {
     throw new UnreadablePictureError();
   }
-  const { width, height } = scaledSize(bitmap.width, bitmap.height);
+  const part = crop ?? { x: 0, y: 0, width: bitmap.width, height: bitmap.height };
+  const { width, height } = scaledSize(part.width, part.height);
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -44,7 +49,7 @@ export async function preparePicture(file: Blob): Promise<Picture> {
   // JPEG has no transparency: transparent parts become white instead of black.
   context.fillStyle = '#fff';
   context.fillRect(0, 0, width, height);
-  context.drawImage(bitmap, 0, 0, width, height);
+  context.drawImage(bitmap, part.x, part.y, part.width, part.height, 0, 0, width, height);
   bitmap.close();
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, 'image/jpeg', JPEG_QUALITY),
