@@ -50,7 +50,6 @@ export interface ExtraField {
 export interface Person {
   id: PersonId;
   givenNames?: string;
-  callName?: string;
   /** Last known surname (PERS-04). */
   surname?: string;
   birthName?: string;

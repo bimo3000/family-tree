@@ -50,7 +50,7 @@
 ```
 ┌──────────────┐
 │   (photo)    │   ← big photo on top
-│ Anna Maria   │   ← all given names + last known surname (no Rufname highlight)
+│ Anna Maria   │   ← all given names + last known surname
 │   Müller     │
 │ * 1923 † 2001│   ← years on the card (PERS-04)
 └──────────────┘
@@ -76,7 +76,7 @@
 
 - Opens as a **dialog** on top of the tree (decided with mock-up round 1).
 - **Always visible:** Foto, Vornamen, Nachname, Geburtsname, Geboren (Datum, Ort), Gestorben (Datum, Ort).
-- **"Mehr Angaben ▾":** Rufname, Geschlecht, Beruf, Wohnorte, Lebensgeschichte, Weitere Angaben (+ Feld hinzufügen).
+- **"Mehr Angaben ▾":** Geschlecht, Beruf, Wohnorte, Lebensgeschichte, Weitere Angaben (+ Feld hinzufügen).
 - **Date fields** are plain text fields with a live interpretation underneath: "→ 12. März 1923", "→ ungefähr 1850",
   "→ wird so übernommen". See data-model §4.
 - Changes apply immediately, with undo. "Fertig" closes the form. There is no "Abbrechen" that loses work: the user undoes instead.
@@ -171,7 +171,7 @@ e.g. a cousin marriage or a person added twice by mistake).
 
 5. **Visual style (mock-up round 1):** variant A "Familienalbum", a bit more mustard and warmer. Big photo on the card,
    neutral card colours, editing a person in a **dialog** (§2.5, §6).
-6. **Rufname** is not highlighted in the name. It is only used for short names ("Karl Brandt" in lists).
+6. **No Rufname field** (removed 2026-10-24 on the user's request). Lists use the first given name ("Karl Brandt").
 7. **Wording:** no dashes or middle dots as separators (§5).
 8. **Relations can be edited and removed** from the detail panel (user request, §2.8).
 9. **Additional parents:** a child can have adoptive/step/foster parents in addition to two biological parents (TREE-03).

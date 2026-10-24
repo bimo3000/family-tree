@@ -25,7 +25,6 @@ import { familieBrandt } from '../../fixtures/familie-brandt';
 const anna: Person = {
   id: 'a',
   givenNames: 'Anna Maria',
-  callName: 'Maria',
   surname: 'Müller',
   birthName: 'Schmidt',
   gender: 'female',
@@ -73,9 +72,9 @@ describe('card and names (PERS-04)', () => {
     expect(yearsLine(kim)).toBe('');
   });
 
-  it('uses all given names for the full name and the Rufname for the short name', () => {
+  it('uses all given names for the full name and the first one for the short name', () => {
     expect(fullName(anna)).toBe('Anna Maria Müller');
-    expect(shortName(anna)).toBe('Maria Müller');
+    expect(shortName(anna)).toBe('Anna Müller');
     expect(shortName({ id: 'x', givenNames: 'Karl Otto', surname: 'Brandt' })).toBe('Karl Brandt');
     expect(fullName({ id: 'x', occupation: 'Fischer' })).toBe('Ohne Namen');
     expect(fullName(unknown)).toBe('Unbekannt');
@@ -83,7 +82,7 @@ describe('card and names (PERS-04)', () => {
   });
 
   it('builds initials for the photo placeholder', () => {
-    expect(initials(anna)).toBe('MM');
+    expect(initials(anna)).toBe('AM');
     expect(initials(kim)).toBe('K');
     expect(initials(unknown)).toBe('?');
   });

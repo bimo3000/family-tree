@@ -29,7 +29,6 @@
     deathDate: fmtDate(start.death?.date),
     deathPlace: start.death?.place ?? '',
     deceased: !!start.deceased,
-    callName: start.callName ?? '',
     gender: start.gender ?? '',
     occupation: start.occupation ?? '',
     residences: start.residences ?? '',
@@ -38,7 +37,7 @@
   });
   /** Open from the start if any of its fields is filled; afterwards only the user opens or closes it. */
   let moreOpen = $state(
-    !!(f.callName || f.gender || f.occupation || f.residences || f.biography || f.extras.length),
+    !!(f.gender || f.occupation || f.residences || f.biography || f.extras.length),
   );
 
   /** The person as the fields describe it. Empty values are dropped by the core operation. */
@@ -55,7 +54,6 @@
       birth: lifeEvent(f.birthDate, f.birthPlace),
       death: lifeEvent(f.deathDate, f.deathPlace),
       deceased: f.deceased,
-      callName: f.callName.trim(),
       ...(f.gender ? { gender: f.gender as Gender } : {}),
       occupation: f.occupation.trim(),
       residences: f.residences.trim(),
@@ -160,15 +158,6 @@
 
     <details bind:open={moreOpen}>
       <summary>Mehr Angaben</summary>
-      <label>
-        Rufname
-        <input
-          type="text"
-          value={f.callName}
-          oninput={input('callName')}
-          placeholder="Der Name, mit dem sie oder er gerufen wurde"
-        />
-      </label>
       <label>
         Geschlecht
         <select value={f.gender} onchange={input('gender')}>

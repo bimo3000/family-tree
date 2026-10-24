@@ -10,7 +10,6 @@
     {
       "id": "p_heinrich",
       "givenNames": "Heinrich Friedrich",
-      "callName": "Heinrich",
       "surname": "Brandt",
       "gender": "male",
       "birth": {
@@ -128,7 +127,6 @@
     {
       "id": "p_karl",
       "givenNames": "Karl Heinrich",
-      "callName": "Karl",
       "surname": "Brandt",
       "gender": "male",
       "birth": {

@@ -85,22 +85,22 @@ export function yearsLine(p: Person): string {
   return parts.join(' ');
 }
 
-/** All given names plus the last known surname. The Rufname is not highlighted (ui-concept decision 6). */
+/** All given names plus the last known surname. */
 export function fullName(p: Person): string {
   if (isPlaceholder(p)) return 'Unbekannt';
   return [p.givenNames, p.surname].filter(Boolean).join(' ') || 'Ohne Namen';
 }
 
-/** Rufname (or first given name) plus surname, for lists: "Karl Brandt". */
+/** First given name plus surname, for lists: "Karl Brandt". */
 export function shortName(p: Person): string {
   if (isPlaceholder(p)) return 'Unbekannt';
-  const first = p.callName || p.givenNames?.split(' ')[0];
+  const first = p.givenNames?.split(' ')[0];
   return [first, p.surname].filter(Boolean).join(' ') || 'Ohne Namen';
 }
 
 /** Shown instead of a photo. */
 export function initials(p: Person): string {
-  const first = (p.callName || p.givenNames || '').trim()[0] ?? '';
+  const first = (p.givenNames || '').trim()[0] ?? '';
   const last = (p.surname || '').trim()[0] ?? '';
   return (first + last).toUpperCase() || '?';
 }

@@ -57,7 +57,6 @@ Shown **on hover/click** (PERS-05): everything else that is filled in.
 | Field                       | German label      | Notes                                                                                                                |
 | --------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `givenNames`                | Vornamen          | All first names, e.g. "Anna Maria"                                                                                   |
-| `callName`                  | Rufname           | Optional. Used for short names in lists ("Karl Brandt"), not highlighted in the full name                            |
 | `surname`                   | Nachname          | **Last known** surname (PERS-04)                                                                                     |
 | `birthName`                 | Geburtsname       | Shown as "geb. Schmidt"                                                                                              |
 | `gender`                    | Geschlecht        | `female` / `male` / `diverse` / unknown. Optional, used for wording only (PERS-07)                                   |
