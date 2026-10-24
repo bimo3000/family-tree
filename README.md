@@ -12,13 +12,13 @@ A private, self-contained web app to **create, edit and view family trees**.
 
 ## Where to find what
 
-| You want to … | Go to |
-|---|---|
+| You want to …                           | Go to                                                                  |
+| --------------------------------------- | ---------------------------------------------------------------------- |
 | See what the app must do (the contract) | [docs/requirements/REQUIREMENTS.md](docs/requirements/REQUIREMENTS.md) |
-| Understand how it is built | [docs/concept/](docs/concept/) |
-| Know why a technical choice was made | [docs/agent/decisions/](docs/agent/decisions/) |
-| See the current status / next steps | [docs/agent/HANDOVER.md](docs/agent/HANDOVER.md) |
-| Read all docs in one overview | [docs/README.md](docs/README.md) |
+| Understand how it is built              | [docs/concept/](docs/concept/)                                         |
+| Know why a technical choice was made    | [docs/agent/decisions/](docs/agent/decisions/)                         |
+| See the current status / next steps     | [docs/agent/HANDOVER.md](docs/agent/HANDOVER.md)                       |
+| Read all docs in one overview           | [docs/README.md](docs/README.md)                                       |
 
 ## Developer quick start
 
