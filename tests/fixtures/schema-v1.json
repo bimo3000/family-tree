@@ -1,0 +1,59 @@
+{
+  "format": "stammbaum",
+  "schemaVersion": 1,
+  "id": "4f1c2a9e-0000-4000-8000-000000000001",
+  "name": "Familie Müller",
+  "createdAt": "2026-10-24T10:00:00Z",
+  "modifiedAt": "2026-10-24T12:30:00Z",
+  "savedWithAppVersion": "0.1.0",
+  "persons": [
+    {
+      "id": "p_anna",
+      "givenNames": "Anna Maria",
+      "surname": "Müller",
+      "birthName": "Schmidt",
+      "gender": "female",
+      "birth": { "date": { "y": 1923, "m": 3, "d": 12 }, "place": "Kiel" },
+      "death": { "date": { "y": 2001 } },
+      "photoId": "img_8f3a",
+      "biography": "Wuchs in Kiel auf.\nSpäter in Hamburg.",
+      "extraFields": [{ "label": "Konfession", "value": "evangelisch" }]
+    },
+    {
+      "id": "p_karl",
+      "givenNames": "Karl",
+      "surname": "Müller",
+      "birth": { "date": { "y": 1920, "q": "about" } },
+      "deceased": true
+    },
+    {
+      "id": "p_eva",
+      "givenNames": "Eva",
+      "surname": "Müller",
+      "birth": { "date": { "text": "Ostern 1950" } }
+    },
+    {
+      "id": "p_lukas",
+      "givenNames": "Lukas",
+      "birth": { "date": { "y": 1975, "q": "between", "y2": 1977 } }
+    },
+    { "id": "p_unbekannt" }
+  ],
+  "partnerships": [
+    {
+      "id": "u_1",
+      "partners": ["p_anna", "p_karl"],
+      "kind": "marriage",
+      "start": { "date": { "y": 1946, "m": 6 }, "place": "Kiel" },
+      "end": { "date": { "y": 1960 }, "reason": "divorce" }
+    }
+  ],
+  "parentChild": [
+    { "parentId": "p_anna", "childId": "p_eva" },
+    { "parentId": "p_karl", "childId": "p_eva" },
+    { "parentId": "p_eva", "childId": "p_lukas", "kind": "adoptive" },
+    { "parentId": "p_unbekannt", "childId": "p_karl" }
+  ],
+  "images": [{ "id": "img_8f3a", "file": "bilder/img_8f3a.jpg", "width": 800, "height": 1000 }],
+  "view": { "focusPersonId": "p_anna" }
+}
