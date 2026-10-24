@@ -41,7 +41,11 @@ on its own, and you can open the document with any copy of the program.
 | **ui**      | `src/ui/`       | Svelte components: tree view, person card, detail panel, forms, dialogs                                                                                | All German texts live here, and only here. User text is always rendered as text, never as HTML.                                       |
 
 Inside `core`: `model/` (types, queries, validation, operations), `dates.ts` (reading German date input),
-`migrations/` and `serialization.ts` (`data.json` in and out). `layout/` follows with slice S2.
+`migrations/` and `serialization.ts` (`data.json` in and out), `layout/` (the automatic tree layout, ADR-0006).
+
+Inside `ui`: `App.svelte` (shell), `tree/` (tree view, cards, drawing and pan/zoom helpers), `panel/` (detail panel),
+`text.ts` (all German display texts for dates, names and relations), `theme.css` (colours), `example.ts` (the embedded
+example from `examples/familie-brandt.json`).
 
 The dependency direction is strictly `ui → state → core` and `storage → core`. Core depends on nothing.
 This is what keeps **data separate from logic** (DATA-01) and makes a future read-only website (FUT-01) a matter of
