@@ -47,6 +47,8 @@
   the pannable background has a commented `svelte-ignore` (mouse-only extra).
 - Wheel zoom needs a non-passive listener (added in an `$effect` in `TreeView.svelte`), not `onwheel`.
 - Read the viewport size from the element when needed (`size()` in `TreeView.svelte`); the panel changes it.
+- A click on a card can move it (the panel opens and the tree slides it into view). The second click of a
+  double-click then hits the background: it is ignored there (`e.detail > 1`). Keep that in mind for new click handlers.
 - E2E: measure positions after the UI settled (inside `expect.poll`), e.g. the panel opening shrinks the viewport.
 - Screenshots for a look: a throwaway Node script in the scratchpad importing
   `<repo>/node_modules/@playwright/test/index.mjs`, `chromium.launch()`, `page.goto('file://…/dist/Stammbaum.html')`.

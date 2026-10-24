@@ -138,7 +138,9 @@
   bind:this={viewport}
   onpointerdown={onPointerDown}
   onclick={(e) => {
-    if (!(e.target as Element).closest('.zoom')) select(null);
+    // detail > 1: the second click of a double-click. Its first click may have opened the panel and moved
+    // the card away from under the mouse, so this one lands on the background and must not deselect.
+    if (e.detail <= 1 && !(e.target as Element).closest('.zoom')) select(null);
   }}
 >
   <div
