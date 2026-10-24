@@ -36,13 +36,9 @@
     biography: start.biography ?? '',
     extras: (start.extraFields ?? []).map((e) => ({ ...e })),
   });
-  const moreOpen = !!(
-    f.callName ||
-    f.gender ||
-    f.occupation ||
-    f.residences ||
-    f.biography ||
-    f.extras.length
+  /** Open from the start if any of its fields is filled; afterwards only the user opens or closes it. */
+  let moreOpen = $state(
+    !!(f.callName || f.gender || f.occupation || f.residences || f.biography || f.extras.length),
   );
 
   /** The person as the fields describe it. Empty values are dropped by the core operation. */
@@ -162,7 +158,7 @@
       verstorben, Datum unbekannt
     </label>
 
-    <details open={moreOpen}>
+    <details bind:open={moreOpen}>
       <summary>Mehr Angaben</summary>
       <label>
         Rufname

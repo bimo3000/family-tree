@@ -97,6 +97,18 @@ test.describe('adding relatives (ui-concept §2.6)', () => {
     await expect(panel(page)).toContainText('Julia Roth');
   });
 
+  test('"Mehr Angaben" stays open while typing (regression)', async ({ page }) => {
+    await open(page, 'p_thomas', '+ Kind');
+    await dialog(page).getByRole('button', { name: 'Hinzufügen' }).click();
+    const more = dialog(page).locator('details');
+    await dialog(page).getByText('Mehr Angaben').click();
+    await expect(more).toHaveJSProperty('open', true);
+    await dialog(page).getByLabel('Beruf').pressSequentially('Bäcker');
+    await dialog(page).getByLabel('Vornamen').pressSequentially('P');
+    await expect(more).toHaveJSProperty('open', true);
+    await expect(dialog(page).getByLabel('Beruf')).toHaveValue('Bäcker');
+  });
+
   test('a new relative left empty is not added', async ({ page }) => {
     await open(page, 'p_frieda', '+ Partner/in');
     await dialog(page).getByRole('button', { name: 'Hinzufügen' }).click();
