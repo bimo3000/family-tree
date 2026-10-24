@@ -1,7 +1,7 @@
 # UI concept (text level)
 
 > Status: **aligned with the user** (2026-10-24), including two mock-up rounds. Nothing is open.
-> The clickable reference is [`mockups/index.html`](../../mockups/README.md).
+> The clickable mock-up was deleted in S6 (git history before commit `1bfe483`); the running app is now the reference.
 > The final look and feel is the **user's decision** (DEV-09). This document describes structure and behaviour, not design.
 
 ## 1. Guiding principles
@@ -163,7 +163,7 @@ e.g. a cousin marriage or a person added twice by mistake).
   photo-forward cards, the panel photo like a print glued into an album.
 - Large readable fonts (base ≥ 16 px) and generous click targets.
 - System fonts only (privacy: no web fonts).
-- Reference: `mockups/index.html` and `mockups/shared/style.css` (colours as CSS variables).
+- Reference: the app's `src/ui/theme.css` (colours as CSS variables).
 
 ## 7. Help
 
@@ -192,4 +192,4 @@ e.g. a cousin marriage or a person added twice by mistake).
     or "… ganz löschen" (confirmed after mock-up round 2), so a wrongly attached person can be re-attached without retyping.
 11. **Layout is automatic** and recomputed after every change; cards glide to their new places, no manual dragging (§3).
 
-The mock-up (`mockups/index.html`) is the **visual and interaction reference** for the real UI.
+The running app is the **visual and interaction reference**; it was built from the mock-up, which is in git history.

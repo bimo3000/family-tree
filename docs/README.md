@@ -46,7 +46,6 @@ tests/unit/            unit tests (Vitest)
 tests/e2e/             browser tests of the built app (Playwright)
 scripts/               build/package/check helper scripts
 examples/              fictional example family (committed)
-mockups/               throwaway clickable UI mock-ups (phase 3, deleted once the real UI exists)
 data/                  YOUR real family projects (git-ignored, never committed)
 docs/                  this documentation
 .githooks/pre-push     runs `npm run verify` before every push

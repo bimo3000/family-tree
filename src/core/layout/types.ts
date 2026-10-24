@@ -21,7 +21,7 @@ export interface LayoutSizes {
   partGap: number;
 }
 
-/** Card sizes of the mock-up (`mockups/shared/style.css`); the "?" node is larger than there (user review of S3). */
+/** Card sizes taken over from the mock-up (the cards are drawn at these sizes); the "?" node is larger than there (user review of S3). */
 export const DEFAULT_SIZES: LayoutSizes = {
   cardWidth: 150,
   cardHeight: 182,

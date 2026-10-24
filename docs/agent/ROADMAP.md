@@ -23,8 +23,9 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 ## Sources of truth for every slice
 
 - What to build: `docs/requirements/REQUIREMENTS.md`. How it behaves: `docs/concept/ui-concept.md`, `data-model.md`, `architecture.md`.
-- How it looks and feels: **`mockups/index.html`** (open it, click through it). Port its colours from `mockups/shared/style.css`.
-- Reusable mock-up logic to port to TypeScript (with tests): `parseDate`/`fmtDate`/`dateHint`, the wording helpers
+- How it looks and feels: the running app and `src/ui/theme.css`. The clickable mock-up (`mockups/`) was deleted in S6; it is
+  in git history before commit `1bfe483`.
+- Mock-up logic that was ported to TypeScript (with tests): `parseDate`/`fmtDate`/`dateHint`, the wording helpers
   (`parentWord`, `childWord`, `partnerWord`), sibling detection, `focusSet`, `component()` (cut-off check), the edge drawing rules.
 
 ## S1 – Core model, dates, operations (`src/core/`)
