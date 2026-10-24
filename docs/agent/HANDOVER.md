@@ -24,7 +24,11 @@
   toast; cards glide (`left`/`top` transition). Shared button/form/dialog CSS now in `theme.css`.
 - Decided on the user's behalf: no photo row and no save status yet (S5, no dummy buttons); a new relative left
   completely empty is removed again when its dialog closes ("nothing entered, nothing added").
-- Tests: 307 unit, 27 E2E per engine (`tests/e2e/editing.spec.ts` new).
+- Tests: 309 unit, 28 E2E per engine (`tests/e2e/editing.spec.ts` new).
+- User feedback after trying S4, all done: "Mehr Angaben" no longer closes while typing (`bind:open`);
+  **the Rufname field is removed** (clarifications log); layout fix: every other upward sweep breaks ties the other
+  way round, so two families tied for one place can pass each other (ADR-0006). A geometric `lineCrossings` check is
+  in `tests/unit/layout/invariants.test.ts`.
 
 ## Next steps
 
@@ -37,6 +41,7 @@
 
 - Try the editing: `npm run build`, double-click `dist/Stammbaum.html`. A reload resets to the example until S5.
 - Feedback wanted on the card glide (cards move, lines jump to their new place).
+- Tell us about any other layout with crossing lines (a description of the family is enough).
 - A manual check on a real Mac (Safari) and on Windows.
 
 ## Pitfalls / environment notes
@@ -69,3 +74,6 @@
 - No photos yet (initials placeholder); photos come with S5.
 - "+ Geschwister" for a person without parents, then leaving the new sibling empty: the sibling is removed, the new "?" parent stays.
 - Lines don't glide with the cards; they jump to the new layout.
+- Line crossings can still happen in other shapes (the generated 100-person fixture has some). The user asked for
+  better layouts "or somehow user-editable". Manual arrangement was ruled out before (clarification 2026-10-24,
+  positions go stale); if crossings keep bothering the user, propose a small option as a `P-NNN` first.
