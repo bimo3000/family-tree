@@ -2,6 +2,14 @@
 import { crc32, deflateRawSync } from 'node:zlib';
 
 /**
+ * A project file (`.stammbaum`, ADR-0005) without pictures: a zip holding just `data.json`.
+ * @param {Buffer} dataJson
+ */
+export function createProjectFile(dataJson) {
+  return createZip([{ name: 'data.json', data: dataJson }]);
+}
+
+/**
  * Minimal ZIP writer (deflate, UTF-8 file names). Good enough for a handful of files;
  * readable by Windows Explorer, macOS Finder and Linux tools.
  * @param {{ name: string, data: Buffer }[]} files

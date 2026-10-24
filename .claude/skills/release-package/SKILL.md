@@ -13,7 +13,7 @@ description: Build and check the distributable Stammbaum zip (Stammbaum.html + A
 3. `npm run package` → `release/Stammbaum-<version>.zip`. It contains:
    - `Stammbaum/Stammbaum.html`, the whole app
    - `Stammbaum/Anleitung.txt`, generated from `docs/user-guide/Anleitung.md` (UTF-8 with BOM, CRLF)
-   - `Stammbaum/*.stammbaum`, the example projects from `examples/`
+   - `Stammbaum/Beispiel.stammbaum`, the example family, built from `examples/familie-brandt.json`
 4. **Check the result:**
    - `python3 -c "import zipfile,sys; z=zipfile.ZipFile(sys.argv[1]); print(z.testzip(), z.namelist())" release/Stammbaum-<version>.zip`
      must print `None` and the expected files.

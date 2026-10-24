@@ -5,14 +5,14 @@
 //     └─ Stammbaum/
 //         ├─ Stammbaum.html        ← the whole app, double-click to start
 //         ├─ Anleitung.txt         ← German quick guide (from docs/user-guide/Anleitung.md)
-//         └─ Beispiel.stammbaum    ← fictional example family (once it exists)
+//         └─ Beispiel.stammbaum    ← fictional example family, made from examples/familie-brandt.json
 //
 // Expects `npm run build` to have run (the `package` npm script does that).
 // No dependencies: the zip writer in scripts/lib/zip.mjs uses Node's built-in zlib.
 
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { createZip } from './lib/zip.mjs';
+import { createProjectFile, createZip } from './lib/zip.mjs';
 
 const root = new URL('..', import.meta.url).pathname;
 const { version } = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
@@ -33,12 +33,9 @@ if (existsSync(guide)) {
   entries.push({ name: 'Stammbaum/Anleitung.txt', data: Buffer.from('﻿' + text, 'utf8') });
 }
 
-const examples = join(root, 'examples');
-if (existsSync(examples)) {
-  for (const f of readdirSync(examples).filter((f) => f.endsWith('.stammbaum'))) {
-    entries.push({ name: `Stammbaum/${f}`, data: readFileSync(join(examples, f)) });
-  }
-}
+// Built here from the JSON the app embeds, so the two can never drift apart (DATA-06).
+const example = readFileSync(join(root, 'examples', 'familie-brandt.json'));
+entries.push({ name: 'Stammbaum/Beispiel.stammbaum', data: createProjectFile(example) });
 
 const outDir = join(root, 'release');
 mkdirSync(outDir, { recursive: true });

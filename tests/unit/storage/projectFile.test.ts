@@ -1,7 +1,9 @@
+import { readFileSync } from 'node:fs';
 import { strFromU8, strToU8, unzipSync, zipSync } from 'fflate';
 import { describe, expect, it } from 'vitest';
 import type { Project } from '../../../src/core/model/types';
 import { packProject, unpackProject } from '../../../src/storage/projectFile';
+import { createProjectFile } from '../../../scripts/lib/zip.mjs';
 import { familieBrandt } from '../../fixtures/familie-brandt';
 import { expectCode } from '../helpers';
 
@@ -45,5 +47,14 @@ describe('packProject / unpackProject (DATA-04)', () => {
 
   it('refuses a damaged data.json', () => {
     expectCode(() => unpackProject(zipSync({ 'data.json': strToU8('{') })), 'invalid');
+  });
+});
+
+describe('Beispiel.stammbaum in the release zip (DATA-06)', () => {
+  it('opens as the example family', () => {
+    const json = readFileSync(new URL('../../../examples/familie-brandt.json', import.meta.url));
+    const { project, images } = unpackProject(new Uint8Array(createProjectFile(json)));
+    expect(project).toEqual(familieBrandt);
+    expect(images.size).toBe(0);
   });
 });

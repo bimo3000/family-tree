@@ -89,7 +89,7 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 ## S6 – Finish and release
 
 - Print / save as image or PDF (UI-03). In-app help and first-use hints (ui-concept §7).
-- `examples/Beispiel.stammbaum` (DATA-06), German user guide `docs/user-guide/Anleitung.md`, release zip (skill `release-package`).
+- `Beispiel.stammbaum` in the release zip, built from `examples/familie-brandt.json` by `npm run package` (DATA-06), German user guide `docs/user-guide/Anleitung.md`, release zip (skill `release-package`).
 - Delete `mockups/`. Walk through every requirement and set `Verified` where a test or check covers it.
 - Give the user a short manual checklist for a real Mac (Safari) and Windows (GEN-02).
 
