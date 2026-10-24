@@ -1,0 +1,27 @@
+#!/bin/sh
+# Git pre-push hook: runs the full quality gate before anything reaches GitHub.
+# Activated automatically by `npm install` (the "prepare" script sets core.hooksPath=.githooks).
+# Never bypass it with --no-verify (see CLAUDE.md).
+set -e
+
+# Git GUIs and non-interactive shells often lack nvm on PATH – load it if needed.
+if ! command -v npm >/dev/null 2>&1; then
+  NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+  if [ -s "$NVM_DIR/nvm.sh" ]; then
+    . "$NVM_DIR/nvm.sh"
+    nvm use --silent >/dev/null 2>&1 || true
+  fi
+fi
+if ! command -v npm >/dev/null 2>&1; then
+  echo "pre-push: npm not found. Install Node.js (see README.md) and retry." >&2
+  exit 1
+fi
+
+cd "$(git rev-parse --show-toplevel)"
+echo "▶ pre-push: running 'npm run verify' (types, lint, unit tests, build, browser tests) …"
+if npm run --silent verify; then
+  echo "✓ pre-push: all checks passed"
+else
+  echo "✗ pre-push: checks failed – push aborted. Fix the problem (don't bypass the hook)." >&2
+  exit 1
+fi
