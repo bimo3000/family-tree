@@ -69,3 +69,11 @@ it('shows an unknown parent as "unbekannt" and leaves out empty groups', () => {
     },
   ]);
 });
+
+it('gives parents, partners and children their relation, siblings none (✎ and ×)', () => {
+  const [parents, partners, children, siblings] = familyGroups(familieBrandt, 'p_peter');
+  expect(parents?.entries[0]?.relation).toEqual({ parentId: 'p_karl', childId: 'p_peter' });
+  expect(partners?.entries[0]?.relation).toMatchObject({ id: 'u_5' });
+  expect(children?.entries[0]?.relation).toEqual({ parentId: 'p_peter', childId: 'p_lena' });
+  expect(siblings?.entries.map((e) => e.relation)).toEqual([undefined, undefined]);
+});

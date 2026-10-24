@@ -61,9 +61,12 @@
     overflow: hidden;
     user-select: none;
     text-align: center;
+    /* After a change the layout is recomputed: cards glide to their new places (ui-concept §3). */
     transition:
       opacity 0.2s,
-      box-shadow 0.2s;
+      box-shadow 0.2s,
+      left 0.35s ease,
+      top 0.35s ease;
   }
   .card:hover {
     box-shadow: var(--card-shadow-hover);

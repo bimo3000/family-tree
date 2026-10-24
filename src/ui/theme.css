@@ -18,6 +18,10 @@
   --card-shadow: 0 2px 6px rgba(110, 80, 10, 0.16);
   --card-shadow-hover: 0 5px 16px rgba(110, 80, 10, 0.28);
   --accent: #8f6b0c;
+  --primary-bg: #dcab2c;
+  --primary-ink: #33290f;
+  --input-bg: #fffdf5;
+  --danger: #a83a26;
   --selected: #d19d1c;
   --btn-bg: #fffaea;
   --btn-border: #dcc78c;
@@ -49,7 +53,10 @@ body {
   display: flex;
   flex-direction: column;
 }
-button {
+button,
+input,
+select,
+textarea {
   font: inherit;
   color: inherit;
   cursor: pointer;
@@ -79,4 +86,162 @@ h3 {
 }
 .btn:hover {
   background: var(--hover);
+}
+
+/* Buttons (from the mock-up). */
+.btn.primary {
+  background: var(--primary-bg);
+  color: var(--primary-ink);
+  border-color: var(--primary-bg);
+  font-weight: 600;
+}
+.btn.primary:hover {
+  filter: brightness(1.06);
+}
+.btn.danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+.link {
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.link:hover {
+  background: var(--hover);
+}
+.link.danger {
+  color: var(--danger);
+}
+
+/* Dialogs and their forms (person, relatives, relations). */
+.modal {
+  background: var(--panel-bg);
+  color: var(--ink);
+  border: none;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  width: 540px;
+  max-width: calc(100% - 40px);
+  max-height: 88vh;
+  overflow-y: auto;
+}
+.modal.wide {
+  width: 640px;
+}
+.modal::backdrop {
+  background: rgba(40, 30, 5, 0.4);
+}
+.modal h2 {
+  margin: 0 0 6px;
+}
+.modal fieldset {
+  border: none;
+  padding: 0;
+  margin: 16px 0 0;
+}
+.modal legend {
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 0;
+}
+.modal select {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 9px;
+}
+.form label {
+  display: block;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.form input[type='text'],
+.form select,
+.form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 9px 11px;
+  border: 1px solid var(--btn-border);
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--ink);
+  font-size: 1rem;
+}
+.form textarea {
+  resize: vertical;
+  line-height: 1.45;
+}
+.form input:focus,
+.form select:focus,
+.form textarea:focus {
+  outline: 2px solid var(--selected);
+  outline-offset: 0;
+  border-color: var(--selected);
+}
+.form details {
+  margin-top: 18px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 8px;
+}
+.form summary {
+  cursor: pointer;
+  padding: 8px 0;
+  font-weight: 600;
+  color: var(--accent);
+}
+.form .check,
+.modal .radio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  margin: 0;
+  color: var(--ink);
+  font-size: 1rem;
+  cursor: pointer;
+}
+.modal .radio input,
+.form .check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.date-hint {
+  font-size: 0.88rem;
+  color: var(--accent);
+  min-height: 1.3em;
+  margin-top: 3px;
+}
+.date-hint.vague {
+  color: var(--muted);
+}
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+.form-actions .btn.primary {
+  min-width: 140px;
+}
+.error {
+  color: var(--danger);
+  font-weight: 600;
+}
+.small {
+  font-size: 0.88rem;
 }

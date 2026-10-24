@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { Partnership, Person } from '../../../src/core/model/types';
 import {
   childWord,
+  dateHint,
+  errorText,
   eventText,
   fmtDate,
   fmtYear,
@@ -12,6 +14,7 @@ import {
   partnershipDetail,
   partnerWord,
   personFacts,
+  possessive,
   shortName,
   siblingWord,
   tooltipLines,
@@ -171,4 +174,32 @@ it('never uses dashes or middle dots as separators (ui-concept §5)', () => {
   ]);
   texts.push(...familieBrandt.partnerships.map(partnershipDetail));
   for (const text of texts) expect(text).not.toMatch(/[–—·]| - /);
+});
+
+describe('dateHint (ui-concept §2.5)', () => {
+  it('reads back how the date was understood', () => {
+    expect(dateHint(undefined)).toBe('');
+    expect(dateHint({ y: 1923, m: 3, d: 12 })).toBe('→ 12. März 1923');
+    expect(dateHint({ y: 1923, m: 12 })).toBe('→ Dezember 1923');
+    expect(dateHint({ y: 1923 })).toBe('→ im Jahr 1923');
+    expect(dateHint({ y: 1850, q: 'about' })).toBe('→ ungefähr 1850');
+    expect(dateHint({ y: 1900, q: 'before' })).toBe('→ vor 1900');
+    expect(dateHint({ y: 1900, q: 'after' })).toBe('→ nach 1900');
+    expect(dateHint({ y: 1890, q: 'between', y2: 1895 })).toBe('→ zwischen 1890 und 1895');
+    expect(dateHint({ text: 'Ostern 1920' })).toMatch(/^→ wird so übernommen/);
+  });
+});
+
+describe('editing texts', () => {
+  it('picks the possessive by gender', () => {
+    expect(possessive({ id: 'a', gender: 'female' })).toBe('Ihre');
+    expect(possessive({ id: 'a', gender: 'male' })).toBe('Seine');
+    expect(possessive({ id: 'a' })).toBe('Die');
+  });
+
+  it('explains rule violations in German', () => {
+    expect(errorText('loop')).toMatch(/eigener Vorfahr/);
+    expect(errorText('too-many-biological-parents')).toMatch(/zwei leibliche Eltern/);
+    expect(errorText('invalid')).toBe('Das hat nicht geklappt.');
+  });
 });

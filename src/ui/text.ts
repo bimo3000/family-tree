@@ -2,6 +2,7 @@
  * German display texts for persons, dates and relations (GEN-05, PERS-04/05/06/07). Ported from the mock-up.
  * Wording rule (ui-concept §5): no dashes or middle dots as separators, ranges read "1890 bis 1895".
  */
+import type { ModelErrorCode } from '../core/model/validation';
 import type {
   FlexDate,
   LifeEvent,
@@ -29,6 +30,37 @@ export function fmtDate(d: FlexDate | undefined): string {
   if ('d' in d && d.d && d.m) return `${pad(d.d)}.${pad(d.m)}.${d.y}`;
   if ('m' in d && d.m) return `${pad(d.m)}.${d.y}`;
   return qualified(d, String(d.y));
+}
+
+const MONTHS = [
+  'Januar',
+  'Februar',
+  'März',
+  'April',
+  'Mai',
+  'Juni',
+  'Juli',
+  'August',
+  'September',
+  'Oktober',
+  'November',
+  'Dezember',
+];
+
+/** The live interpretation under a date field (ui-concept §2.5): "→ 12. März 1923", "→ ungefähr 1850". */
+export function dateHint(d: FlexDate | undefined): string {
+  if (!d) return '';
+  if ('text' in d) return '→ wird so übernommen (kann nicht zum Sortieren genutzt werden)';
+  if ('q' in d) {
+    if (d.q === 'about') return `→ ungefähr ${d.y}`;
+    if (d.q === 'before') return `→ vor ${d.y}`;
+    if (d.q === 'after') return `→ nach ${d.y}`;
+    return 'y2' in d ? `→ zwischen ${d.y} und ${d.y2}` : `→ im Jahr ${d.y}`;
+  }
+  const month = d.m ? MONTHS[d.m - 1] : undefined;
+  if (d.d && month) return `→ ${d.d}. ${month} ${d.y}`;
+  if (month) return `→ ${month} ${d.y}`;
+  return `→ im Jahr ${d.y}`;
 }
 
 /** Year only, for the card (PERS-04). */
@@ -86,6 +118,11 @@ const KIND_PREFIX: Record<Exclude<ParentChildKind, 'biological'>, string> = {
 
 function withKind(kind: ParentChildKind | undefined, w: string): string {
   return kind && kind !== 'biological' ? KIND_PREFIX[kind] + w.toLowerCase() : w;
+}
+
+/** "Ihre", "Seine", "Die" (e.g. "Ihre Verbindungen … werden entfernt"). */
+export function possessive(p: Person): string {
+  return word(p, 'Ihre', 'Seine', 'Die');
 }
 
 /** "Mutter", "Adoptivvater", "Elternteil". */
@@ -151,4 +188,22 @@ export function personFacts(p: Person): [string, string][] {
   if (p.residences) facts.push(['Wohnorte', p.residences]);
   for (const f of p.extraFields ?? []) if (f.label || f.value) facts.push([f.label, f.value]);
   return facts;
+}
+
+/** Why a change was not possible, for the codes a user can run into while editing. */
+export function errorText(code: ModelErrorCode): string {
+  switch (code) {
+    case 'loop':
+      return 'Das geht nicht: Eine Person kann nicht ihr eigener Vorfahr sein.';
+    case 'too-many-biological-parents':
+      return 'Das geht nicht: Eine Person hat höchstens zwei leibliche Eltern.';
+    case 'duplicate-link':
+      return 'Diese Verbindung gibt es schon.';
+    case 'duplicate-partnership':
+      return 'Die beiden sind schon ein Paar.';
+    case 'self-partnership':
+      return 'Eine Person kann nicht ihr eigener Partner sein.';
+    default:
+      return 'Das hat nicht geklappt.';
+  }
 }
