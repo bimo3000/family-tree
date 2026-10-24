@@ -7,74 +7,10 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src data:"
     />
-    <title>Mock-up A · Familienalbum</title>
-    <link rel="stylesheet" href="shared/base.css" />
-    <style>
-      /* Variant A: warm family album. Neutral cards with a big photo, editing inside the side panel. */
-      :root {
-        --font: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
-        --bg: #f6efe2;
-        --canvas: #f3ead9;
-        --ink: #3b2f24;
-        --muted: #7a6a58;
-        --line: #b39a7c;
-        --line-hl: #7a4f2a;
-        --line-soft: #e2d4bd;
-        --bar-bg: #efe4cf;
-        --bar-border: #dccbaa;
-        --panel-bg: #fbf6ec;
-        --hover: rgba(122, 79, 42, 0.09);
-        --card-bg: #fffaf0;
-        --card-border: #e3d3b6;
-        --card-shadow: 0 2px 6px rgba(80, 55, 30, 0.16);
-        --card-shadow-hover: 0 5px 16px rgba(80, 55, 30, 0.28);
-        --accent: #8a5a2b;
-        --accent-ink: #fffaf0;
-        --btn-bg: #fffaf0;
-        --btn-border: #d8c4a2;
-        --input-bg: #fffdf8;
-        --warn: #a3542a;
-        --danger: #a33b2a;
-        --ph-bg: #e9dcc4;
-        --ph-ink: #9a8263;
-        --tip-bg: #3b2f24;
-        --tip-ink: #fbf6ec;
-        --radius: 10px;
-        --shadow: 0 10px 30px rgba(60, 40, 20, 0.22);
-        --card-w: 150;
-        --card-h: 182;
-        --slot-w: 182;
-        --row-h: 250;
-      }
-      .viewport {
-        background-image: radial-gradient(rgba(120, 90, 50, 0.09) 1px, transparent 1px);
-        background-size: 22px 22px;
-      }
-      /* The panel photo looks like a print glued into an album. */
-      .p-photo {
-        width: 100%;
-        height: 260px;
-        border: 9px solid #fff;
-        box-shadow: 0 3px 10px rgba(60, 40, 20, 0.25);
-        transform: rotate(-1deg);
-        margin: 34px 0 14px;
-      }
-      .panel h2 {
-        font-size: 1.7rem;
-      }
-      .panel h3 {
-        font-style: italic;
-        font-weight: normal;
-        font-size: 1.2rem;
-        border-bottom: 1px solid var(--line-soft);
-        padding-bottom: 4px;
-      }
-      .start h1 {
-        font-style: italic;
-      }
-    </style>
+    <title>Stammbaum Mock-up</title>
+    <link rel="stylesheet" href="shared/style.css" />
   </head>
-  <body class="card-portrait g-none" data-variant="a" data-edit-mode="panel">
+  <body>
     <script src="shared/familie.js"></script>
     <script src="shared/prototype.js"></script>
   </body>

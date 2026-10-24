@@ -1,4 +1,42 @@
-/* Shared layout of the mock-ups. Each variant page sets the colour/font variables and card sizes. */
+/* Look of the mock-up: warm family album (round 1 decision). Card sizes are read by prototype.js. */
+
+:root {
+  --font: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --bg: #f8f0d8;
+  --canvas: #f6ecce;
+  --ink: #3a3020;
+  --muted: #7a6a45;
+  --line: #c3a660;
+  --line-hl: #9c760f;
+  --line-soft: #e8dbb2;
+  --bar-bg: #f2e5bf;
+  --bar-border: #e0cd97;
+  --panel-bg: #fdf7e5;
+  --hover: rgba(176, 134, 20, 0.12);
+  --card-bg: #fffaea;
+  --card-border: #e7d49e;
+  --card-shadow: 0 2px 6px rgba(110, 80, 10, 0.16);
+  --card-shadow-hover: 0 5px 16px rgba(110, 80, 10, 0.28);
+  --accent: #8f6b0c;
+  --primary-bg: #dcab2c;
+  --primary-ink: #33290f;
+  --selected: #d19d1c;
+  --btn-bg: #fffaea;
+  --btn-border: #dcc78c;
+  --input-bg: #fffdf5;
+  --warn: #b0561c;
+  --danger: #a83a26;
+  --ph-bg: #f0e2b6;
+  --ph-ink: #a58a44;
+  --tip-bg: #3a3020;
+  --tip-ink: #fdf7e5;
+  --radius: 10px;
+  --shadow: 0 10px 30px rgba(80, 60, 10, 0.22);
+  --card-w: 150;
+  --card-h: 182;
+  --slot-w: 192;
+  --row-h: 250;
+}
 
 * {
   box-sizing: border-box;
@@ -31,19 +69,27 @@ button {
   cursor: pointer;
 }
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   margin: 0.4em 0 0.2em;
   line-height: 1.2;
 }
 h3 {
-  font-size: 1.05rem;
-  margin: 1.4em 0 0.4em;
+  font-style: italic;
+  font-weight: normal;
+  font-size: 1.2rem;
+  margin: 1.4em 0 0.6em;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 4px;
 }
 .muted {
   color: var(--muted);
 }
 .small {
   font-size: 0.9rem;
+}
+.sep {
+  margin: 0 0.55em;
+  color: var(--line);
 }
 
 /* --- Top bar --- */
@@ -137,12 +183,13 @@ h3 {
   background: var(--hover);
 }
 .btn.primary {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
+  background: var(--primary-bg);
+  color: var(--primary-ink);
+  border-color: var(--primary-bg);
+  font-weight: 600;
 }
 .btn.primary:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.06);
 }
 .btn.danger {
   background: var(--danger);
@@ -174,7 +221,9 @@ main {
   overflow: hidden;
   cursor: grab;
   touch-action: none;
-  background: var(--canvas);
+  background-color: var(--canvas);
+  background-image: radial-gradient(rgba(140, 100, 10, 0.1) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 .viewport.panning {
   cursor: grabbing;
@@ -199,22 +248,15 @@ main {
 .edges path {
   fill: none;
   stroke: var(--line);
-  stroke-width: var(--line-w, 2);
+  stroke-width: 2;
   transition: opacity 0.2s;
 }
-.edges path.adoptive {
+.edges path.dashed {
   stroke-dasharray: 7 5;
-}
-/* Marriage sign (two rings), shown only by variants that want it */
-.edges .marr {
-  display: none;
-  fill: none;
-  stroke: var(--line);
-  stroke-width: 1.2;
 }
 .edges .hl {
   stroke: var(--line-hl);
-  stroke-width: calc(var(--line-w, 2) * 1.6);
+  stroke-width: 3;
 }
 .edges .dim {
   opacity: 0.2;
@@ -222,6 +264,8 @@ main {
 .card {
   position: absolute;
   display: flex;
+  flex-direction: column;
+  padding: 6px 6px 0;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
@@ -240,12 +284,20 @@ main {
   opacity: 0.3;
 }
 .card.selected {
-  outline: 3px solid var(--accent);
-  outline-offset: 3px;
-  overflow: visible;
+  border-color: var(--selected);
+  box-shadow:
+    0 0 0 3px var(--selected),
+    var(--card-shadow-hover);
+}
+.card .ph {
+  height: 100px;
+  font-size: 2rem;
+  border-radius: calc(var(--radius) - 4px);
 }
 .card .txt {
   min-width: 0;
+  padding: 6px 4px;
+  text-align: center;
 }
 .card .nm {
   font-weight: 600;
@@ -262,11 +314,8 @@ main {
   margin-top: 3px;
   white-space: nowrap;
 }
-u {
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-}
 .card.unknown {
+  padding: 0;
   border-radius: 50%;
   border-style: dashed;
   background: var(--canvas);
@@ -295,69 +344,6 @@ u {
 }
 .old svg {
   filter: sepia(0.8) saturate(0.6);
-}
-
-/* Card style: portrait (photo on top) */
-.card-portrait .card {
-  flex-direction: column;
-  padding: 6px 6px 0;
-}
-.card-portrait .ph {
-  height: 100px;
-  font-size: 2rem;
-  border-radius: calc(var(--radius) - 4px);
-}
-.card-portrait .txt {
-  padding: 6px 4px;
-  text-align: center;
-}
-/* Card style: row (round photo left) */
-.card-row .card {
-  align-items: center;
-  gap: 10px;
-  padding: 0 12px 0 10px;
-}
-.card-row .ph {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  font-size: 1rem;
-}
-/* Card style: text only */
-.card-text .card .ph {
-  display: none;
-}
-.card-text .card {
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 4px 8px;
-}
-
-/* Gender colours: coloured left edge, or a soft tint */
-.g-edge .card[data-gender='female'] {
-  border-left: 5px solid var(--female);
-}
-.g-edge .card[data-gender='male'] {
-  border-left: 5px solid var(--male);
-}
-.g-edge .card[data-gender='diverse'] {
-  border-left: 5px solid var(--diverse);
-}
-.g-tint .card[data-gender='female'] {
-  background: var(--female-bg);
-  border-color: var(--female);
-}
-.g-tint .card[data-gender='male'] {
-  background: var(--male-bg);
-  border-color: var(--male);
-}
-.g-tint .card[data-gender='diverse'] {
-  background: var(--diverse-bg);
-  border-color: var(--diverse);
-}
-.g-tint .card[data-gender=''] {
-  background: var(--neutral-bg);
 }
 
 /* Tree controls and hints */
@@ -430,7 +416,14 @@ u {
 .close:hover {
   background: var(--hover);
 }
+/* The panel photo looks like a print glued into an album. */
 .p-photo {
+  width: 100%;
+  height: 260px;
+  border: 9px solid #fff;
+  box-shadow: 0 3px 10px rgba(80, 60, 10, 0.25);
+  transform: rotate(-1deg);
+  margin: 34px 0 14px;
   background: var(--ph-bg);
   color: var(--ph-ink);
   display: flex;
@@ -439,7 +432,12 @@ u {
   font-size: 3rem;
   font-weight: 600;
   overflow: hidden;
-  margin: 10px 0 8px;
+}
+.p-unknown {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  transform: none;
 }
 .geb {
   color: var(--muted);
@@ -462,35 +460,69 @@ u {
   line-height: 1.5;
   margin: 0;
 }
+
+/* Family: group title, then the entries indented along a thin line */
 .fam {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 .fam-title {
-  color: var(--muted);
-  font-size: 0.9rem;
-  margin-bottom: 2px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: 4px;
+}
+.fam-list {
+  border-left: 2px solid var(--line-soft);
+  padding-left: 6px;
+}
+.fam-row {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+}
+.fam-row:hover {
+  background: var(--hover);
 }
 .fam-link {
-  display: block;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   text-align: left;
   background: none;
   border: none;
   padding: 6px 8px;
-  margin-left: -8px;
-  border-radius: 6px;
-}
-.fam-link:hover {
-  background: var(--hover);
 }
 .fam-name {
   color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.fam-role {
+.fam-info {
+  display: block;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  margin-top: 1px;
+}
+.fam-tool {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  color: var(--muted);
+  font-size: 1.05rem;
+  opacity: 0.55;
+}
+.fam-row:hover .fam-tool {
+  opacity: 1;
+}
+.fam-tool:hover {
+  background: var(--card-bg);
+  color: var(--ink);
+}
+.fam-tool.remove:hover {
+  color: var(--danger);
 }
 .actions {
   display: grid;
@@ -502,8 +534,9 @@ u {
   grid-column: 1 / -1;
 }
 
-/* --- Edit form --- */
-.form label {
+/* --- Forms (person and relation dialogs) --- */
+.form label,
+.modal .lbl {
   display: block;
   margin: 12px 0 0;
   color: var(--muted);
@@ -517,8 +550,8 @@ u {
   margin-top: 4px;
   padding: 9px 11px;
   border: 1px solid var(--btn-border);
-  border-radius: calc(var(--radius) * 0.6);
-  background: var(--input-bg, #fff);
+  border-radius: 6px;
+  background: var(--input-bg);
   font-size: 1rem;
 }
 .form textarea {
@@ -528,9 +561,9 @@ u {
 .form input:focus,
 .form select:focus,
 .form textarea:focus {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--selected);
   outline-offset: 0;
-  border-color: var(--accent);
+  border-color: var(--selected);
 }
 .pair {
   display: grid;
@@ -595,6 +628,7 @@ u {
   display: flex;
   gap: 10px;
   margin-top: 22px;
+  flex-wrap: wrap;
 }
 .form-actions .btn.primary {
   min-width: 140px;
@@ -605,7 +639,7 @@ u {
   position: fixed;
   inset: 0;
   z-index: 30;
-  background: rgba(20, 15, 10, 0.4);
+  background: rgba(40, 30, 5, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -613,9 +647,9 @@ u {
 }
 .modal {
   background: var(--panel-bg);
-  border-radius: calc(var(--radius) * 1.4);
+  border-radius: 14px;
   box-shadow: var(--shadow);
-  width: 520px;
+  width: 540px;
   max-width: 100%;
   max-height: 88vh;
   overflow-y: auto;
@@ -634,15 +668,19 @@ u {
   margin-bottom: 6px;
 }
 .radio {
-  display: flex;
+  display: flex !important;
   align-items: center;
   gap: 10px;
   padding: 7px 0;
+  margin: 0 !important;
+  color: var(--ink) !important;
+  font-size: 1rem !important;
   cursor: pointer;
 }
 .radio input {
   width: 18px;
   height: 18px;
+  accent-color: var(--accent);
 }
 .modal select {
   width: 100%;
@@ -678,6 +716,7 @@ u {
 }
 .start h1 {
   font-size: 2.6rem;
+  font-style: italic;
   margin: 0;
 }
 .start p {
@@ -692,7 +731,7 @@ u {
   font-size: 1.15rem;
 }
 
-/* Bar to switch between the mock-ups (not part of the app) */
+/* Small bar to get back to the start screen (not part of the app) */
 .mockbar {
   position: fixed;
   left: 10px;
@@ -701,7 +740,7 @@ u {
   font:
     13px/1.4 system-ui,
     sans-serif;
-  background: rgba(20, 20, 20, 0.78);
+  background: rgba(30, 25, 10, 0.78);
   color: #fff;
   border-radius: 8px;
   padding: 6px 10px;
@@ -709,7 +748,6 @@ u {
   gap: 10px;
   align-items: center;
 }
-.mockbar a,
 .mockbar button {
   color: #fff;
   background: none;
@@ -717,10 +755,4 @@ u {
   padding: 0;
   font: inherit;
   text-decoration: underline;
-  opacity: 0.85;
-}
-.mockbar .current {
-  font-weight: 700;
-  text-decoration: none;
-  opacity: 1;
 }

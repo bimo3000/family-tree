@@ -1,6 +1,5 @@
-// Shared behaviour of the Stammbaum mock-ups. Throwaway code: no build step, no network, fictional data only.
-// A variant page sets its look via CSS (incl. --card-w/--card-h/--slot-w/--row-h) and its open UX choices
-// via data attributes on <body>: data-variant, data-edit-mode ("panel" | "dialog").
+// Behaviour of the Stammbaum mock-up. Throwaway code: no build step, no network, fictional data only.
+// Card sizes come from CSS (--card-w/--card-h/--slot-w/--row-h in style.css).
 // Changes live in memory only and are gone after reloading the page.
 (function () {
   'use strict';
@@ -12,12 +11,6 @@
   const CARD_H = num('--card-h');
   const SLOT_W = num('--slot-w');
   const ROW_H = num('--row-h');
-  const EDIT_MODE = body.dataset.editMode;
-  const VARIANTS = [
-    ['a', 'a-familienalbum.html', 'A · Familienalbum'],
-    ['b', 'b-klar-modern.html', 'B · Klar & modern'],
-    ['c', 'c-ahnentafel.html', 'C · Ahnentafel'],
-  ];
 
   let state = structuredClone(window.FAMILIE);
   let selectedId = null;
@@ -103,7 +96,7 @@
     if (d.q === 'about') return `ca. ${d.y}`;
     if (d.q === 'before') return `vor ${d.y}`;
     if (d.q === 'after') return `nach ${d.y}`;
-    if (d.q === 'between') return `${d.y}–${d.y2}`;
+    if (d.q === 'between') return `${d.y} bis ${d.y2}`;
     return plain;
   }
 
@@ -148,12 +141,9 @@
     return [first, p.surname].filter(Boolean).join(' ') || 'Ohne Namen';
   }
 
-  /** Given names with the Rufname underlined, plus the last known surname. */
+  /** All given names plus the last known surname (the Rufname is used for short names only). */
   function nameHtml(p) {
-    let given = esc(p.givenNames || '');
-    if (p.callName && given.includes(esc(p.callName)))
-      given = given.replace(esc(p.callName), `<u>${esc(p.callName)}</u>`);
-    const html = [given, esc(p.surname || '')].filter(Boolean).join(' ');
+    const html = [p.givenNames, p.surname].filter(Boolean).map(esc).join(' ');
     return html || '<i>Ohne Namen</i>';
   }
 
@@ -245,19 +235,14 @@
     <div class="toast" hidden></div>
     <div class="start">
       <h1>Stammbaum</h1>
-      <p>Deine Familiengeschichte – privat auf deinem Computer.</p>
+      <p>Deine Familiengeschichte, privat auf deinem Computer.</p>
       <button class="btn primary" data-mock="Neuen Stammbaum anlegen">Neuen Stammbaum anlegen</button>
       <button class="btn" data-mock="Stammbaum-Datei öffnen">Stammbaum-Datei öffnen</button>
       <button class="btn" data-action="example">Beispiel ansehen</button>
     </div>
     <nav class="mockbar">
-      <span>Mock-up:</span>
-      ${VARIANTS.map(
-        ([id, file, label]) =>
-          `<a href="${file}" class="${id === body.dataset.variant ? 'current' : ''}">${label}</a>`,
-      ).join('')}
-      <button data-action="start">Startseite</button>
-      <a href="index.html">Übersicht</a>
+      <span>Mock-up</span>
+      <button data-action="start">Startseite zeigen</button>
     </nav>`,
   );
 
@@ -302,6 +287,9 @@
     </div>`;
   }
 
+  const coupleOf = (a, b) =>
+    state.partnerships.find((r) => r.partners.includes(a) && r.partners.includes(b));
+
   function edgesHtml() {
     const out = [];
     const byId = new Map(state.persons.map((p) => [p.id, p]));
@@ -322,58 +310,57 @@
       const y = pa.y;
       const mx = (x1 + x2) / 2;
       if (r.end?.reason) {
-        out.push(`<path ${ids} d="M${x1} ${y} H${mx - 6} M${mx + 6} ${y} H${x2}" />`);
+        const title = r.end.reason === 'divorce' ? 'geschieden' : 'getrennt';
+        out.push(`<path ${ids} d="M${x1} ${y} H${mx - 5} M${mx + 5} ${y} H${x2}" />`);
         out.push(
-          `<path ${ids} d="M${mx - 9} ${y + 8} L${mx - 3} ${y - 8} M${mx + 3} ${y + 8} L${mx + 9} ${y - 8}"><title>${r.end.reason === 'divorce' ? 'geschieden' : 'getrennt'}</title></path>`,
+          `<path ${ids} d="M${mx - 7} ${y + 7} L${mx - 1} ${y - 7} M${mx + 1} ${y + 7} L${mx + 7} ${y - 7}"><title>${title}</title></path>`,
         );
       } else {
         out.push(`<path ${ids} d="M${x1} ${y} H${x2}" />`);
       }
-      if (r.kind === 'marriage')
-        out.push(
-          `<g class="marr" ${ids}><circle cx="${mx - 3}" cy="${y - 9}" r="4" /><circle cx="${mx + 3}" cy="${y - 9}" r="4" /></g>`,
-        );
     }
 
-    // Children hang from the middle of their parents' couple line (or below a single parent).
+    // Children hang from the middle of their parents' couple line, or below a single parent.
+    // Biological parents share one solid line. Adoptive/step/foster parents get their own dashed line,
+    // so a child can show both (TREE-03). Two parents share a line only if they are a couple.
     const groups = new Map();
     for (const c of state.persons) {
-      const links = parentsOf(c.id);
-      if (!links.length) continue;
-      const key = links
-        .map((l) => l.parentId)
-        .sort()
-        .join(' ');
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push({ child: c, links });
+      const byKind = new Map();
+      for (const l of parentsOf(c.id)) {
+        const kind = isBio(l) ? '' : l.kind;
+        if (!byKind.has(kind)) byKind.set(kind, []);
+        byKind.get(kind).push(l.parentId);
+      }
+      for (const [kind, ids] of byKind) {
+        const sets = ids.length === 2 && coupleOf(ids[0], ids[1]) ? [ids] : ids.map((id) => [id]);
+        for (const set of sets) {
+          const key = `${kind}|${[...set].sort().join(' ')}`;
+          if (!groups.has(key)) groups.set(key, { kind, parentIds: set, kids: [] });
+          groups.get(key).kids.push(c);
+        }
+      }
     }
-    for (const [key, kids] of groups) {
-      const parents = key
-        .split(' ')
-        .map((id) => byId.get(id))
-        .filter(Boolean);
+    for (const { kind, parentIds, kids } of groups.values()) {
+      const parents = parentIds.map((id) => byId.get(id)).filter(Boolean);
       if (!parents.length) continue;
-      const couple =
-        parents.length === 2 &&
-        parents[0].row === parents[1].row &&
-        state.partnerships.some(
-          (r) => r.partners.includes(parents[0].id) && r.partners.includes(parents[1].id),
-        );
+      const r = parents.length === 2 ? coupleOf(parents[0].id, parents[1].id) : null;
+      const onCoupleLine = r && parents[0].row === parents[1].row;
       const ox = parents.reduce((s, p) => s + pos(p).x, 0) / parents.length;
       const bottom = Math.max(...parents.map((p) => pos(p).y + size(p).h / 2));
-      const oy = couple ? pos(parents[0]).y : bottom;
-      const top = Math.min(...kids.map((k) => pos(k.child).y - size(k.child).h / 2));
-      const busY = (bottom + top) / 2;
+      // Below a divorce mark, the line starts under the "//" instead of running through it.
+      const oy = onCoupleLine ? pos(parents[0]).y + (r.end?.reason ? 11 : 0) : bottom;
+      const top = Math.min(...kids.map((k) => pos(k).y - size(k).h / 2));
+      const busY = (bottom + top) / 2 + (kind ? 10 : 0);
       const pids = parents.map((p) => p.id).join(' ');
+      const cls = kind ? ' class="dashed"' : '';
+      const label = kind ? `<title>${withKind(kind, 'Kind')}</title>` : '';
       out.push(
-        `<path data-parents="${pids}" data-children="${kids.map((k) => k.child.id).join(' ')}" d="M${ox} ${oy} V${busY}" />`,
+        `<path data-parents="${pids}" data-children="${kids.map((k) => k.id).join(' ')}"${cls} d="M${ox} ${oy} V${busY}">${label}</path>`,
       );
       for (const k of kids) {
-        const cp = pos(k.child);
-        const kind = k.links.find((l) => !isBio(l))?.kind;
-        const label = kind ? `<title>${withKind(kind, 'Kind')}</title>` : '';
+        const cp = pos(k);
         out.push(
-          `<path data-parents="${pids}" data-children="${k.child.id}"${kind ? ' class="adoptive"' : ''} d="M${ox} ${busY} H${cp.x} V${cp.y - size(k.child).h / 2}">${label}</path>`,
+          `<path data-parents="${pids}" data-children="${k.id}"${cls} d="M${ox} ${busY} H${cp.x} V${cp.y - size(k).h / 2}">${label}</path>`,
         );
       }
     }
@@ -564,7 +551,6 @@
   }
 
   function clearSelection() {
-    if (editingId && EDIT_MODE === 'panel') editingId = null;
     selectedId = null;
     renderPanel();
     applyFocus();
@@ -578,33 +564,47 @@
       return;
     }
     panel.hidden = false;
-    if (editingId === p.id && EDIT_MODE === 'panel') {
-      panel.replaceChildren(buildForm(p));
-      return;
-    }
     panel.innerHTML = detailsHtml(p);
   }
 
-  function familyEntry(q, role, detail) {
+  // `rel` identifies the relation for the ✎/× buttons: "u:<partnershipId>" or "pc:<parentId>:<childId>".
+  function familyEntry(q, role, detail, rel) {
     const name = q.placeholder ? '<i>unbekannt</i>' : esc(shortName(q));
-    const years = q.placeholder ? '' : yearsLine(q);
-    const info = [role, years, detail].filter(Boolean).join(' · ');
-    return `<button class="fam-link" data-action="goto" data-id="${q.id}"><span class="fam-name">${name}</span><br /><span class="fam-role">${esc(info)}</span></button>`;
+    const info = [role, q.placeholder ? '' : yearsLine(q)]
+      .filter(Boolean)
+      .map(esc)
+      .join('<span class="sep">|</span>');
+    const tools = rel
+      ? `<button class="fam-tool" data-action="rel-edit" data-rel="${rel}" title="Beziehung bearbeiten">✎</button>
+         <button class="fam-tool remove" data-action="rel-remove" data-rel="${rel}" title="Verbindung entfernen">×</button>`
+      : '';
+    return `<div class="fam-row">
+      <button class="fam-link" data-action="goto" data-id="${q.id}">
+        <span class="fam-name">${name}</span>
+        ${info ? `<span class="fam-info">${info}</span>` : ''}
+        ${detail ? `<span class="fam-info">${esc(detail)}</span>` : ''}
+      </button>${tools}</div>`;
   }
 
   function familyHtml(p) {
     const parents = parentsOf(p.id).map((l) => {
       const q = person(l.parentId);
-      return familyEntry(q, q.placeholder ? '' : parentWord(q, l.kind));
+      return familyEntry(
+        q,
+        q.placeholder ? '' : parentWord(q, l.kind),
+        '',
+        `pc:${l.parentId}:${p.id}`,
+      );
     });
     const partners = partnershipsOf(p.id).map((r) => {
       const q = person(other(r, p.id));
-      return familyEntry(q, partnerWord(q, r), partnershipDetail(r));
+      return familyEntry(q, partnerWord(q, r), partnershipDetail(r), `u:${r.id}`);
     });
     const children = childrenOf(p.id)
       .map((l) => [person(l.childId), l])
       .sort((a, b) => sortValue(a[0]) - sortValue(b[0]))
-      .map(([c, l]) => familyEntry(c, childWord(c, l.kind)));
+      .map(([c, l]) => familyEntry(c, childWord(c, l.kind), '', `pc:${p.id}:${c.id}`));
+    // Siblings are derived from shared parents, so they have no ✎/× of their own.
     const myParents = parentsOf(p.id).map((l) => l.parentId);
     const siblingIds = new Set(myParents.flatMap((id) => childrenOf(id).map((l) => l.childId)));
     siblingIds.delete(p.id);
@@ -630,7 +630,7 @@
     return `<h3>Familie</h3>${groups
       .map(
         ([title, items]) =>
-          `<div class="fam"><div class="fam-title">${title}</div>${items.join('')}</div>`,
+          `<div class="fam"><div class="fam-title">${title}</div><div class="fam-list">${items.join('')}</div></div>`,
       )
       .join('')}`;
   }
@@ -681,6 +681,8 @@
     } else if (a === 'edit') startEdit(selectedId);
     else if (a === 'add') openAdd(t.dataset.kind, selectedId);
     else if (a === 'delete') openDelete(selectedId);
+    else if (a === 'rel-edit') openRelEdit(t.dataset.rel);
+    else if (a === 'rel-remove') openRelRemove(t.dataset.rel);
   });
 
   // ---------------------------------------------------------------- edit form
@@ -838,14 +840,7 @@
 
   function startEdit(id) {
     editingId = id;
-    if (EDIT_MODE === 'panel') {
-      selectedId = id;
-      renderPanel();
-      applyFocus();
-      panel.scrollTop = 0;
-    } else {
-      openModal(buildForm(person(id)), { wide: true, onClose: finishEdit });
-    }
+    openModal(buildForm(person(id)), { wide: true, onClose: finishEdit });
     requestAnimationFrame(() => document.querySelector('.form [data-field="givenNames"]')?.focus());
   }
 
@@ -861,7 +856,7 @@
     if (!person(editingId)) {
       editingId = null;
       closeModal();
-    } else if (EDIT_MODE === 'dialog') modal.replaceChildren(buildForm(person(editingId)));
+    } else modal.replaceChildren(buildForm(person(editingId)));
     renderPanel();
   }
 
@@ -928,6 +923,13 @@
     if (kind === 'sibling' && !parentsOf(id).length)
       question =
         '<p class="muted">Die Eltern sind noch unbekannt. Damit beide als Geschwister zusammengehören, wird ein Platzhalter „?“ als Elternteil angelegt.</p>';
+    const kindQuestion =
+      kind === 'child' || kind === 'sibling'
+        ? `<fieldset class="ckind" hidden><legend></legend>
+            ${radio('ckind', 'adoptive', 'Adoptivkind', true)}
+            ${radio('ckind', 'step', 'Stiefkind')}
+            ${radio('ckind', 'foster', 'Pflegekind')}</fieldset>`
+        : '';
     const options = state.persons
       .filter((x) => !x.placeholder && x.id !== id)
       .sort((a, b) => fullName(a).localeCompare(fullName(b), 'de'))
@@ -942,13 +944,46 @@
         ${radio('who', 'existing', 'Vorhandene Person auswählen')}
         <select name="existing" hidden>${options}</select>
       </fieldset>
+      ${kindQuestion}
       <div class="form-actions">
         <button class="btn primary" data-action="confirm">Hinzufügen</button>
         <button class="btn" data-action="cancel">Abbrechen</button>
       </div>`);
+    // The parents the new/selected person would get from this flow.
+    const newParentIds = () => {
+      if (kind === 'sibling') return parentsOf(id).map((l) => l.parentId);
+      const ps = partnershipsOf(id);
+      const otherId =
+        ps.length > 1
+          ? modal.querySelector('[name="with"]:checked').value
+          : ps[0] && other(ps[0], id);
+      return [id, otherId].filter(Boolean);
+    };
     modal.onchange = () => {
-      modal.querySelector('[name="existing"]').hidden =
-        modal.querySelector('[name="who"]:checked').value !== 'existing';
+      const select = modal.querySelector('[name="existing"]');
+      const useExisting = modal.querySelector('[name="who"]:checked').value === 'existing';
+      select.hidden = !useExisting;
+      const fieldset = modal.querySelector('.ckind');
+      if (!fieldset) return;
+      // At most two biological parents: otherwise ask what kind of child this is.
+      const ids = newParentIds();
+      const existingBio = useExisting
+        ? parentsOf(select.value)
+            .filter((l) => isBio(l) && !ids.includes(l.parentId))
+            .map((l) => l.parentId)
+        : [];
+      fieldset.hidden = existingBio.length + ids.length <= 2;
+      if (!fieldset.hidden) {
+        const n = esc(shortName(person(select.value)));
+        const names = ids.map((pid) => esc(shortName(person(pid)))).join(' und ');
+        fieldset.querySelector('legend').textContent = '';
+        fieldset
+          .querySelector('legend')
+          .insertAdjacentHTML(
+            'beforeend',
+            `${n} hat schon leibliche Eltern. Was für ein Kind ist ${n} für ${names}?`,
+          );
+      }
     };
     modal.onclick = (e) => {
       const a = e.target.closest('[data-action]')?.dataset.action;
@@ -959,6 +994,7 @@
         existing: val('who') === 'existing' ? modal.querySelector('[name="existing"]').value : null,
         with: val('with'),
         pkind: val('pkind'),
+        ckind: modal.querySelector('.ckind:not([hidden])') ? val('ckind') : undefined,
         couple: modal.querySelector('[name="couple"]')?.checked,
       });
     };
@@ -979,9 +1015,13 @@
     state.persons.push(p);
     return p;
   }
-  const link = (parentId, childId, kind) =>
+  function link(parentId, childId, kind) {
+    if (state.parentChild.some((l) => l.parentId === parentId && l.childId === childId)) return;
     state.parentChild.push(kind ? { parentId, childId, kind } : { parentId, childId });
-  const couple = (a, b) => state.partnerships.push({ id: `u_neu${nextId++}`, partners: [a, b] });
+  }
+  function couple(a, b) {
+    if (!coupleOf(a, b)) state.partnerships.push({ id: `u_neu${nextId++}`, partners: [a, b] });
+  }
 
   function doAdd(kind, id, f) {
     pushUndo();
@@ -999,7 +1039,7 @@
         ? Math.max(...siblings.map((c) => c.x)) + 1
         : parentIds.reduce((s, pid) => s + person(pid).x, 0) / parentIds.length;
       target = existing || addPerson(p.row + 1, preferred);
-      for (const pid of parentIds) link(pid, target.id);
+      for (const pid of parentIds) link(pid, target.id, f.ckind);
     } else if (kind === 'partner') {
       target = existing || addPerson(p.row, p.x + 1);
       couple(id, target.id);
@@ -1015,7 +1055,7 @@
         link(ph.id, id);
       }
       target = existing || addPerson(p.row, p.x + 1);
-      for (const l of parentsOf(id)) link(l.parentId, target.id, l.kind);
+      for (const l of parentsOf(id)) link(l.parentId, target.id, f.ckind || l.kind);
     }
     markDirty();
     closeModal();
@@ -1040,16 +1080,199 @@
       if (a === 'cancel') closeModal();
       if (a !== 'confirm') return;
       pushUndo();
-      state.persons = state.persons.filter((q) => q.id !== id);
-      state.parentChild = state.parentChild.filter((l) => l.parentId !== id && l.childId !== id);
-      state.partnerships = state.partnerships.filter((r) => !r.partners.includes(id));
+      removePerson(id);
+      afterChange('Gelöscht. Mit ↶ kannst du das rückgängig machen.');
+    };
+  }
+
+  function removePerson(id) {
+    state.persons = state.persons.filter((q) => q.id !== id);
+    state.parentChild = state.parentChild.filter((l) => l.parentId !== id && l.childId !== id);
+    state.partnerships = state.partnerships.filter((r) => !r.partners.includes(id));
+  }
+
+  /** An unknown parent ("?") only exists for its children: drop it when it has none left. */
+  function dropEmptyPlaceholders() {
+    for (const p of state.persons.filter((q) => q.placeholder))
+      if (!childrenOf(p.id).length) removePerson(p.id);
+  }
+
+  function afterChange(message) {
+    markDirty();
+    closeModal();
+    renderTree();
+    renderPanel();
+    if (message) toast(message);
+  }
+
+  // ---------------------------------------------------------------- editing and removing relations
+
+  function findRel(rel) {
+    const [type, a, b] = rel.split(':');
+    if (type === 'u') {
+      const r = state.partnerships.find((x) => x.id === a);
+      return { obj: r, ids: r.partners };
+    }
+    return { obj: state.parentChild.find((l) => l.parentId === a && l.childId === b), ids: [a, b] };
+  }
+
+  /** Everyone reachable from `start` through parent-child links and partnerships, ignoring `skip`. */
+  function component(start, skip) {
+    const seen = new Set([start]);
+    const todo = [start];
+    while (todo.length) {
+      const n = todo.pop();
+      const next = [
+        ...state.parentChild
+          .filter((l) => l !== skip && (l.parentId === n || l.childId === n))
+          .map((l) => (l.parentId === n ? l.childId : l.parentId)),
+        ...state.partnerships
+          .filter((r) => r !== skip && r.partners.includes(n))
+          .map((r) => other(r, n)),
+      ];
+      for (const m of next)
+        if (!seen.has(m)) {
+          seen.add(m);
+          todo.push(m);
+        }
+    }
+    return seen;
+  }
+
+  function openRelRemove(rel) {
+    const { obj, ids } = findRel(rel);
+    const [pa, pb] = ids.map(person);
+    const [na, nb] = [pa, pb].map((q) => esc(shortName(q)));
+    let what;
+    if (obj.partners) {
+      const shared = childrenOf(ids[0]).some((l) =>
+        parentsOf(l.childId).some((m) => m.parentId === ids[1]),
+      );
+      what = `${na} und ${nb} sind dann kein Paar mehr.${shared ? ' Gemeinsame Kinder bleiben Kinder von beiden.' : ''}`;
+    } else if (pa.placeholder)
+      what = `Die Verbindung von ${nb} zum unbekannten Elternteil wird entfernt.`;
+    else what = `${na} ist dann nicht mehr ${parentWord(pa, obj.kind)} von ${nb}.`;
+
+    // Does removing it cut someone off from the rest of the tree?
+    let consequence = '';
+    let lone = null;
+    const compA = component(ids[0], obj);
+    if (!compA.has(ids[1])) {
+      const compB = component(ids[1], obj);
+      const small = [...(compA.size <= compB.size ? compA : compB)].filter(
+        (id) => !person(id).placeholder,
+      );
+      if (small.length === 1) {
+        lone = person(small[0]);
+        const n = esc(shortName(lone));
+        consequence = `<p>Danach hat ${n} keine Verbindung mehr zu anderen Personen. Du kannst ${n} behalten (steht dann allein neben dem Stammbaum) oder ganz löschen.</p>`;
+      } else if (small.length > 1) {
+        consequence = `<p>Danach hängen ${small.length} Personen nicht mehr mit dem übrigen Stammbaum zusammen. Sie bleiben erhalten und stehen daneben, bis du sie wieder verbindest.</p>`;
+      }
+    }
+    openModal(`
+      <h2>Verbindung entfernen?</h2>
+      <p>${what}</p>
+      ${consequence}
+      <p class="muted small">Mit ↶ kannst du das rückgängig machen.</p>
+      <div class="form-actions">
+        <button class="btn primary" data-action="confirm">${lone ? 'Nur Verbindung entfernen' : 'Verbindung entfernen'}</button>
+        ${lone ? `<button class="btn danger" data-action="delete-lone">${esc(shortName(lone))} ganz löschen</button>` : ''}
+        <button class="btn" data-action="cancel">Abbrechen</button>
+      </div>`);
+    modal.onclick = (e) => {
+      const a = e.target.closest('[data-action]')?.dataset.action;
+      if (a === 'cancel') closeModal();
+      if (a !== 'confirm' && a !== 'delete-lone') return;
+      pushUndo();
+      if (obj.partners) state.partnerships = state.partnerships.filter((r) => r !== obj);
+      else state.parentChild = state.parentChild.filter((l) => l !== obj);
+      if (a === 'delete-lone') removePerson(lone.id);
+      dropEmptyPlaceholders();
+      afterChange(
+        a === 'delete-lone'
+          ? 'Person gelöscht.'
+          : 'Verbindung entfernt. Mit ↶ kannst du das rückgängig machen.',
+      );
+    };
+  }
+
+  function openRelEdit(rel) {
+    const { obj } = findRel(rel);
+    const el = document.createElement('div');
+    el.className = 'form';
+    if (obj.partners) {
+      const [na, nb] = obj.partners.map((id) => esc(shortName(person(id))));
+      el.innerHTML = `
+        <h2>Beziehung bearbeiten</h2>
+        <p class="muted">${na} und ${nb}</p>
+        <fieldset><legend>Art der Beziehung</legend>
+          ${radio('rkind', '', 'Paar (keine nähere Angabe)', !obj.kind)}
+          ${radio('rkind', 'marriage', 'Ehe', obj.kind === 'marriage')}
+          ${radio('rkind', 'partnership', 'Eingetragene Partnerschaft', obj.kind === 'partnership')}
+        </fieldset>
+        <div class="pair"><div>${dateField('start.date', 'Seit')}</div><div>${field('start.place', 'in')}</div></div>
+        <fieldset><legend>Getrennt?</legend>
+          ${radio('rend', '', 'nein', !obj.end?.reason)}
+          ${radio('rend', 'separation', 'getrennt', obj.end?.reason === 'separation')}
+          ${radio('rend', 'divorce', 'geschieden', obj.end?.reason === 'divorce')}
+        </fieldset>
+        <div class="end-date">${dateField('end.date', 'Seit wann?')}</div>
+        <div class="form-actions"><button type="button" class="btn primary" data-action="done">Fertig</button></div>`;
+    } else {
+      const [p, c] = [person(obj.parentId), person(obj.childId)];
+      const otherBio = parentsOf(c.id).filter((l) => l !== obj && isBio(l)).length;
+      const bioAllowed = isBio(obj) || otherBio < 2;
+      el.innerHTML = `
+        <h2>Beziehung bearbeiten</h2>
+        <p class="muted">${esc(shortName(c))} ist für ${esc(shortName(p))} ein …</p>
+        <fieldset>
+          <label class="radio"><input type="radio" name="pkind" value="" ${isBio(obj) ? 'checked' : ''} ${bioAllowed ? '' : 'disabled'} />
+            leibliches Kind ${bioAllowed ? '' : '<span class="muted small">(hat schon zwei leibliche Eltern)</span>'}</label>
+          ${radio('pkind', 'adoptive', 'Adoptivkind', obj.kind === 'adoptive')}
+          ${radio('pkind', 'step', 'Stiefkind', obj.kind === 'step')}
+          ${radio('pkind', 'foster', 'Pflegekind', obj.kind === 'foster')}
+        </fieldset>
+        <div class="form-actions"><button type="button" class="btn primary" data-action="done">Fertig</button></div>`;
+    }
+    for (const input of el.querySelectorAll('[data-field]'))
+      input.value = getPath(obj, input.dataset.field) ?? '';
+    for (const input of el.querySelectorAll('[data-date]')) {
+      input.value = fmtDate(getPath(obj, input.dataset.date));
+      showHint(el, input.dataset.date, getPath(obj, input.dataset.date));
+    }
+    const endDate = el.querySelector('.end-date');
+    if (endDate) endDate.hidden = !obj.end?.reason;
+
+    el.addEventListener('focusin', () => (snapshotPending = true));
+    const onInput = (e) => {
+      const t = e.target;
+      if (snapshotPending || t.type === 'radio') pushUndo();
+      snapshotPending = false;
+      if (t.name === 'rkind') setPath(obj, 'kind', t.value);
+      if (t.name === 'pkind') setPath(obj, 'kind', t.value);
+      if (t.name === 'rend') {
+        if (t.value) (obj.end ??= {}).reason = t.value;
+        else delete obj.end;
+        endDate.hidden = !t.value;
+      }
+      if (t.dataset.field) setPath(obj, t.dataset.field, t.value.trim());
+      if (t.dataset.date) {
+        const d = parseDate(t.value);
+        if (t.dataset.date === 'end.date' && !obj.end) return;
+        setPath(obj, t.dataset.date, d);
+        showHint(el, t.dataset.date, d);
+      }
       markDirty();
-      closeModal();
-      selectedId = null;
       renderTree();
       renderPanel();
-      toast('Gelöscht. Mit ↶ kannst du das rückgängig machen.');
     };
+    el.addEventListener('input', (e) => e.target.type !== 'radio' && onInput(e));
+    el.addEventListener('change', (e) => e.target.type === 'radio' && onInput(e));
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('[data-action="done"]')) closeModal();
+    });
+    openModal(el);
   }
 
   // ---------------------------------------------------------------- undo/redo (UI-01), save status (UI-02)

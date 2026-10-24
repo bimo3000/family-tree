@@ -57,7 +57,7 @@ Shown **on hover/click** (PERS-05): everything else that is filled in.
 | Field                       | German label      | Notes                                                                                                                |
 | --------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `givenNames`                | Vornamen          | All first names, e.g. "Anna Maria"                                                                                   |
-| `callName`                  | Rufname           | Optional. Highlighted (underlined) in the name if set                                                                |
+| `callName`                  | Rufname           | Optional. Used for short names in lists ("Karl Brandt"), not highlighted in the full name                            |
 | `surname`                   | Nachname          | **Last known** surname (PERS-04)                                                                                     |
 | `birthName`                 | Geburtsname       | Shown as "geb. Schmidt"                                                                                              |
 | `gender`                    | Geschlecht        | `female` / `male` / `diverse` / unknown. Optional, used for wording only (PERS-07)                                   |
@@ -108,7 +108,7 @@ The card shows only the year (PERS-04); hover and the detail panel show the full
 | `ca. 1850`, `um 1850`, `~1850`          | `{ "y": 1850, "q": "about" }`               | ca. 1850         | 1850       |
 | `vor 1900`                              | `{ "y": 1900, "q": "before" }`              | vor 1900         | 1900       |
 | `nach 1900`                             | `{ "y": 1900, "q": "after" }`               | nach 1900        | 1900       |
-| `zw. 1890 und 1895`, `1890–1895`        | `{ "y": 1890, "q": "between", "y2": 1895 }` | 1890–1895        | 1890       |
+| `zw. 1890 und 1895`, `1890-1895`        | `{ "y": 1890, "q": "between", "y2": 1895 }` | 1890 bis 1895    | 1890       |
 | anything unreadable, e.g. `Ostern 1923` | `{ "text": "Ostern 1923" }`                 | Ostern 1923      | none       |
 
 Unreadable input is **kept as written** and never rejected. The app shows a gentle hint that it can't be used for sorting.

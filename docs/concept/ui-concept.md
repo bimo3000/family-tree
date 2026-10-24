@@ -1,7 +1,7 @@
 # UI concept (text level)
 
-> Status: **aligned with the user** (2026-10-24). Three clickable mock-ups for the open questions are in
-> [`mockups/`](../../mockups/README.md) (waiting for the user's feedback).
+> Status: **aligned with the user** (2026-10-24). Mock-up round 1 decided the open questions (see the end of this file).
+> Round 2 (style A refined, relation editing) is in [`mockups/`](../../mockups/README.md), waiting for the user's feedback.
 > The final look and feel is the **user's decision** (DEV-09). This document describes structure and behaviour, not design.
 
 ## 1. Guiding principles
@@ -48,13 +48,15 @@
 ### 2.3 Person card (in the tree, PERS-04)
 
 ```
-┌────────────────────────┐
-│ (photo)  Anna Müller   │   ← given name(s) + last known surname
-│          * 1923 † 2001 │   ← years on the card (PERS-04)
-└────────────────────────┘
+┌──────────────┐
+│   (photo)    │   ← big photo on top
+│ Anna Maria   │   ← all given names + last known surname (no Rufname highlight)
+│   Müller     │
+│ * 1923 † 2001│   ← years on the card (PERS-04)
+└──────────────┘
 ```
 
-- No photo: a neutral placeholder with initials.
+- No photo: a neutral placeholder with initials. Neutral card colours (no colours by gender).
 - **Hover:** a small tooltip with full dates and places, plus "geb. Schmidt" if a birth name exists (PERS-05).
 - **Click:** selects the person, highlights their line (ancestors and descendants) and opens the detail panel.
 - **Double-click:** centers the tree on the person.
@@ -65,11 +67,14 @@
   **Only filled fields are shown.**
 - **Lebensgeschichte** (biography) text.
 - **Family** as clickable names: Eltern, Partner (with wedding date if known), Kinder, Geschwister.
+  Group titles are set apart clearly from the entries (small bold caps, entries indented along a thin line).
+- **Each relation** (parent, partner, child) has a small **✎ "Beziehung bearbeiten"** and **× "Verbindung entfernen"**.
+  Siblings have neither, because they follow from shared parents. See §2.8.
 - **Action buttons:** "Bearbeiten", "+ Elternteil", "+ Partner/in", "+ Kind", "+ Geschwister", and a less prominent "Person löschen".
 
 ### 2.5 Editing a person
 
-- Opens in the detail panel or as a dialog (**to be decided with the mock-ups**).
+- Opens as a **dialog** on top of the tree (decided with mock-up round 1).
 - **Always visible:** Foto, Vornamen, Nachname, Geburtsname, Geboren (Datum, Ort), Gestorben (Datum, Ort).
 - **"Mehr Angaben ▾":** Rufname, Geschlecht, Beruf, Wohnorte, Lebensgeschichte, Weitere Angaben (+ Feld hinzufügen).
 - **Date fields** are plain text fields with a live interpretation underneath: "→ 12. März 1923", "→ ungefähr 1850",
@@ -95,14 +100,29 @@ e.g. a cousin marriage or a person added twice by mistake).
 "Anna Müller wirklich löschen? Ihre Verbindungen zu anderen Personen werden entfernt. Du kannst das mit ↶ rückgängig machen."
 [Löschen] [Abbrechen]
 
+### 2.8 Editing and removing relations
+
+- **✎ on a partner:** Art der Beziehung (Paar, Ehe, Eingetragene Partnerschaft), since when and where, and
+  "Getrennt?" (nein, getrennt, geschieden) with a date. Changes apply immediately, with undo.
+- **✎ on a parent or child:** leibliches Kind, Adoptivkind, Stiefkind, Pflegekind. "leiblich" is disabled if the
+  child already has two biological parents.
+- **× on any relation:** "Verbindung entfernen?" with one sentence on what changes ("Karl ist dann nicht mehr Vater von Peter").
+  The persons themselves stay. If this cuts persons off from the rest of the tree, the dialog says so:
+  - **one person** left on their own: [Nur Verbindung entfernen] [Peter ganz löschen] [Abbrechen].
+  - **several persons** cut off: they stay and stand next to the tree until they are connected again.
+- An unknown parent ("?") without children left disappears automatically.
+- **At most two biological parents:** linking an existing person as a child who already has biological parents asks
+  "Was für ein Kind ist … für …?" (Adoptivkind, Stiefkind, Pflegekind).
+
 ## 3. Tree interactions (TREE-02)
 
 - **Pan:** drag the background. **Zoom:** mouse wheel or the `+`/`−` buttons. **⤢ "Alles anzeigen"** fits the whole tree on screen.
 - **Focus:** selecting a person highlights their direct line and slightly fades the others. Esc clears the selection.
 - **Orientation:** ancestors at the top, descendants below (TREE-02).
 - **Relations drawn:** partners joined by a horizontal line, and children hanging from the middle of that line.
-  - Divorced/separated: the couple line is interrupted (e.g. a small "//"). **Only when it applies.**
-  - Adoptive/step/foster: a dashed child line plus a label on hover. **Only when it applies.**
+  - Divorced/separated: the couple line is interrupted by a small "//", and the children's line starts below it. **Only when it applies.**
+  - Adoptive/step/foster: a dashed child line plus a label on hover. **Only when it applies.** A child keeps the
+    solid line to the biological parents, and each additional parent gets its own dashed line.
   - Several partners: the person sits next to each partner in turn, each couple with its own children.
 
 ## 4. Saving behaviour as the user experiences it
@@ -122,12 +142,16 @@ e.g. a cousin marriage or a person added twice by mistake).
 - Dates as `12.03.1923`, `*` for birth and `†` for death.
 - Gender-neutral defaults: "Partner/in", "Elternteil", "Kind". Gendered words (Mutter/Vater) only if a gender is set (PERS-07).
 - No technical terms in the UI: no "Datei-Handle", no "IndexedDB", no "Cache".
+- **No dashes (– or —) and no middle dots (·) as separators** in UI text (the user finds they look machine-made).
+  Use commas, full stops, line breaks or a spaced pipe ("Vater | * 1921 † 1999"). Date ranges read "1890 bis 1895".
 
-## 6. Visual direction (to be decided with mock-ups)
+## 6. Visual direction (decided with mock-up round 1)
 
-- A calm, warm look ("family album" rather than "spreadsheet"), large readable fonts (base ≥ 16 px) and generous click targets.
+- **"Familienalbum":** warm cream/paper tones with a mustard accent (not brown), a classic system serif font,
+  photo-forward cards, the panel photo like a print glued into an album.
+- Large readable fonts (base ≥ 16 px) and generous click targets.
 - System fonts only (privacy: no web fonts).
-- Mock-ups will offer 2–3 visual variants for the user to choose from.
+- Reference: `mockups/index.html` and `mockups/shared/style.css` (colours as CSS variables).
 
 ## 7. Help
 
@@ -141,8 +165,15 @@ e.g. a cousin marriage or a person added twice by mistake).
 3. **Orientation:** top-down, with ancestors on top (TREE-02).
 4. **"+ Geschwister" with unknown parents:** an automatic placeholder, shown as a small "?" node.
 
-## Still open, to be decided with the mock-ups
+5. **Visual style (mock-up round 1):** variant A "Familienalbum", a bit more mustard and warmer. Big photo on the card,
+   neutral card colours, editing a person in a **dialog** (§2.5, §6).
+6. **Rufname** is not highlighted in the name. It is only used for short names ("Karl Brandt" in lists).
+7. **Wording:** no dashes or middle dots as separators (§5).
+8. **Relations can be edited and removed** from the detail panel (user request, §2.8).
+9. **Additional parents:** a child can have adoptive/step/foster parents in addition to two biological parents (TREE-03).
+   They are drawn with their own dashed line. At most two biological parents.
 
-- Card colours: neutral, or subtle colours by gender.
-- Editing a person in the side panel or in a dialog.
-- The overall visual style (2–3 variants to choose from).
+## Still open, to be confirmed with mock-up round 2
+
+- Removing the last connection of a person: the user suggested also deleting the person. Round 2 instead offers a
+  choice ("Nur Verbindung entfernen" or "… ganz löschen"), so a wrongly attached person can be re-attached without retyping.
