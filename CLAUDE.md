@@ -42,6 +42,8 @@ repo itself must carry all context. Keep it that way.
 - **Data ≠ logic:** family data only ever lives in project files (`*.stammbaum`) and the browser's working copy, never in the source.
 - **Privacy:** no network access of any kind. No CDNs, web fonts, analytics or update checks. This is enforced by the CSP in
   `vite.config.ts`, the ESLint rules, `scripts/check-no-external-refs.mjs` and the E2E fixture. Never weaken any of these.
+- **Agents don't read real family data either.** Whatever you read is sent to the model, so `data/` is denied in
+  `.claude/settings.json`. For debugging, use the fictional data in `examples/` or ask the user for an anonymized sample.
 - New runtime dependency? Only with a good reason, pinned exact, and noted in an ADR. It gets bundled into the HTML.
 - Code, comments and dev docs are in English. The UI and the end-user guide (`docs/user-guide/`) are in German.
 - Key decisions are recorded as ADRs in [docs/agent/decisions/](docs/agent/decisions/). Read them before re-opening a decision.
