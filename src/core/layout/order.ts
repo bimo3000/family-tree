@@ -1,7 +1,8 @@
 /**
  * Step 2 of the layout: the left-to-right order inside each row. Partners in the same row form a block that
  * always stays together. A depth-first walk gives a natural first order (siblings by birth, every family below its
- * parents); a few barycenter sweeps then move blocks to reduce crossing lines, keeping the best order found.
+ * parents); a few barycenter sweeps then move blocks to reduce crossing lines, keeping the best order found,
+ * and swapping neighbours removes what is left where it can.
  */
 import { compareByBirth, get, mean, type FamilyGraph } from './graph';
 import type { PersonId } from '../model/types';
@@ -35,7 +36,33 @@ export function orderRows(graph: FamilyGraph, rowOf: Map<PersonId, number>): Row
     keepIfBetter();
   }
   rows = best.rows;
+  swapNeighbours(graph, rowOf, best.blocks, rows);
   return rows.map((r) => r.map((b) => get(best.blocks, b)));
+}
+
+/**
+ * Final polish: swap neighbouring blocks wherever that removes crossings. Plain siblings are never swapped,
+ * because swapping them changes nothing, so they keep their birth order.
+ */
+function swapNeighbours(
+  graph: FamilyGraph,
+  rowOf: Map<PersonId, number>,
+  blocks: PersonId[][],
+  rows: number[][],
+): void {
+  let count = crossings(graph, rowOf, blocks, rows);
+  for (let improved = true; improved && count > 0;) {
+    improved = false;
+    for (const row of rows)
+      for (let i = 0; i + 1 < row.length; i++) {
+        row.splice(i, 2, get(row, i + 1), get(row, i));
+        const swapped = crossings(graph, rowOf, blocks, rows);
+        if (swapped < count) {
+          count = swapped;
+          improved = true;
+        } else row.splice(i, 2, get(row, i + 1), get(row, i));
+      }
+  }
 }
 
 /**

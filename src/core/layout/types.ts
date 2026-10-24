@@ -49,11 +49,15 @@ export interface CardBox {
   placeholder: boolean;
 }
 
-/** The line between two partners. The UI draws a "//" at its middle when `ended` is set. */
+/**
+ * The line between two partners: straight between neighbours, arching over the cards in between when a person
+ * with several partners stands between them, diagonal for partners in different rows. The UI draws a "//" at
+ * `middle` when `ended` is set.
+ */
 export interface CoupleLine {
   partnershipId: string;
-  from: Point;
-  to: Point;
+  points: Point[];
+  middle: Point;
   ended?: PartnershipEndReason;
 }
 
