@@ -9,8 +9,12 @@ repo itself must carry all context. Keep it that way.
 
 1. Read [docs/agent/HANDOVER.md](docs/agent/HANDOVER.md) (current state, next steps, pitfalls).
 2. Read [docs/requirements/REQUIREMENTS.md](docs/requirements/REQUIREMENTS.md) (the contract).
-3. Run `git status` and `git log --oneline -10`. Make sure `node_modules/` exists (otherwise `npm install`).
-4. Only then start work. If the user's request conflicts with the requirements, say so before acting.
+3. Read [docs/agent/ROADMAP.md](docs/agent/ROADMAP.md) (the slices of functional development and their status).
+4. Run `git status` and `git log --oneline -10`. Make sure `node_modules/` exists (otherwise `npm install`).
+5. Only then start work. If the user's request conflicts with the requirements, say so before acting.
+6. **No specific task** (or just "weiter", "go", "continue"): run the skill [`next-slice`](.claude/skills/next-slice/SKILL.md)
+   and work through the next slice **on your own**. The user has approved autonomous development along the roadmap.
+   Tell them which step you take, and recommend a fresh session when it makes sense (rules in the skill).
 
 ## 2. The requirements are the contract
 
@@ -34,7 +38,9 @@ repo itself must carry all context. Keep it that way.
 - Work proactively on the agreed scope. Do not silently expand the scope.
 - **No over-engineering** (the user's explicit preference). Build the simplest solution that meets the requirements.
   No speculative abstractions, options or "might need it later" code. If a simpler variant exists, recommend it.
-- Mock-ups and functional development start **only when the user explicitly asks**.
+- The mock-up phase is done. `mockups/index.html` is the **look-and-feel reference**: build what it shows.
+  Functional development runs autonomously along the roadmap (approved 2026-10-24). New UI/UX questions that the
+  concept and the mock-up don't answer still go to the user first.
 
 ## 4. Architecture invariants (details: [docs/concept/architecture.md](docs/concept/architecture.md))
 
@@ -91,12 +97,14 @@ repo itself must carry all context. Keep it that way.
 
 ### Skills in this repo
 
-| Skill                                                              | Use it when                                                                                               |
-| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
-| [`session-handover`](.claude/skills/session-handover/SKILL.md)     | Ending a session or reaching a milestone: update the handover, docs and statuses, clean up, verify, push. |
-| [`requirement-change`](.claude/skills/requirement-change/SKILL.md) | Proposing, approving or recording a requirement change or deviation.                                      |
-| [`release-package`](.claude/skills/release-package/SKILL.md)       | Building and checking the distributable zip for end users.                                                |
+| Skill                                                              | Use it when                                                                                                 |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| [`session-handover`](.claude/skills/session-handover/SKILL.md)     | Ending a session or reaching a milestone: update the handover, docs and statuses, clean up, verify, push.   |
+| [`requirement-change`](.claude/skills/requirement-change/SKILL.md) | Proposing, approving or recording a requirement change or deviation.                                        |
+| [`release-package`](.claude/skills/release-package/SKILL.md)       | Building and checking the distributable zip for end users.                                                  |
+| [`next-slice`](.claude/skills/next-slice/SKILL.md)                 | Starting a session without a specific task, or finishing a slice: build the next roadmap slice on your own. |
 
 ## 10. End of every session
 
-Run the `session-handover` skill. A fresh session must be able to continue from `HANDOVER.md` alone.
+Run the `session-handover` skill. A fresh session must be able to continue from `HANDOVER.md` and `ROADMAP.md` alone.
+Close with a plain-language note to the user: what's done, how to try it, the next step, and whether to start a fresh session.

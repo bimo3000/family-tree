@@ -11,6 +11,7 @@ Start here if you want to understand the project. Agents keep these documents up
 | [concept/data-model.md](concept/data-model.md)               | What is stored in a project file and how                              | Both                         |
 | [concept/ui-concept.md](concept/ui-concept.md)               | Screens, interactions and wording (text level)                        | Both, UI/UX input wanted     |
 | [agent/HANDOVER.md](agent/HANDOVER.md)                       | Current status, next steps, open questions, pitfalls                  | Agents (readable for humans) |
+| [agent/ROADMAP.md](agent/ROADMAP.md)                         | The slices of functional development, their order and status          | Both                         |
 | [agent/decisions/](agent/decisions/)                         | Architecture Decision Records: why things are the way they are        | Both                         |
 | [user-guide/Anleitung.md](user-guide/Anleitung.md)           | German guide for end users, shipped in the zip                        | End users                    |
 | [../CLAUDE.md](../CLAUDE.md)                                 | Operating manual for Claude Code in this repo                         | Agents                       |
@@ -60,6 +61,7 @@ docs/                  this documentation
 | **Build**                         | Turning the source code into the final file users open (`Stammbaum.html`).                                                                                                         |
 | **CSP** (Content-Security-Policy) | A rule set inside the HTML that tells the browser what the page may load or contact. Ours says "nothing outside this file", so the browser itself guarantees that no data is sent. |
 | **E2E test**                      | "End-to-end" test. A robot opens the real app in a real browser and clicks through it like a user.                                                                                 |
+| **Slice**                         | One complete, tested piece of the app that works on its own (like finishing one room before starting the next). The roadmap lists them in order.                                   |
 | **Unit test**                     | A small automatic test of one piece of logic (e.g. "is '03.1923' read as March 1923?").                                                                                            |
 | **Engine** (browser engine)       | The core of a browser. Chromium powers Chrome and Edge, Gecko powers Firefox, and WebKit powers Safari. Testing all three covers the main browsers.                                |
 | **Hook** (git hook)               | A script git runs automatically. Ours runs all tests before a push and stops the push if something is broken.                                                                      |

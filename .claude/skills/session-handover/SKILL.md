@@ -26,19 +26,21 @@ and the repo is clean, green and pushed.
    - Check `.gitignore`: does `git status` show generated files? Then add the rule.
    - Check `git check-ignore -v data/x.stammbaum` (it must be ignored).
 
-5. **Rewrite `docs/agent/HANDOVER.md`.** Rewrite it rather than appending, and keep it under ~80 lines:
+5. **Roadmap** (`docs/agent/ROADMAP.md`): slice statuses current; if the direction changed, slices adjusted and a change-log line added.
+
+6. **Rewrite `docs/agent/HANDOVER.md`.** Rewrite it rather than appending, and keep it under ~80 lines:
    - `Last updated` date and session number
    - Phase overview (what's done, what's current, what's next)
    - Done in this session (short bullets)
-   - **Next steps** (concrete and ordered, so the next session can start immediately)
+   - **Next steps**: the current slice and its concrete next step (details live in ROADMAP.md, don't duplicate them)
    - Open questions for the user
    - Pitfalls and environment notes learned the hard way
    - Known gaps (missing tests, unverified browsers, …)
 
-6. **Self-improvement check.** Did anything this session cost unnecessary time (a missing skill, an unclear CLAUDE.md rule, a slow test)?
+7. **Self-improvement check.** Did anything this session cost unnecessary time (a missing skill, an unclear CLAUDE.md rule, a slow test)?
    Then propose a concrete improvement to the user, or create the skill and register it in the CLAUDE.md skill table.
 
-7. **Verify and push.** Run `npm run verify`. If it is green, commit (`docs: session handover …` or as part of the last commit) and `git push`.
+8. **Verify and push.** Run `npm run verify`. If it is green, commit (`docs: session handover …` or as part of the last commit) and `git push`.
    Never use `--no-verify`.
 
-8. **Report to the user** in plain language: what was done, what's next, and which decisions are waiting for them.
+9. **Report to the user** in plain language: what was done, what's next, and which decisions are waiting for them.

@@ -21,30 +21,12 @@
   line, max. two biological parents. No dashes/middle dots in UI text. Layout is automatic, no dragging.
 - All decisions: `docs/concept/ui-concept.md` (Decisions 1–11, §2.8, §3, §5, §6) and the clarifications log in REQUIREMENTS.md.
 
-## Next steps (functional development, in vertical slices)
+## Next steps
 
-Start with a short plan of the slices and confirm it with the user. Each slice: tests first or alongside, `npm run verify` green,
-requirement statuses updated (Agreed → Implemented → Verified), commit and push.
-
-1. **Core model + dates** (`src/core/`): types per `data-model.md`, flexible dates (parse/format/hint/sort, data-model §4),
-   operations (add/edit/delete person, add/remove/edit partnership and parent-child link, placeholder "?" handling),
-   validation (no loops, max. two biological parents, no duplicate partnerships), connectivity check for "cut off".
-   The mock-up's `parseDate`, wording helpers (`parentWord` etc.) and `component()` are a good starting point to port to TS.
-2. **Tree layout** (`src/core/layout/`, ADR-0006, still "Proposed"): generations → family units → ordering → coordinates,
-   with fixture families and invariant tests (no overlaps, parents above children, partners adjacent, deterministic, 100 persons fast).
-   Handle: several partners, extra non-biological parents, divorced couples (wider gap), disconnected parts placed side by side.
-   This is the hardest slice. Confirm ADR-0006 once it works.
-3. **Tree view** (`src/ui/`): SVG rendering in the mock-up's look (port `mockups/shared/style.css` variables), pan/zoom/fit,
-   hover tooltip, select + highlight line, detail panel. Use the example family from `mockups/shared/familie.js` (minus x/row).
-4. **Editing UI:** person dialog, add-relative flows (ui-concept §2.6), relation edit/remove (§2.8), delete, undo/redo (UI-01).
-5. **Storage** (`src/storage/`, ADR-0005): IndexedDB working copy, `.stammbaum` zip with fflate (pinned, ADR note), open/save,
-   FSA in Chromium vs. download elsewhere (DATA-09), last project on start (DATA-03), start screen, save status + reminder (UI-02),
-   photo downscaling to 2000 px (DATA-07), schema version + migration hook (DATA-08).
-6. **Finish:** print/export (UI-03), in-app help, `examples/Beispiel.stammbaum` (DATA-06), German user guide, release zip
-   (skill `release-package`). Then delete `mockups/`.
-
-Proposals still waiting for a decision: P-005 (search), P-006 (plausibility hints), P-008 (smaller copy for email).
-Ask about P-005 when the tree view exists (finding a person among 100 gets tedious).
+- **Current slice: S1 (core model, dates, operations), status Todo.** Details, order and the later slices: `docs/agent/ROADMAP.md`.
+- A fresh session without a specific task runs the skill `next-slice` and works on its own (CLAUDE.md §1).
+  It tells the user which step it takes and recommends a fresh session at the right moments (rules in the skill).
+- Proposals still waiting: P-005 (search), P-006 (plausibility hints), P-008 (smaller copy for email). The roadmap says when to ask.
 
 ## Open items for the user
 
@@ -60,6 +42,7 @@ Ask about P-005 when the tree view exists (finding a person among 100 gets tedio
 - Editing CLAUDE.md via a shell script got blocked by the auto-mode classifier. Use the Edit tool for CLAUDE.md.
 - The mock-up is plain JS loaded with `<script src>` under a CSP `script-src 'self'`; that works under `file://` in all
   3 engines. It is linted/formatted by `npm run lint` like the rest of the repo.
+- Session 2 also set up autonomous development: `docs/agent/ROADMAP.md` (slices S1–S6) and the skill `next-slice`.
 - Rendering lessons from the mock-up: divorced partners need a wider gap (the "//" plus the selection ring), and the
   children's line starts below the "//". Selection is a tight ring (box-shadow), not an outline with offset.
   `✎` renders badly in many fonts: use drawn SVG icons. The ⚭ glyph is missing on Linux fonts.
