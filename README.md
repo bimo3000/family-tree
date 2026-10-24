@@ -7,7 +7,9 @@ A private, self-contained web app to **create, edit and view family trees**.
 - **No data ever leaves the device.** The family data stays in local project files (`*.stammbaum`).
 - App language: **German**.
 
-> Status: functional development. Core logic and automatic layout are done; the app shows the example family as a tree (pan, zoom, details) and can edit it (persons, relatives, relations, undo/redo). Saving, pictures and printing follow slice by slice ([roadmap](docs/agent/ROADMAP.md)).
+> Status: all roadmap slices are done ([roadmap](docs/agent/ROADMAP.md)). Version 0.9.0 is a test version for family members:
+> edit the tree, photos, save to a `.stammbaum` file, print or save as PDF, help inside the app. Next: manual checks on a
+> real Mac and Windows ([docs/manual-checks.md](docs/manual-checks.md)) and feedback, then 1.0.0.
 > The current state is always in [docs/agent/HANDOVER.md](docs/agent/HANDOVER.md).
 
 ## Where to find what

@@ -9,14 +9,14 @@ Each slice ends green (`npm run verify`), committed, pushed, with requirement st
 
 ## Overview
 
-| #   | Slice                         | Status      | Main requirements                                       |
-| --- | ----------------------------- | ----------- | ------------------------------------------------------- |
-| S1  | Core model, dates, operations | Done        | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
-| S2  | Automatic tree layout         | Done        | TREE-01/03/04/05 (ADR-0006)                             |
-| S3  | Tree view (read-only)         | Done        | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
-| S4  | Editing                       | Done        | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
-| S5  | Working copy, files, pictures | Done        | DATA-02/03/04/07/09, PERS-03, UI-02                     |
-| S6  | Finish and release            | In progress | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| #   | Slice                         | Status | Main requirements                                       |
+| --- | ----------------------------- | ------ | ------------------------------------------------------- |
+| S1  | Core model, dates, operations | Done   | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
+| S2  | Automatic tree layout         | Done   | TREE-01/03/04/05 (ADR-0006)                             |
+| S3  | Tree view (read-only)         | Done   | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
+| S4  | Editing                       | Done   | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
+| S5  | Working copy, files, pictures | Done   | DATA-02/03/04/07/09, PERS-03, UI-02                     |
+| S6  | Finish and release            | Done   | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
 
 Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progress` at a time.
 
@@ -93,6 +93,9 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 - `Beispiel.stammbaum` in the release zip, built from `examples/familie-brandt.json` by `npm run package` (DATA-06), German user guide `docs/user-guide/Anleitung.md`, release zip (skill `release-package`).
 - Delete `mockups/`. Walk through every requirement and set `Verified` where a test or check covers it.
 - Give the user a short manual checklist for a real Mac (Safari) and Windows (GEN-02).
+- ✅ Done in session 8. Print styles in `TreeView`/`ProjectScreen` (`printView` in `geometry.ts`), `HelpDialog.svelte`,
+  the hint bar, `Beispiel.stammbaum` built by `npm run package`, guide written, `mockups/` deleted, `docs/manual-checks.md`,
+  release 0.9.0. Decided on the user's behalf: the printout has a white page (cards keep their colours) and no highlight.
 
 ## Decisions to raise when the slice is reached
 
@@ -121,3 +124,4 @@ Anything not covered by the concept or the mock-up that changes what the user se
 | 2026-10-24 | S5 started (session 7). P-008 rejected. One working copy in the browser; before replacing an unsaved tree the app asks (user's choice).                                |
 | 2026-10-24 | S5 done (session 7). Next: S6 (finish and release). Real file picker (Chrome/Edge) and Safari need a manual check.                                                     |
 | 2026-10-24 | S6 started (session 8). Print: browser dialog, one A4 landscape page, PDF via the dialog, no PNG. Help: short dialog plus one hint. First zip: 0.9.0.                  |
+| 2026-10-24 | S6 done (session 8). All slices done. Release 0.9.0. Next: manual Mac/Windows checks and the user's feedback, then 1.0.0.                                              |
