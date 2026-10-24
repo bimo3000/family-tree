@@ -1,159 +1,81 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; style-src 'unsafe-inline'"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src data:"
     />
-    <title>Stammbaum · Mock-ups</title>
+    <title>Mock-up A · Familienalbum</title>
+    <link rel="stylesheet" href="shared/base.css" />
     <style>
-      body {
-        font:
-          17px/1.55 system-ui,
-          -apple-system,
-          'Segoe UI',
-          Roboto,
-          sans-serif;
-        color: #222;
-        background: #f7f7f5;
-        max-width: 980px;
-        margin: 0 auto;
-        padding: 32px 20px 60px;
+      /* Variant A: warm family album. Neutral cards with a big photo, editing inside the side panel. */
+      :root {
+        --font: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+        --bg: #f6efe2;
+        --canvas: #f3ead9;
+        --ink: #3b2f24;
+        --muted: #7a6a58;
+        --line: #b39a7c;
+        --line-hl: #7a4f2a;
+        --line-soft: #e2d4bd;
+        --bar-bg: #efe4cf;
+        --bar-border: #dccbaa;
+        --panel-bg: #fbf6ec;
+        --hover: rgba(122, 79, 42, 0.09);
+        --card-bg: #fffaf0;
+        --card-border: #e3d3b6;
+        --card-shadow: 0 2px 6px rgba(80, 55, 30, 0.16);
+        --card-shadow-hover: 0 5px 16px rgba(80, 55, 30, 0.28);
+        --accent: #8a5a2b;
+        --accent-ink: #fffaf0;
+        --btn-bg: #fffaf0;
+        --btn-border: #d8c4a2;
+        --input-bg: #fffdf8;
+        --warn: #a3542a;
+        --danger: #a33b2a;
+        --ph-bg: #e9dcc4;
+        --ph-ink: #9a8263;
+        --tip-bg: #3b2f24;
+        --tip-ink: #fbf6ec;
+        --radius: 10px;
+        --shadow: 0 10px 30px rgba(60, 40, 20, 0.22);
+        --card-w: 150;
+        --card-h: 182;
+        --slot-w: 182;
+        --row-h: 250;
       }
-      h1 {
-        margin-bottom: 0.2em;
+      .viewport {
+        background-image: radial-gradient(rgba(120, 90, 50, 0.09) 1px, transparent 1px);
+        background-size: 22px 22px;
       }
-      .cards {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin: 28px 0;
-      }
-      .cards a {
-        display: block;
-        padding: 18px 20px;
-        border-radius: 12px;
-        text-decoration: none;
-        color: inherit;
-        border: 1px solid #ddd;
-        background: #fff;
-      }
-      .cards a:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-      }
-      .cards b {
-        display: block;
-        font-size: 1.2rem;
-        margin-bottom: 6px;
-      }
-      .a {
-        background: #f6efe2 !important;
-        font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-      }
-      .c {
-        background: #fbf8f1 !important;
-        font-family: Baskerville, 'Times New Roman', serif;
-      }
-      table {
-        border-collapse: collapse;
+      /* The panel photo looks like a print glued into an album. */
+      .p-photo {
         width: 100%;
-        background: #fff;
+        height: 260px;
+        border: 9px solid #fff;
+        box-shadow: 0 3px 10px rgba(60, 40, 20, 0.25);
+        transform: rotate(-1deg);
+        margin: 34px 0 14px;
       }
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 8px 10px;
-        text-align: left;
-        vertical-align: top;
+      .panel h2 {
+        font-size: 1.7rem;
       }
-      th {
-        background: #eee;
+      .panel h3 {
+        font-style: italic;
+        font-weight: normal;
+        font-size: 1.2rem;
+        border-bottom: 1px solid var(--line-soft);
+        padding-bottom: 4px;
+      }
+      .start h1 {
+        font-style: italic;
       }
     </style>
   </head>
-  <body>
-    <h1>Stammbaum: three mock-ups</h1>
-    <p>
-      Clickable prototypes with a fictional family. Nothing is saved: reload the page to start over.
-      Use the dark bar at the bottom left to switch between the variants.
-    </p>
-
-    <div class="cards">
-      <a class="a" href="a-familienalbum.html"
-        ><b>A · Familienalbum</b>Warm, paper tones, big photos on the cards. Neutral colours.
-        Editing inside the side panel.</a
-      >
-      <a class="b" href="b-klar-modern.html"
-        ><b>B · Klar &amp; modern</b>White and calm, compact cards with a round photo and a subtle
-        colour edge by gender. Editing in a dialog.</a
-      >
-      <a class="c" href="c-ahnentafel.html"
-        ><b>C · Ahnentafel</b>Classic family chart: text-only boxes tinted by gender, fine lines, ⚭
-        rings for marriages. Editing inside the side panel.</a
-      >
-    </div>
-
-    <h2>What differs</h2>
-    <table>
-      <tr>
-        <th></th>
-        <th>A · Familienalbum</th>
-        <th>B · Klar &amp; modern</th>
-        <th>C · Ahnentafel</th>
-      </tr>
-      <tr>
-        <td>Look</td>
-        <td>cream/paper, warm brown, serif font</td>
-        <td>white/grey, one calm blue, sans-serif font</td>
-        <td>parchment, fine dark lines, serif, small caps</td>
-      </tr>
-      <tr>
-        <td>Card</td>
-        <td>big photo on top</td>
-        <td>small round photo on the left</td>
-        <td>text only (photo only in the panel)</td>
-      </tr>
-      <tr>
-        <td>Card colours</td>
-        <td>neutral</td>
-        <td>coloured left edge by gender</td>
-        <td>soft tint by gender</td>
-      </tr>
-      <tr>
-        <td>Editing</td>
-        <td>in the side panel</td>
-        <td>in a dialog</td>
-        <td>in the side panel</td>
-      </tr>
-    </table>
-    <p>You can mix and match, e.g. the look of A with the cards of B and editing in a dialog.</p>
-
-    <h2>Things to try</h2>
-    <ul>
-      <li>Drag the background, zoom with the mouse wheel, click <i>Alles anzeigen</i>.</li>
-      <li>
-        Hover over a card (full dates), click a person (their line is highlighted, the panel opens),
-        double-click to centre.
-      </li>
-      <li>
-        <b>Karl Brandt</b>: two marriages (his first wife died), biography, extra fields. Try
-        <i>+ Kind</i>: it asks "Mit wem?".
-      </li>
-      <li>
-        <b>Peter and Sabine</b>: divorced (the <code>//</code> on their line). <b>Jonas Seidel</b>:
-        adopted (dashed line). The small <b>?</b>: an unknown parent of two brothers.
-      </li>
-      <li>
-        <i>Bearbeiten</i>: type a date such as <code>um 1850</code>, <code>vor 1900</code>,
-        <code>März 1923</code> or <code>Ostern 1923</code> and watch the hint and the card.
-      </li>
-      <li>Delete someone, then undo with ↶ (or Ctrl+Z).</li>
-    </ul>
-    <p>
-      Not in the mock-ups: search (proposal P-005 is still open), real photos, saving, printing,
-      help. The tree layout is hand-placed here, the real app computes it.
-    </p>
+  <body class="card-portrait g-none" data-variant="a" data-edit-mode="panel">
+    <script src="shared/familie.js"></script>
+    <script src="shared/prototype.js"></script>
   </body>
 </html>
