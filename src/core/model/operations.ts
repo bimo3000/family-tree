@@ -28,6 +28,14 @@ export interface Added {
   id: string;
 }
 
+// ---------------------------------------------------------------- project
+
+/** A name is needed: an empty one keeps the old name. */
+export function renameProject(project: Project, name: string): Project {
+  const trimmed = name.trim();
+  return trimmed ? { ...project, name: trimmed } : project;
+}
+
 // ---------------------------------------------------------------- persons (PERS-01)
 
 export function addPerson(project: Project, fields: Omit<Person, 'id'> = {}): Added {

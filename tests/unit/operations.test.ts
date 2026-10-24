@@ -8,6 +8,7 @@ import {
   dropEmptyPlaceholders,
   removeParentChild,
   removePhoto,
+  renameProject,
   removePartnership,
   setParentChildKind,
   setPhoto,
@@ -32,6 +33,13 @@ function deepFreeze<T>(value: T): T {
 
 const brandt = deepFreeze(structuredClone(familieBrandt));
 const empty = deepFreeze(createProject('Test', new Date('2026-10-24T10:00:00Z')));
+
+describe('project', () => {
+  it('renames a project; an empty name keeps the old one', () => {
+    expect(renameProject(brandt, '  Familie Brand ').name).toBe('Familie Brand');
+    expect(renameProject(brandt, ' ')).toBe(brandt);
+  });
+});
 
 describe('persons', () => {
   it('adds a person with a new ID and drops empty fields', () => {

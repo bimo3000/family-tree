@@ -43,7 +43,12 @@ on its own, and you can open the document with any copy of the program.
 Inside `core`: `model/` (types, queries, validation, operations, `relatives.ts` for the add-relative flows and the cut-off check), `dates.ts` (reading German date input),
 `migrations/` and `serialization.ts` (`data.json` in and out), `layout/` (the automatic tree layout, ADR-0006).
 
-Inside `ui`: `App.svelte` (shell, top bar, which dialog is open), `state/` (the open project with undo/redo),
+Inside `storage`: `projectFile.ts` (the `.stammbaum` zip in and out), `workingCopy.ts` (IndexedDB), `files.ts`
+(file pickers, writing into a file, downloads), `latest.ts` (one write at a time, only the newest waiting one next).
+
+Inside `ui`: `App.svelte` (start screen or open project, opening and saving, the unsaved-tree question),
+`StartScreen.svelte`, `ProjectScreen.svelte` (top bar with project menu and save status, tree, panel, which dialog is open),
+`state/` (`editor.svelte.ts`: the open project with undo/redo; `workspace.svelte.ts`: working copy, file and save status),
 `tree/` (tree view, cards, drawing and pan/zoom helpers), `panel/` (detail panel), `dialogs/` (person, add relative,
 delete, relation edit/remove, all on the native `<dialog>` element),
 `text.ts` (all German display texts for dates, names and relations), `theme.css` (colours), `example.ts` (the embedded

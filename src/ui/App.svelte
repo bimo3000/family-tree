@@ -1,234 +1,208 @@
 <script lang="ts">
-  import { deletePerson, updatePerson } from '../core/model/operations';
-  import {
-    type Relation,
-    childLinksOf,
-    findPerson,
-    isPlaceholder,
-    sameRelation,
-  } from '../core/model/queries';
-  import { removeRelation } from '../core/model/relatives';
+  import { PROJECT_FILE_EXTENSION } from '../core/app-info';
+  import { addPerson } from '../core/model/operations';
+  import { createProject } from '../core/model/project';
   import type { PersonId } from '../core/model/types';
-  import AddRelativeDialog, { type RelativeKind } from './dialogs/AddRelativeDialog.svelte';
-  import DeleteDialog from './dialogs/DeleteDialog.svelte';
-  import PersonDialog from './dialogs/PersonDialog.svelte';
-  import RelationDialog from './dialogs/RelationDialog.svelte';
-  import RemoveRelationDialog from './dialogs/RemoveRelationDialog.svelte';
+  import { ModelError } from '../core/model/validation';
+  import { canOpenWithHandle, pickFileToOpen } from '../storage/files';
+  import { hasSeen, markSeen } from '../storage/workingCopy';
+  import Modal from './dialogs/Modal.svelte';
+  import NameDialog from './dialogs/NameDialog.svelte';
+  import UnsavedDialog from './dialogs/UnsavedDialog.svelte';
   import { loadExample } from './example';
-  import DetailPanel from './panel/DetailPanel.svelte';
-  import { Editor } from './state/editor.svelte';
-  import TreeView from './tree/TreeView.svelte';
+  import ProjectScreen from './ProjectScreen.svelte';
+  import StartScreen from './StartScreen.svelte';
+  import { readProjectFile, Workspace } from './state/workspace.svelte';
+  import { showToast, toast } from './toast.svelte';
 
-  // Until the start screen and project files exist (slice S5), the app opens the embedded example.
-  const editor = new Editor(loadExample());
-  const project = $derived(editor.project);
-  const selected = $derived(editor.selectedId ? findPerson(project, editor.selectedId) : undefined);
-  let tree = $state<TreeView>();
+  const DOWNLOAD_HINT = 'download';
 
-  /** At most one dialog is open. Persons and relations are looked up again on every change. */
+  const workspace = new Workspace();
+  let ready = $state(false);
+  workspace
+    .start()
+    .catch(() => showToast('Der Browser lässt das Speichern einer Arbeitskopie nicht zu.'))
+    .finally(() => (ready = true));
+
+  /** A new project opens straight into its first person. */
+  let startWith = $state<PersonId>();
+
+  type Then = () => Promise<void>;
   type Dialog =
-    | { type: 'person'; id: PersonId; isNew?: boolean }
-    | { type: 'add'; id: PersonId; kind: RelativeKind }
-    | { type: 'delete'; id: PersonId }
-    | { type: 'relation'; relation: Relation }
-    | { type: 'remove'; relation: Relation };
+    | { type: 'new' }
+    | { type: 'unsaved'; then: Then }
+    | { type: 'downloaded'; then: Then | undefined };
   let dialog = $state<Dialog | null>(null);
-  const dialogPerson = $derived(
-    dialog && 'id' in dialog ? findPerson(project, dialog.id) : undefined,
-  );
-  const dialogRelation = $derived.by(() => {
-    const d = dialog;
-    if (!d || !('relation' in d)) return undefined;
-    return [...project.partnerships, ...project.parentChild].find((r) =>
-      sameRelation(r, d.relation),
-    );
+  let fileInput: HTMLInputElement;
+
+  $effect(() => {
+    if (workspace.problem === 'working-copy')
+      showToast('Deine Änderungen konnten im Browser nicht gesichert werden. Bitte speichere sie.');
+    else if (workspace.problem === 'file')
+      showToast('Die Datei konnte nicht geschrieben werden. Klick auf Speichern.');
+    workspace.problem = null;
   });
-  const closeDialog = () => (dialog = null);
 
-  /** Nothing entered, nothing added: a new relative left completely empty is removed again. */
-  function closePersonDialog() {
-    const d = dialog;
+  /** Before another project replaces one with changes that are not in a file, ask first. */
+  function leave(then: Then) {
+    if (workspace.editor && workspace.unsaved) dialog = { type: 'unsaved', then };
+    else void then();
+  }
+
+  async function save(as: boolean, then?: Then) {
+    let result;
+    try {
+      result = as ? await workspace.saveAs() : await workspace.save();
+    } catch {
+      showToast('Das Speichern hat nicht geklappt. Bitte versuch es noch einmal.');
+      return;
+    }
+    if (result === 'cancelled') return;
+    // Firefox and Safari download the file: explain that once (DATA-09).
+    if (result === 'downloaded' && !(await hasSeen(DOWNLOAD_HINT))) {
+      await markSeen(DOWNLOAD_HINT);
+      dialog = { type: 'downloaded', then };
+    } else if (then) await then();
+  }
+
+  /** Closes the dialog and hands over what was to happen after it. */
+  function next(): Then | undefined {
+    const then = dialog && 'then' in dialog ? dialog.then : undefined;
     dialog = null;
-    if (d?.type !== 'person' || !d.isNew) return;
-    const person = findPerson(project, d.id);
-    if (person && isPlaceholder(person) && !childLinksOf(project, d.id).length)
-      editor.apply((p) => deletePerson(p, d.id));
+    return then;
   }
 
-  let toast = $state('');
-  let toastTimer: ReturnType<typeof setTimeout> | undefined;
-  function showToast(text: string) {
-    toast = text;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => (toast = ''), 4500);
+  function newProject() {
+    leave(async () => {
+      dialog = { type: 'new' };
+    });
   }
 
-  function select(id: PersonId | null) {
-    editor.selectedId = id;
+  function example() {
+    leave(async () => {
+      dialog = null;
+      startWith = undefined;
+      await workspace.open(loadExample());
+    });
   }
 
-  function goto(id: PersonId) {
-    select(id);
-    tree?.centre(id);
+  async function openFile() {
+    if (!canOpenWithHandle()) return fileInput.click();
+    try {
+      const handle = await pickFileToOpen();
+      if (handle) await read(await handle.getFile(), handle);
+    } catch {
+      showToast('Die Datei konnte nicht geöffnet werden.');
+    }
   }
 
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape' && !dialog) select(null);
-    if (!(e.ctrlKey || e.metaKey)) return;
-    // In a text field, Ctrl+Z belongs to the field itself.
-    if ((e.target as Element).closest('input[type="text"], textarea')) return;
-    const key = e.key.toLowerCase();
-    if (key === 'z' && !e.shiftKey) editor.undo();
-    else if (key === 'y' || (key === 'z' && e.shiftKey)) editor.redo();
-    else return;
+  /** The file is read first, so a wrong file changes nothing. */
+  async function read(file: File, handle: FileSystemFileHandle | null) {
+    let content;
+    try {
+      content = await readProjectFile(file);
+    } catch (e) {
+      showToast(fileError(e));
+      return;
+    }
+    const { project, images } = content;
+    leave(async () => {
+      dialog = null;
+      startWith = undefined;
+      await workspace.open(project, images, { name: file.name }, handle);
+    });
+  }
+
+  function fileError(e: unknown): string {
+    const code = e instanceof ModelError ? e.code : 'invalid';
+    if (code === 'not-a-project') return 'Diese Datei ist keine Stammbaum-Datei.';
+    if (code === 'newer-version')
+      return 'Diese Datei wurde mit einer neueren Version von Stammbaum erstellt. Bitte nimm die neueste Stammbaum.html.';
+    return 'Diese Datei ist beschädigt und kann nicht geöffnet werden.';
+  }
+
+  /** A `.stammbaum` file dropped anywhere onto the window opens (ui-concept §2.1). */
+  function ondragover(e: DragEvent) {
+    if (e.dataTransfer?.types.includes('Files')) e.preventDefault();
+  }
+  function ondrop(e: DragEvent) {
+    const file = e.dataTransfer?.files[0];
+    if (!file) return;
     e.preventDefault();
+    void read(file, null);
   }
 </script>
 
-<svelte:window {onkeydown} />
+<svelte:window {ondragover} {ondrop} />
 
-<header class="topbar">
-  <h1 class="proj">{project.name}</h1>
-  <button
-    type="button"
-    class="icon-btn"
-    title="Rückgängig (Strg+Z)"
-    aria-label="Rückgängig"
-    disabled={!editor.canUndo}
-    onclick={() => editor.undo()}>↶</button
-  >
-  <button
-    type="button"
-    class="icon-btn"
-    title="Wiederholen (Strg+Y)"
-    aria-label="Wiederholen"
-    disabled={!editor.canRedo}
-    onclick={() => editor.redo()}>↷</button
-  >
-</header>
-<main>
-  <TreeView bind:this={tree} {project} selectedId={editor.selectedId} onselect={select} />
-  {#if selected}
-    {@const id = selected.id}
-    <DetailPanel
-      {project}
-      person={selected}
-      ongoto={goto}
-      onclose={() => select(null)}
-      onedit={() => (dialog = { type: 'person', id })}
-      onadd={(kind) => (dialog = { type: 'add', id, kind })}
-      ondelete={() => (dialog = { type: 'delete', id })}
-      onrelation={(relation, action) =>
-        (dialog = { type: action === 'edit' ? 'relation' : 'remove', relation })}
-    />
+{#if ready}
+  {#if workspace.editor}
+    {#key workspace.editor}
+      <ProjectScreen
+        {workspace}
+        editor={workspace.editor}
+        {startWith}
+        onnew={newProject}
+        onopen={openFile}
+        onexample={example}
+        onsave={(as) => save(as)}
+      />
+    {/key}
+  {:else}
+    <StartScreen onnew={newProject} onopen={openFile} onexample={example} />
   {/if}
-</main>
-
-<!-- Undo and redo rebuild an open form from the restored version, hence the key. -->
-{#key editor.revision}
-  {#if dialog?.type === 'person' && dialogPerson}
-    <PersonDialog
-      person={dialogPerson}
-      onchange={(person, key) => editor.apply((p) => updatePerson(p, person), key)}
-      onfocus={() => editor.seal()}
-      onclose={closePersonDialog}
-    />
-  {:else if dialog?.type === 'relation' && dialogRelation}
-    <RelationDialog
-      {project}
-      relation={dialogRelation}
-      onchange={(change, key) => editor.apply(change, key)}
-      onfocus={() => editor.seal()}
-      onclose={closeDialog}
-    />
-  {/if}
-{/key}
-{#if dialog?.type === 'add' && dialogPerson}
-  <AddRelativeDialog
-    {project}
-    person={dialogPerson}
-    kind={dialog.kind}
-    onadd={(change, isNew) => {
-      const id = editor.add(change);
-      select(id);
-      // A new person is still empty: go straight on to entering their data.
-      dialog = isNew ? { type: 'person', id, isNew } : null;
-    }}
-    onclose={closeDialog}
-  />
-{:else if dialog?.type === 'delete' && dialogPerson}
-  {@const id = dialogPerson.id}
-  <DeleteDialog
-    person={dialogPerson}
-    ondelete={() => {
-      editor.apply((p) => deletePerson(p, id));
-      dialog = null;
-      showToast('Gelöscht. Mit ↶ kannst du das rückgängig machen.');
-    }}
-    onclose={closeDialog}
-  />
-{:else if dialog?.type === 'remove' && dialogRelation}
-  {@const relation = dialogRelation}
-  <RemoveRelationDialog
-    {project}
-    {relation}
-    onremove={(alsoDelete) => {
-      editor.apply((p) => {
-        const without = removeRelation(p, relation);
-        return alsoDelete ? deletePerson(without, alsoDelete) : without;
-      });
-      dialog = null;
-      showToast(
-        alsoDelete
-          ? 'Person gelöscht. Mit ↶ kannst du das rückgängig machen.'
-          : 'Verbindung entfernt. Mit ↶ kannst du das rückgängig machen.',
-      );
-    }}
-    onclose={closeDialog}
-  />
 {/if}
 
-{#if toast}<div class="toast" role="status">{toast}</div>{/if}
+<input
+  bind:this={fileInput}
+  type="file"
+  accept={PROJECT_FILE_EXTENSION}
+  hidden
+  onchange={() => {
+    const file = fileInput.files?.[0];
+    fileInput.value = '';
+    if (file) void read(file, null);
+  }}
+/>
+
+{#if dialog?.type === 'new'}
+  <NameDialog
+    title="Neuer Stammbaum"
+    submit="Anlegen"
+    onsubmit={(name) => {
+      // A new project starts with one empty person, whose dialog opens at once.
+      const { project, id } = addPerson(createProject(name, new Date()));
+      dialog = null;
+      startWith = id;
+      void workspace.open(project);
+    }}
+    onclose={() => (dialog = null)}
+  />
+{:else if dialog?.type === 'unsaved'}
+  <UnsavedDialog
+    hasFile={!!workspace.file.name}
+    onsave={() => save(false, next())}
+    ondiscard={() => void next()?.()}
+    onclose={() => (dialog = null)}
+  />
+{:else if dialog?.type === 'downloaded'}
+  {@const close = () => void next()?.()}
+  <Modal label="Gespeichert" onclose={close}>
+    <h2>Gespeichert</h2>
+    <p>Die Datei liegt jetzt in deinem Download-Ordner. Bewahre sie gut auf.</p>
+    <p>
+      Dein Browser legt bei jedem Speichern eine neue Datei an. Zum Weitermachen öffnest du am
+      besten immer die neueste.
+    </p>
+    <div class="form-actions">
+      <button type="button" class="btn primary" onclick={close}>Verstanden</button>
+    </div>
+  </Modal>
+{/if}
+
+{#if toast.text}<div class="toast" role="status">{toast.text}</div>{/if}
 
 <style>
-  .topbar {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    min-height: 60px;
-    background: var(--bar-bg);
-    border-bottom: 1px solid var(--bar-border);
-    flex: none;
-    position: relative;
-    z-index: 20;
-  }
-  .proj {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin: 0;
-    padding: 6px 10px;
-  }
-  .icon-btn {
-    background: none;
-    border: none;
-    font-size: 1.35rem;
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius);
-  }
-  .icon-btn:hover:not(:disabled) {
-    background: var(--hover);
-  }
-  .icon-btn:disabled {
-    opacity: 0.3;
-    cursor: default;
-  }
-  main {
-    flex: 1;
-    display: flex;
-    min-height: 0;
-  }
   .toast {
     position: fixed;
     left: 50%;

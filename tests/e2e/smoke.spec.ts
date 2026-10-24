@@ -2,7 +2,7 @@ import { test, expect } from './fixtures';
 
 test.describe('built app opened from file://', () => {
   test('starts in German and shows a family tree', async ({ app, page }) => {
-    await app.open();
+    await app.openExample();
     await expect(page).toHaveTitle('Stammbaum');
     await expect(page.locator('html')).toHaveAttribute('lang', 'de');
     await expect(page.getByRole('button', { name: 'Alles anzeigen' })).toBeVisible();

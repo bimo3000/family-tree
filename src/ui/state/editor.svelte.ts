@@ -15,10 +15,13 @@ export class Editor {
   /** Counts undo and redo steps: open forms rebuild their fields from the restored version. */
   revision = $state(0);
   #history: History<Project>;
+  #onchange: (project: Project) => void;
 
-  constructor(project: Project) {
+  /** `onchange` hears about every new version, also from undo and redo (autosave, DATA-03). */
+  constructor(project: Project, onchange: (project: Project) => void = () => {}) {
     this.#history = new History(project);
     this.project = $state.raw(project);
+    this.#onchange = onchange;
   }
 
   /**
@@ -61,5 +64,6 @@ export class Editor {
     this.canRedo = this.#history.canRedo;
     // The selected person may be gone after a delete or an undo.
     if (this.selectedId && !findPerson(this.project, this.selectedId)) this.selectedId = null;
+    this.#onchange(this.project);
   }
 }

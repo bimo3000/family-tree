@@ -12,7 +12,7 @@ const card = (page: Page, id: string) => page.locator(`.card[data-id="${id}"]`);
 const panel = (page: Page) => page.getByRole('complementary', { name: 'Details' });
 
 test.beforeEach(async ({ app }) => {
-  await app.open();
+  await app.openExample();
 });
 
 test.describe('tree view (TREE-02, PERS-04)', () => {

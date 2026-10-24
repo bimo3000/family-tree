@@ -14,7 +14,7 @@ async function open(page: Page, id: string, button: string) {
 }
 
 test.beforeEach(async ({ app }) => {
-  await app.open();
+  await app.openExample();
 });
 
 test.describe('editing a person (PERS-01, PERS-06, UI-01)', () => {

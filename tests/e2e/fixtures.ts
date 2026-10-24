@@ -12,6 +12,8 @@ type Fixtures = {
   /** Opens the built app and records any network activity and console errors. */
   app: {
     open: () => Promise<void>;
+    /** Opens the app and, from the start screen, the embedded example family. */
+    openExample: () => Promise<void>;
     networkRequests: string[];
     consoleErrors: string[];
   };
@@ -44,6 +46,11 @@ export const test = base.extend<Fixtures>({
     await use({
       open: async () => {
         await page.goto(APP_URL);
+      },
+      openExample: async () => {
+        await page.goto(APP_URL);
+        await page.getByRole('button', { name: 'Beispiel ansehen' }).click();
+        await expect(page.locator('.card').first()).toBeVisible();
       },
       networkRequests,
       consoleErrors,
