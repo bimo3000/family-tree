@@ -9,14 +9,14 @@ Each slice ends green (`npm run verify`), committed, pushed, with requirement st
 
 ## Overview
 
-| #   | Slice                         | Status | Main requirements                                       |
-| --- | ----------------------------- | ------ | ------------------------------------------------------- |
-| S1  | Core model, dates, operations | Done   | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
-| S2  | Automatic tree layout         | Done   | TREE-01/03/04/05 (ADR-0006)                             |
-| S3  | Tree view (read-only)         | Done   | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
-| S4  | Editing                       | Done   | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
-| S5  | Working copy, files, pictures | Done   | DATA-02/03/04/07/09, PERS-03, UI-02                     |
-| S6  | Finish and release            | Todo   | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| #   | Slice                         | Status      | Main requirements                                       |
+| --- | ----------------------------- | ----------- | ------------------------------------------------------- |
+| S1  | Core model, dates, operations | Done        | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
+| S2  | Automatic tree layout         | Done        | TREE-01/03/04/05 (ADR-0006)                             |
+| S3  | Tree view (read-only)         | Done        | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
+| S4  | Editing                       | Done        | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
+| S5  | Working copy, files, pictures | Done        | DATA-02/03/04/07/09, PERS-03, UI-02                     |
+| S6  | Finish and release            | In progress | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
 
 Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progress` at a time.
 
@@ -95,14 +95,14 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 
 ## Decisions to raise when the slice is reached
 
-| When  | Question                                                                                                                | Recommendation to give                                      |
-| ----- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| S3 ✅ | "Beispiel ansehen" without network: embed the fictional example in `Stammbaum.html`, or only ship it as a file to open? | Decided: embed it                                           |
-| S3 ✅ | P-005 search, now that a real tree with many persons is visible                                                         | Decided: rejected, no search                                |
-| S3 ✅ | Show the layout choices of ADR-0006 (several partners, married siblings, "?" parent) in the real tree and confirm them  | Decided: kept; the "?" node made larger                     |
-| S4 ✅ | P-006 plausibility hints                                                                                                | Decided: rejected                                           |
-| S5 ✅ | P-008 smaller copy for email                                                                                            | Decided: rejected                                           |
-| S6    | Print details (paper size, fit to one page or several)                                                                  | Fit to one page, A4 landscape default, browser print dialog |
+| When  | Question                                                                                                                | Recommendation to give                                                   |
+| ----- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| S3 ✅ | "Beispiel ansehen" without network: embed the fictional example in `Stammbaum.html`, or only ship it as a file to open? | Decided: embed it                                                        |
+| S3 ✅ | P-005 search, now that a real tree with many persons is visible                                                         | Decided: rejected, no search                                             |
+| S3 ✅ | Show the layout choices of ADR-0006 (several partners, married siblings, "?" parent) in the real tree and confirm them  | Decided: kept; the "?" node made larger                                  |
+| S4 ✅ | P-006 plausibility hints                                                                                                | Decided: rejected                                                        |
+| S5 ✅ | P-008 smaller copy for email                                                                                            | Decided: rejected                                                        |
+| S6 ✅ | Print details (paper size, fit to one page or several)                                                                  | Decided: browser print dialog, one A4 landscape page, PDF via the dialog |
 
 Anything not covered by the concept or the mock-up that changes what the user sees is **the user's call**: show it, then ask.
 
@@ -119,3 +119,4 @@ Anything not covered by the concept or the mock-up that changes what the user se
 | 2026-10-24 | S4 done (session 6). Next: S5 (working copy, project files, pictures).                                                                                                 |
 | 2026-10-24 | S5 started (session 7). P-008 rejected. One working copy in the browser; before replacing an unsaved tree the app asks (user's choice).                                |
 | 2026-10-24 | S5 done (session 7). Next: S6 (finish and release). Real file picker (Chrome/Edge) and Safari need a manual check.                                                     |
+| 2026-10-24 | S6 started (session 8). Print: browser dialog, one A4 landscape page, PDF via the dialog, no PNG. Help: short dialog plus one hint. First zip: 0.9.0.                  |

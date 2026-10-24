@@ -40,7 +40,10 @@
 
 (This rough sketch only shows the arrangement. It is not a mock-up.)
 
-- **Project menu ("Familie Müller ▾"):** Neu, Öffnen …, Speichern unter …, Umbenennen, Drucken / Als Bild speichern (UI-03), Beispiel ansehen, Hilfe.
+- **Project menu ("Familie Müller ▾"):** Neu, Öffnen …, Speichern unter …, Umbenennen, Drucken / Als PDF speichern (UI-03), Beispiel ansehen, Hilfe.
+- **Drucken / Als PDF speichern** opens the browser's print dialog. The whole tree is fitted on one A4 landscape page with the
+  project name on top; top bar, panel and buttons are not printed. A PDF comes from the dialog's "Als PDF speichern"
+  (decided 2026-10-24). Ctrl+P prints the same page.
 - **↶ ↷** undo/redo (UI-01), also via Ctrl+Z / Ctrl+Y.
 - **No search** (P-005 was rejected, 2026-10-24): people are found by pan, zoom, "Alles anzeigen" and the family links in the panel.
 - **Save status** (UI-02): "✓ Gespeichert" or "● Nicht in Datei gespeichert". Nothing is shown while there is nothing
@@ -164,8 +167,11 @@ e.g. a cousin marriage or a person added twice by mistake).
 
 ## 7. Help
 
-- A "?" in the project menu opens a short German help page inside the app (no internet).
-- On first use, a few unobtrusive hints ("Klick auf eine Person, um Details zu sehen").
+- "Hilfe" in the project menu opens a short help dialog inside the app (no internet), with a few sections: Personen hinzufügen,
+  Baum bewegen und zoomen, Beziehungen ändern, Speichern und Sichern, Drucken (decided 2026-10-24).
+- On first use, one unobtrusive hint bar above the tree: "Klick auf eine Person, um Details zu sehen. Ziehen verschiebt den
+  Baum, das Mausrad zoomt." [×]. It goes away for good when closed or when the first person is selected. While the backup
+  reminder is showing, the hint waits.
 
 ## Decisions (aligned with the user on 2026-10-24)
 
