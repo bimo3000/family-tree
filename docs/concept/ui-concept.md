@@ -20,7 +20,7 @@
 
 - **If there is a last project:** it opens directly (DATA-03) and the start screen is skipped.
 - **Otherwise** a friendly welcome page with three large buttons:
-  - **"Neuen Stammbaum anlegen"** asks for a name ("Familie Müller") and then starts with one empty person.
+  - **"Neuen Stammbaum anlegen"** asks for a name ("Familie Müller") and then starts with one empty person, whose dialog opens at once.
   - **"Stammbaum-Datei öffnen"** opens a file picker for `.stammbaum`. Drag & drop also works.
   - **"Beispiel ansehen"** loads the fictional example family (DATA-06). It is embedded in `Stammbaum.html`, so it needs no file.
 
@@ -43,7 +43,11 @@
 - **Project menu ("Familie Müller ▾"):** Neu, Öffnen …, Speichern unter …, Umbenennen, Drucken / Als Bild speichern (UI-03), Beispiel ansehen, Hilfe.
 - **↶ ↷** undo/redo (UI-01), also via Ctrl+Z / Ctrl+Y.
 - **No search** (P-005 was rejected, 2026-10-24): people are found by pan, zoom, "Alles anzeigen" and the family links in the panel.
-- **Save status** (UI-02): "✓ Gespeichert" or "● Nicht in Datei gespeichert".
+- **Save status** (UI-02): "✓ Gespeichert" or "● Nicht in Datei gespeichert". Nothing is shown while there is nothing
+  to save (the untouched example, a new tree before the first entry).
+- **Before another project replaces one with unsaved changes** (Neuer Stammbaum, Öffnen, Beispiel ansehen, a dropped file):
+  "Noch nicht gespeichert. Dieser Stammbaum ist noch nicht in einer Datei gespeichert." [Jetzt speichern]
+  [Ohne Speichern weiter] [Abbrechen] (decided 2026-10-24). A file is read first, so a wrong file changes nothing.
 
 ### 2.3 Person card (in the tree, PERS-04)
 
@@ -131,13 +135,14 @@ e.g. a cousin marriage or a person added twice by mistake).
 
 ## 4. Saving behaviour as the user experiences it
 
-| Situation                                 | What the user sees                                                                                                      |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Any change                                | Saved to the working copy instantly. The status shows "● Nicht in Datei gespeichert" until the file is written.         |
-| "Speichern" in Chrome/Edge                | The first time, a "Speichern unter" dialog. Afterwards every change is written automatically (DATA-09).                 |
-| "Speichern" in Firefox/Safari             | The file is downloaded. The first time, a hint: "Die Datei liegt jetzt in deinem Download-Ordner. Bewahre sie gut auf." |
-| Closing the tab with unsaved file changes | The browser asks "Seite verlassen?" The working copy is safe anyway.                                                    |
-| Not saved to the file for a long time     | A gentle reminder (UI-02): "Du hast seit 7 Tagen nicht in die Datei gespeichert."                                       |
+| Situation                                 | What the user sees                                                                                                                                                                                            |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Any change                                | Saved to the working copy instantly. The status shows "● Nicht in Datei gespeichert" until the file is written.                                                                                               |
+| "Speichern" in Chrome/Edge                | The first time, a "Speichern unter" dialog. Afterwards every change is written automatically (DATA-09).                                                                                                       |
+| "Speichern" in Firefox/Safari             | The file is downloaded. The first time, a hint: "Die Datei liegt jetzt in deinem Download-Ordner. Bewahre sie gut auf."                                                                                       |
+| Chrome/Edge after a restart or "Öffnen"   | The file is known, but the browser asks once for permission to write when the user clicks "Speichern".                                                                                                        |
+| Closing the tab with unsaved file changes | The browser asks "Seite verlassen?" The working copy is safe anyway.                                                                                                                                          |
+| Not saved to the file for a long time     | On start, after 7 days, a gentle note (UI-02): "Du hast seit 8 Tagen nicht in die Datei gespeichert." [Jetzt speichern] [×]. Never saved: "Dein Stammbaum ist seit 8 Tagen nicht in einer Datei gespeichert." |
 
 ## 5. Language and wording
 

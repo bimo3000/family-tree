@@ -9,14 +9,14 @@ Each slice ends green (`npm run verify`), committed, pushed, with requirement st
 
 ## Overview
 
-| #   | Slice                         | Status      | Main requirements                                       |
-| --- | ----------------------------- | ----------- | ------------------------------------------------------- |
-| S1  | Core model, dates, operations | Done        | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
-| S2  | Automatic tree layout         | Done        | TREE-01/03/04/05 (ADR-0006)                             |
-| S3  | Tree view (read-only)         | Done        | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
-| S4  | Editing                       | Done        | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
-| S5  | Working copy, files, pictures | In progress | DATA-02/03/04/07/09, PERS-03, UI-02                     |
-| S6  | Finish and release            | Todo        | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| #   | Slice                         | Status | Main requirements                                       |
+| --- | ----------------------------- | ------ | ------------------------------------------------------- |
+| S1  | Core model, dates, operations | Done   | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
+| S2  | Automatic tree layout         | Done   | TREE-01/03/04/05 (ADR-0006)                             |
+| S3  | Tree view (read-only)         | Done   | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
+| S4  | Editing                       | Done   | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
+| S5  | Working copy, files, pictures | Done   | DATA-02/03/04/07/09, PERS-03, UI-02                     |
+| S6  | Finish and release            | Todo   | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
 
 Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progress` at a time.
 
@@ -82,6 +82,9 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 - Start screen (new, open, example), several projects (DATA-02), last project on start (DATA-03).
 - Save status and backup reminder (UI-02). Remove an image from `images` when its person is deleted or the photo is replaced. Photos: one per person, downscaled to 2000 px JPEG (DATA-07, PERS-03).
 - E2E: save/open roundtrip in every engine.
+- ✅ Done in session 7. Storage in `src/storage/`, state in `src/ui/state/workspace.svelte.ts`, start screen and project screen
+  in `src/ui/`. Decided on the user's behalf: no "Zuletzt geöffnet" list (one working copy); Drucken and Hilfe menu entries
+  come with S6; nothing in the status while there is nothing to save; the reminder shows on start only.
 
 ## S6 – Finish and release
 
@@ -115,3 +118,4 @@ Anything not covered by the concept or the mock-up that changes what the user se
 | 2026-10-24 | S4 started (session 6). The working copy moves from S4 to S5 (user's choice: until files exist it would only keep edits to the example). P-006 rejected.               |
 | 2026-10-24 | S4 done (session 6). Next: S5 (working copy, project files, pictures).                                                                                                 |
 | 2026-10-24 | S5 started (session 7). P-008 rejected. One working copy in the browser; before replacing an unsaved tree the app asks (user's choice).                                |
+| 2026-10-24 | S5 done (session 7). Next: S6 (finish and release). Real file picker (Chrome/Edge) and Safari need a manual check.                                                     |

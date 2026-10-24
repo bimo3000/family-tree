@@ -111,6 +111,9 @@ versions. With ~100 persons a project is a few hundred kB of JSON (pictures are 
 | Survives moving/renaming `Stammbaum.html`                 | ✅                     | ✅                    | ✅                    |
 | Save directly into a chosen file (File System Access API) | ✅                     | ❌ (download instead) | ❌ (download instead) |
 
+Found later (S5): WebKit refuses **Blobs** in IndexedDB in private windows and in Playwright's test browser, so pictures
+are stored as plain bytes, which works everywhere.
+
 Note: browsers treat **all local HTML files as one shared storage area**. That is why moving the file works. It also means
 another local HTML file opened in the same browser could, in theory, read the working copy. The risk is low (the data
 never leaves the device), and it is documented here for transparency. A real Safari on macOS still needs a manual check.
