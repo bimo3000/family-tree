@@ -14,7 +14,9 @@ and back up their tree, and the last project should reopen by itself.
 
 - **One project = one file** `Name.stammbaum`: a zip with `data.json` and `bilder/*.jpg`. Zip handling via **fflate**
   (MIT, no dependencies, bundled), pinned exact at `0.8.3` and added in S5 (`src/storage/projectFile.ts`).
-- **Working copy** in IndexedDB (data and pictures as blobs), autosaved after every change, plus a pointer to the last project.
+- **Working copy** in IndexedDB (data and pictures), autosaved after every change, plus a pointer to the last project.
+  Pictures are stored as bytes (`ArrayBuffer`), not as Blobs: WebKit refuses Blobs in IndexedDB in private windows and in
+  Playwright's test browser (found in S5).
 - **Storage adapters** behind one interface:
   - `FileSystemAccessAdapter` (Chromium): open/save in place. The file handle is stored in IndexedDB so the file can be re-used after a restart (needs a permission click).
   - `DownloadAdapter` (Firefox/Safari): open via `<input type=file>`, save via a download of a `blob:` URL.

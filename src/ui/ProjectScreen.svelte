@@ -1,6 +1,6 @@
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { deletePerson, renameProject, updatePerson } from '../core/model/operations';
+  import { deletePerson, removePhoto, renameProject, updatePerson } from '../core/model/operations';
   import {
     type Relation,
     childLinksOf,
@@ -17,6 +17,8 @@
   import RemoveRelationDialog from './dialogs/RemoveRelationDialog.svelte';
   import NameDialog from './dialogs/NameDialog.svelte';
   import DetailPanel from './panel/DetailPanel.svelte';
+  import { providePhotos } from './photos';
+  import { UnreadablePictureError } from '../storage/pictures';
   import type { Editor } from './state/editor.svelte';
   import type { Workspace } from './state/workspace.svelte';
   import { showToast } from './toast.svelte';
@@ -36,6 +38,19 @@
   let { workspace, editor, startWith, onnew, onopen, onexample, onsave }: Props = $props();
 
   const project = $derived(editor.project);
+  providePhotos((id) => workspace.photoUrl(id));
+
+  async function addPhoto(id: PersonId, file: File) {
+    try {
+      await workspace.addPhoto(id, file);
+    } catch (e) {
+      showToast(
+        e instanceof UnreadablePictureError
+          ? 'Dieses Bild kann dein Browser nicht öffnen. Bitte speichere es als JPG und versuch es noch einmal.'
+          : 'Das Foto konnte nicht gespeichert werden.',
+      );
+    }
+  }
   const selected = $derived(editor.selectedId ? findPerson(project, editor.selectedId) : undefined);
   let tree = $state<TreeView>();
 
@@ -182,6 +197,8 @@
       person={dialogPerson}
       onchange={(person, key) => editor.apply((p) => updatePerson(p, person), key)}
       onfocus={() => editor.seal()}
+      onphoto={(file) => addPhoto(dialogPerson.id, file)}
+      onphotoremove={() => editor.apply((p) => removePhoto(p, dialogPerson.id))}
       onclose={closePersonDialog}
     />
   {:else if dialog?.type === 'relation' && dialogRelation}

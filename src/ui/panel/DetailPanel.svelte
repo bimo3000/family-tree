@@ -2,6 +2,7 @@
   import { type Relation, isPlaceholder } from '../../core/model/queries';
   import type { Person, PersonId, Project } from '../../core/model/types';
   import type { RelativeKind } from '../dialogs/AddRelativeDialog.svelte';
+  import { usePhotos } from '../photos';
   import { fullName, initials, personFacts } from '../text';
   import { familyGroups } from './family';
 
@@ -28,6 +29,8 @@
     'M4 16l.9-3.6L13.3 4a1.5 1.5 0 0 1 2.1 0l.6.6a1.5 1.5 0 0 1 0 2.1L7.6 15.1 4 16zM12 5.3l2.7 2.7';
   const CROSS = 'M5.5 5.5l9 9M14.5 5.5l-9 9';
 
+  const photoUrl = usePhotos();
+  const photo = $derived(photoUrl(person.photoId));
   const unknown = $derived(isPlaceholder(person));
   const facts = $derived(personFacts(person));
   const groups = $derived(familyGroups(project, person.id));
@@ -46,7 +49,9 @@
       Diese Person ist noch nicht bekannt. Sie wurde angelegt, damit Geschwister zusammengehören.
     </p>
   {:else}
-    <div class="p-photo">{initials(person)}</div>
+    <div class="p-photo">
+      {#if photo}<img src={photo} alt="" />{:else}{initials(person)}{/if}
+    </div>
     <h2>{fullName(person)}</h2>
     {#if person.birthName}<div class="geb">geb. {person.birthName}</div>{/if}
     {#if empty}<p class="muted">Noch keine Angaben. Klick auf „Bearbeiten“.</p>{/if}
@@ -188,6 +193,12 @@
     font-size: 3rem;
     font-weight: 600;
     overflow: hidden;
+  }
+  .p-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
   }
   .p-unknown {
     width: 120px;

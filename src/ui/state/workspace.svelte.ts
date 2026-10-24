@@ -5,7 +5,9 @@
  */
 /* eslint-disable svelte/prefer-svelte-reactivity -- the picture maps and timestamps are not shown directly */
 import { APP_VERSION } from '../../core/app-info';
-import type { Project } from '../../core/model/types';
+import { setPhoto } from '../../core/model/operations';
+import { newId } from '../../core/model/project';
+import type { PersonId, Project } from '../../core/model/types';
 import {
   canSaveInPlace,
   download,
@@ -15,6 +17,7 @@ import {
   writeFile,
 } from '../../storage/files';
 import { latestOnly } from '../../storage/latest';
+import { preparePicture } from '../../storage/pictures';
 import { packProject, unpackProject } from '../../storage/projectFile';
 import * as workingCopy from '../../storage/workingCopy';
 import type { FileInfo } from '../../storage/workingCopy';
@@ -32,7 +35,9 @@ export class Workspace {
   /** Set when saving went wrong in the background; the UI shows it and clears it. */
   problem: 'working-copy' | 'file' | null = $state(null);
 
+  /** Pictures by image ID. Kept for the whole session, so undoing a photo change always works. */
   #images = new Map<string, Blob>();
+  #urls = new Map<string, string>();
   #handle: FileSystemFileHandle | null = null;
   /** Chrome/Edge with permission: every change is written into the file. */
   #writesToFile = false;
@@ -116,6 +121,28 @@ export class Workspace {
     return 'saved';
   }
 
+  /** PERS-03, DATA-07. Throws UnreadablePictureError for pictures the browser can't read. */
+  async addPhoto(personId: PersonId, file: Blob): Promise<void> {
+    const { blob, width, height } = await preparePicture(file);
+    const id = newId('img');
+    await workingCopy.putImage(id, blob);
+    this.#images.set(id, blob);
+    this.editor?.apply((p) =>
+      setPhoto(p, personId, { id, file: `bilder/${id}.jpg`, width, height }),
+    );
+  }
+
+  photoUrl(photoId: string | undefined): string | undefined {
+    if (!photoId) return undefined;
+    let url = this.#urls.get(photoId);
+    const blob = this.#images.get(photoId);
+    if (!url && blob) {
+      url = URL.createObjectURL(blob);
+      this.#urls.set(photoId, url);
+    }
+    return url;
+  }
+
   async #show(
     project: Project,
     images: Map<string, Blob>,
@@ -123,6 +150,8 @@ export class Workspace {
     handle: FileSystemFileHandle | null,
   ): Promise<void> {
     clearTimeout(this.#writeTimer);
+    for (const url of this.#urls.values()) URL.revokeObjectURL(url);
+    this.#urls.clear();
     this.#images = images;
     this.#handle = handle;
     this.#writesToFile = handle ? await mayWrite(handle, false) : false;

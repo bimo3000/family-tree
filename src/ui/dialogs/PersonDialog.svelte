@@ -2,7 +2,8 @@
   import { untrack } from 'svelte';
   import { isPlaceholder } from '../../core/model/queries';
   import type { ExtraField, Gender, Person } from '../../core/model/types';
-  import { fmtDate } from '../text';
+  import { usePhotos } from '../photos';
+  import { fmtDate, initials } from '../text';
   import DateField from './DateField.svelte';
   import { lifeEvent } from './fields';
   import Modal from './Modal.svelte';
@@ -13,9 +14,15 @@
     onchange: (person: Person, key: string) => void;
     /** A field got the focus: the next input starts a new undo step. */
     onfocus: () => void;
+    /** A picture file was chosen (PERS-03). */
+    onphoto: (file: File) => void;
+    onphotoremove: () => void;
     onclose: () => void;
   }
-  let { person, onchange, onfocus, onclose }: Props = $props();
+  let { person, onchange, onfocus, onphoto, onphotoremove, onclose }: Props = $props();
+
+  const photoUrl = usePhotos();
+  let photoInput: HTMLInputElement;
 
   // The fields as typed. They are filled once; after undo/redo the whole dialog is rebuilt (App.svelte).
   const start = untrack(() => person);
@@ -46,7 +53,8 @@
       .map((e) => ({ label: e.label.trim(), value: e.value.trim() }))
       .filter((e) => e.label || e.value);
     return {
-      ...(start.photoId ? { photoId: start.photoId } : {}),
+      // The photo is changed on its own, so it comes from the current version.
+      ...(person.photoId ? { photoId: person.photoId } : {}),
       id: start.id,
       givenNames: f.givenNames.trim(),
       surname: f.surname.trim(),
@@ -99,6 +107,31 @@
 <Modal label={title} wide {onclose}>
   <h2>{title}</h2>
   <div class="form" onfocusin={onfocus}>
+    <div class="photo-row">
+      <div class="f-photo">
+        {#if photoUrl(person.photoId)}
+          <img src={photoUrl(person.photoId)} alt="" />
+        {:else}
+          {initials(person)}
+        {/if}
+      </div>
+      <button type="button" class="btn" onclick={() => photoInput.click()}>Foto wählen …</button>
+      {#if person.photoId}
+        <button type="button" class="link" onclick={onphotoremove}>Foto entfernen</button>
+      {/if}
+      <input
+        bind:this={photoInput}
+        type="file"
+        accept="image/*"
+        aria-label="Foto"
+        hidden
+        onchange={() => {
+          const file = photoInput.files?.[0];
+          photoInput.value = '';
+          if (file) onphoto(file);
+        }}
+      />
+    </div>
     <label>
       Vornamen
       <input
@@ -221,6 +254,29 @@
 </Modal>
 
 <style>
+  .photo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .f-photo {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--ph-bg);
+    color: var(--ph-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex: none;
+  }
+  .f-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
   .extras-title {
     margin: 12px 0 0;
     color: var(--muted);

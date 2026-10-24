@@ -77,7 +77,7 @@ export async function loadWorkingCopy(): Promise<WorkingCopy | null> {
         const c = cursor.result;
         if (!c) return;
         const id = String(c.key);
-        if (used.has(id)) images.set(id, c.value as Blob);
+        if (used.has(id)) images.set(id, jpeg(c.value as ArrayBuffer));
         else c.delete();
         c.continue();
       };
@@ -91,15 +91,23 @@ export function saveProject(project: Project, file: FileInfo): Promise<void> {
   return transaction('readwrite', (state) => state.put({ project, file }, PROJECT_KEY));
 }
 
-export function putImage(id: string, blob: Blob): Promise<void> {
-  return transaction('readwrite', (_, images) => images.put(blob, id));
+/**
+ * Pictures are stored as bytes, not as Blobs: WebKit refuses Blobs in IndexedDB in private windows
+ * (and in Playwright's test browser).
+ */
+export async function putImage(id: string, blob: Blob): Promise<void> {
+  const bytes = await blob.arrayBuffer();
+  return transaction('readwrite', (_, images) => images.put(bytes, id));
 }
 
 /** Another project is opened: it replaces the working copy, pictures included. */
-export function replaceWorkingCopy({ project, file, images }: WorkingCopy): Promise<void> {
+export async function replaceWorkingCopy({ project, file, images }: WorkingCopy): Promise<void> {
+  const pictures = await Promise.all(
+    [...images].map(async ([id, blob]) => [id, await blob.arrayBuffer()] as const),
+  );
   return transaction('readwrite', (state, store) => {
     store.clear();
-    for (const [id, blob] of images) store.put(blob, id);
+    for (const [id, bytes] of pictures) store.put(bytes, id);
     state.put({ project, file }, PROJECT_KEY);
     state.delete(HANDLE_KEY);
   });
@@ -138,4 +146,8 @@ export async function hasSeen(hint: string): Promise<boolean> {
 
 export function markSeen(hint: string): Promise<void> {
   return transaction('readwrite', (state) => state.put(true, `seen:${hint}`));
+}
+
+function jpeg(bytes: ArrayBuffer): Blob {
+  return new Blob([bytes], { type: 'image/jpeg' });
 }

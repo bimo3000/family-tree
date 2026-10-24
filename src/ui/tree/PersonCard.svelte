@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { CardBox } from '../../core/layout';
   import type { Person } from '../../core/model/types';
+  import { usePhotos } from '../photos';
   import { fullName, initials, yearsLine } from '../text';
 
   interface Props {
@@ -13,6 +14,9 @@
     onhover: (e: MouseEvent | null) => void;
   }
   let { person, box, selected, dim, onselect, oncentre, onhover }: Props = $props();
+
+  const photoUrl = usePhotos();
+  const photo = $derived(photoUrl(person.photoId));
 </script>
 
 <!-- A button, so every person can also be reached with the keyboard. The tooltip follows the mouse. -->
@@ -40,7 +44,9 @@
   {#if box.placeholder}
     ?
   {:else}
-    <span class="ph">{initials(person)}</span>
+    <span class="ph">
+      {#if photo}<img src={photo} alt="" draggable="false" />{:else}{initials(person)}{/if}
+    </span>
     <span class="txt">
       <span class="nm">{fullName(person)}</span>
       <span class="yr">{yearsLine(person)}</span>
@@ -91,6 +97,13 @@
     font-size: 2rem;
     font-weight: 600;
     border-radius: calc(var(--radius) - 4px);
+    overflow: hidden;
+  }
+  .ph img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
   }
   .txt {
     min-width: 0;
