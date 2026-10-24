@@ -246,3 +246,21 @@ h3 {
 .small {
   font-size: 0.88rem;
 }
+/* Printing (UI-03): one A4 landscape page with the tree only (ProjectScreen and TreeView hide the rest). */
+@page {
+  size: A4 landscape;
+  margin: 10mm;
+}
+@media print {
+  html,
+  body,
+  #app {
+    height: auto;
+    overflow: visible;
+    background: none;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

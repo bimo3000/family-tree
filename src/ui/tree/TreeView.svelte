@@ -4,7 +4,17 @@
   import { findPerson, focusSet } from '../../core/model/queries';
   import type { Person, PersonId, Project } from '../../core/model/types';
   import { endWord, kindLabel, tooltipLines } from '../text';
-  import { centerOn, endMarkD, fitView, highlight, isOnScreen, pathD, zoomAt } from './geometry';
+  import {
+    centerOn,
+    endMarkD,
+    fitView,
+    highlight,
+    isOnScreen,
+    pathD,
+    PRINT_AREA,
+    printView,
+    zoomAt,
+  } from './geometry';
   import PersonCard from './PersonCard.svelte';
 
   interface Props {
@@ -18,6 +28,8 @@
   const boxes = $derived(new Map(layout.cards.map((c) => [c.id, c])));
   const focus = $derived(selectedId ? focusSet(project, selectedId) : null);
   const hl = $derived(focus ? highlight(project, layout, focus) : null);
+  /** Used only by the print styles: the whole tree on one page, whatever the screen shows (UI-03). */
+  const print = $derived(printView(layout));
 
   let viewport: HTMLDivElement;
   let view = $state({ x: 0, y: 0, k: 1 });
@@ -136,6 +148,8 @@
   class="viewport"
   class:panning
   bind:this={viewport}
+  style:--print-width="{PRINT_AREA.width}px"
+  style:--print-height="{PRINT_AREA.height}px"
   onpointerdown={onPointerDown}
   onclick={(e) => {
     // detail > 1: the second click of a double-click. Its first click may have opened the panel and moved
@@ -148,6 +162,7 @@
     class:animate
     data-testid="world"
     style:transform="translate({view.x}px, {view.y}px) scale({view.k})"
+    style:--print-transform="translate({print.x}px, {print.y}px) scale({print.k})"
   >
     <svg class="edges" width={layout.width} height={layout.height} aria-hidden="true">
       {#each layout.coupleLines as line (line.partnershipId)}
@@ -287,5 +302,36 @@
     font-size: 0.92rem;
     line-height: 1.45;
     box-shadow: var(--shadow);
+  }
+  /* Printing (UI-03): the whole tree on one page, without highlight and buttons. */
+  @media print {
+    .viewport {
+      flex: none;
+      width: var(--print-width);
+      height: var(--print-height);
+      background: none;
+    }
+    .world,
+    .world.animate {
+      transform: var(--print-transform) !important;
+      transition: none;
+    }
+    .edges path {
+      transition: none;
+    }
+    .edges path.dim {
+      opacity: 1;
+    }
+    .edges path.hl {
+      stroke: var(--line);
+      stroke-width: 2;
+    }
+    .edges path.gap {
+      stroke: #fff;
+    }
+    .zoom,
+    .tooltip {
+      display: none;
+    }
   }
 </style>

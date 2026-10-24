@@ -150,6 +150,10 @@
           >Umbenennen</button
         >
         <hr />
+        <button type="button" onclick={() => menu(() => window.print())}
+          >Drucken / Als PDF speichern</button
+        >
+        <hr />
         <button type="button" onclick={() => menu(onexample)}>Beispiel ansehen</button>
       </div>
     {/if}
@@ -178,6 +182,7 @@
   {/if}
   <button type="button" class="btn primary" onclick={() => onsave(false)}>Speichern</button>
 </header>
+<p class="print-title">{project.name}</p>
 <main>
   {#if remindAfter && workspace.unsaved && !reminderClosed}
     <div class="reminder">
@@ -413,5 +418,25 @@
   }
   .reminder .close:hover {
     background: var(--hover);
+  }
+  .print-title {
+    display: none;
+  }
+  /* Printing (UI-03): only the project name and the tree. */
+  @media print {
+    .topbar,
+    .reminder,
+    main > :global(.panel) {
+      display: none;
+    }
+    .print-title {
+      display: block;
+      margin: 0 0 12px;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    main {
+      display: block;
+    }
   }
 </style>

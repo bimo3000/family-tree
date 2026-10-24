@@ -137,4 +137,18 @@
     align-items: center;
     justify-content: center;
   }
+  /* Printed without shadows, fading or selection (UI-03). */
+  @media print {
+    .card,
+    .card.selected {
+      box-shadow: none;
+      transition: none;
+    }
+    .card.selected:not(.unknown) {
+      border-color: var(--card-border);
+    }
+    .card.dim {
+      opacity: 1;
+    }
+  }
 </style>

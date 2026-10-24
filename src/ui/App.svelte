@@ -225,4 +225,9 @@
     max-width: 560px;
     text-align: center;
   }
+  @media print {
+    .toast {
+      display: none;
+    }
+  }
 </style>

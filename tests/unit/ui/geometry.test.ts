@@ -10,6 +10,8 @@ import {
   MAX_ZOOM,
   MIN_ZOOM,
   pathD,
+  PRINT_AREA,
+  printView,
   zoomAt,
 } from '../../../src/ui/tree/geometry';
 import { familieBrandt } from '../../fixtures/familie-brandt';
@@ -29,6 +31,38 @@ describe('svg paths', () => {
 
   it('draws the "//" around the given point', () => {
     expect(endMarkD({ x: 100, y: 50 })).toBe('M93 57 L99 43 M101 57 L107 43');
+  });
+});
+
+describe('print view (UI-03)', () => {
+  const fits = (drawing: { width: number; height: number }) => {
+    const v = printView(drawing);
+    expect(v.x).toBeGreaterThanOrEqual(0);
+    expect(v.y).toBe(0);
+    expect(v.x + drawing.width * v.k).toBeLessThanOrEqual(PRINT_AREA.width + 1e-9);
+    expect(drawing.height * v.k).toBeLessThanOrEqual(PRINT_AREA.height + 1e-9);
+    return v;
+  };
+
+  it('shrinks a wide tree to the page width, centred', () => {
+    const v = fits({ width: 5000, height: 1000 });
+    expect(v.k).toBeCloseTo(PRINT_AREA.width / 5000);
+    expect(v.x).toBeCloseTo(0);
+  });
+
+  it('shrinks a tall tree to the page height, centred across', () => {
+    const v = fits({ width: 1000, height: 3000 });
+    expect(v.k).toBeCloseTo(PRINT_AREA.height / 3000);
+    expect(v.x + 500 * v.k).toBeCloseTo(PRINT_AREA.width / 2);
+  });
+
+  it('never enlarges a small tree, and copes with an empty one', () => {
+    expect(fits({ width: 150, height: 180 }).k).toBe(1);
+    expect(fits({ width: 0, height: 0 }).k).toBe(1);
+  });
+
+  it('fits the example family', () => {
+    fits(computeLayout(familieBrandt));
   });
 });
 

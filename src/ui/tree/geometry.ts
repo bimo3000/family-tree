@@ -52,6 +52,22 @@ export function fitView(drawing: Size, viewport: Size): View {
   };
 }
 
+/**
+ * The printable part of an A4 landscape page (297 × 210 mm, 10 mm margins) in CSS pixels (96 per inch),
+ * less a line for the project name on top (UI-03).
+ */
+export const PRINT_AREA: Size = { width: 1046, height: 660 };
+
+/** The whole tree on one printed page: scaled down to fit (never up), centred across the page, at its top. */
+export function printView(drawing: Size, page: Size = PRINT_AREA): View {
+  const k = Math.min(
+    page.width / Math.max(drawing.width, 1),
+    page.height / Math.max(drawing.height, 1),
+    1,
+  );
+  return { k, x: (page.width - drawing.width * k) / 2, y: 0 };
+}
+
 /** Zooms by `factor`, keeping the drawing point under the screen point (cx, cy) in place. */
 export function zoomAt(view: View, factor: number, cx: number, cy: number): View {
   const k = clamp(view.k * factor, MIN_ZOOM, MAX_ZOOM);
