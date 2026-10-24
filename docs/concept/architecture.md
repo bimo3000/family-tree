@@ -91,6 +91,9 @@ versions. With ~100 persons a project is a few hundred kB of JSON (pictures are 
 
 - After every change the open project is autosaved into the browser's built-in database (IndexedDB), pictures included.
 - At startup the app reopens the last project from there, so the user continues where they left off.
+- The browser keeps **one** working copy: the open project. Before "Neu", "Öffnen" or "Beispiel ansehen" replace a
+  project whose changes are not in a file yet, the app asks: "Jetzt speichern", "Ohne Speichern weiter" or "Abbrechen"
+  (decided 2026-10-24). Several projects (DATA-02) are several `.stammbaum` files.
 - The working copy is a **safety net and a convenience. The `.stammbaum` file is the real thing.** The working copy
   disappears if the user clears the browser data, and it is tied to that one browser on that one computer.
 
@@ -123,7 +126,7 @@ The UI always shows the save status ("✓ Gespeichert" / "● Nicht in Datei ges
 - Imported via file picker or drag & drop.
 - Automatically downscaled ✅ (DATA-07) to max. **2000 px** on the long side, JPEG quality ~0.85, giving about 300–600 kB per picture.
   100 persons with pictures then come to about 30–60 MB per project file. That is fine for backups and USB sticks, but
-  too big for many email providers, so proposal P-008 suggests a "Kopie zum Verschicken" export with smaller pictures.
+  too big for many email providers. A "Kopie zum Verschicken" with smaller pictures (P-008) was rejected by the user.
 - Displayed via `blob:` URLs, which the CSP allows.
 - iPhone HEIC photos only decode in Safari. Other browsers show a friendly message ("Bitte als JPG speichern").
 
@@ -188,5 +191,5 @@ JavaScript must be enabled (a `<noscript>` message explains this).
 ## Decisions (aligned with the user on 2026-10-24)
 
 1. **Auto-save into the file (Chrome/Edge):** yes. After the first "Speichern unter …", every change goes straight into the file (DATA-09).
-2. **Picture size:** max. 2000 px (DATA-07). The user chose quality over file size. For emailing, see proposal P-008.
+2. **Picture size:** max. 2000 px (DATA-07). The user chose quality over file size (P-008, smaller copies for email, was rejected).
 3. **Firefox/Safari saving via download:** accepted, with a one-time hint and the save status (DATA-09, UI-02).
