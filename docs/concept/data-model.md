@@ -96,18 +96,20 @@ child's birth, a person older than 110 without a death date.
 
 ## 4. Flexible dates (PERS-06) ✅
 
-The user types one text field. The app understands it, shows how it was read ("→ 12. März 1923"), and stores both:
+The user types one text field. The app understands it, shows how it was read ("→ 12. März 1923"), and stores **only the
+interpreted value**, not the typed text. Reopening the field shows the tidy form (`um 1850` comes back as `ca. 1850`).
+The card shows only the year (PERS-04); hover and the detail panel show the full precision:
 
-| Input (examples)                        | Stored                                      | Shown on card | Sort value |
-| --------------------------------------- | ------------------------------------------- | ------------- | ---------- |
-| `12.03.1923`, `12.3.1923`               | `{ "y": 1923, "m": 3, "d": 12 }`            | 12.03.1923    | 1923-03-12 |
-| `03.1923`, `März 1923`                  | `{ "y": 1923, "m": 3 }`                     | 03.1923       | 1923-03    |
-| `1923`                                  | `{ "y": 1923 }`                             | 1923          | 1923       |
-| `ca. 1850`, `um 1850`, `~1850`          | `{ "y": 1850, "q": "about" }`               | ca. 1850      | 1850       |
-| `vor 1900`                              | `{ "y": 1900, "q": "before" }`              | vor 1900      | 1900       |
-| `nach 1900`                             | `{ "y": 1900, "q": "after" }`               | nach 1900     | 1900       |
-| `zw. 1890 und 1895`, `1890–1895`        | `{ "y": 1890, "q": "between", "y2": 1895 }` | 1890–1895     | 1890       |
-| anything unreadable, e.g. `Ostern 1923` | `{ "text": "Ostern 1923" }`                 | Ostern 1923   | none       |
+| Input (examples)                        | Stored                                      | Shown in details | Sort value |
+| --------------------------------------- | ------------------------------------------- | ---------------- | ---------- |
+| `12.03.1923`, `12.3.1923`               | `{ "y": 1923, "m": 3, "d": 12 }`            | 12.03.1923       | 1923-03-12 |
+| `03.1923`, `März 1923`                  | `{ "y": 1923, "m": 3 }`                     | 03.1923          | 1923-03    |
+| `1923`                                  | `{ "y": 1923 }`                             | 1923             | 1923       |
+| `ca. 1850`, `um 1850`, `~1850`          | `{ "y": 1850, "q": "about" }`               | ca. 1850         | 1850       |
+| `vor 1900`                              | `{ "y": 1900, "q": "before" }`              | vor 1900         | 1900       |
+| `nach 1900`                             | `{ "y": 1900, "q": "after" }`               | nach 1900        | 1900       |
+| `zw. 1890 und 1895`, `1890–1895`        | `{ "y": 1890, "q": "between", "y2": 1895 }` | 1890–1895        | 1890       |
+| anything unreadable, e.g. `Ostern 1923` | `{ "text": "Ostern 1923" }`                 | Ostern 1923      | none       |
 
 Unreadable input is **kept as written** and never rejected. The app shows a gentle hint that it can't be used for sorting.
 This maps 1:1 to GEDCOM date qualifiers (`ABT`, `BEF`, `AFT`, `BET … AND`).
