@@ -89,12 +89,12 @@
 
 Every flow starts **from a person**, which avoids abstract "create relationship" dialogs.
 
-| Button            | What happens                                                                                                          | The extra question appears only if …                                                                           |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **+ Kind**        | A new person becomes a child of this person **and** their partner                                                     | … the person has several partners: "Mit wem?" (list + "anderer/unbekannt")                                     |
-| **+ Partner/in**  | A new person becomes a partner                                                                                        | never. Details (Ehe, Datum) can be added later under "Beziehung bearbeiten"                                    |
-| **+ Elternteil**  | A new person becomes a parent. If one parent exists already, the new one becomes their partner (checkbox, pre-ticked) | … two biological parents exist already: "Adoptiv-/Stief-/Pflegeelternteil?"                                    |
-| **+ Geschwister** | A new person becomes a child of the same parents                                                                      | … never. If the parents are unknown, an "unknown parent" placeholder is created automatically (small "?" node) |
+| Button            | What happens                                                                                                                                | The extra question appears only if …                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **+ Kind**        | A new person becomes a child of this person **and** their partner                                                                           | … the person has several partners: "Mit wem?" (list + "anderer/unbekannt")                                     |
+| **+ Partner/in**  | A new person becomes a partner                                                                                                              | never. Details (Ehe, Datum) can be added later under "Beziehung bearbeiten"                                    |
+| **+ Elternteil**  | A new person becomes a parent. If one parent exists already, the new one becomes their partner (no question; remove with × if not a couple) | … two biological parents exist already: "Adoptiv-/Stief-/Pflegeelternteil?"                                    |
+| **+ Geschwister** | A new person becomes a child of the same parents                                                                                            | … never. If the parents are unknown, an "unknown parent" placeholder is created automatically (small "?" node) |
 
 Each flow offers **"Neue Person"** (default) or **"Vorhandene Person auswählen"** (for linking two people already in the tree,
 e.g. a cousin marriage or a person added twice by mistake).
