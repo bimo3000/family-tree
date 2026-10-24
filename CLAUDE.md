@@ -32,6 +32,8 @@ repo itself must carry all context. Keep it that way.
 - **UI/UX is their call.** Show options early (mock-ups, screenshots), ask for their opinion and take
   their feedback seriously. Do not finalize UI/UX on your own.
 - Work proactively on the agreed scope. Do not silently expand the scope.
+- **No over-engineering** (the user's explicit preference). Build the simplest solution that meets the requirements.
+  No speculative abstractions, options or "might need it later" code. If a simpler variant exists, recommend it.
 - Mock-ups and functional development start **only when the user explicitly asks**.
 
 ## 4. Architecture invariants (details: [docs/concept/architecture.md](docs/concept/architecture.md))

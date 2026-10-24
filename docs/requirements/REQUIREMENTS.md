@@ -139,3 +139,5 @@ Interpretations of the original brief that were confirmed by the human developer
 | 2026-10-24 | Person fields as in `docs/concept/data-model.md` §2. No extra dedicated fields; anything else goes into "Weitere Angaben".                                                      |
 | 2026-10-24 | "+ Geschwister" with unknown parents automatically creates an "unknown parent" placeholder (shown as a small "?" node).                                                         |
 | 2026-10-24 | Still open, to be decided with the mock-ups: card colours (neutral or by gender), editing in the side panel or in a dialog.                                                     |
+| 2026-10-24 | Dates (PERS-06): only the interpreted value is stored, not the typed text (`um 1850` comes back as `ca. 1850`). Unreadable input is kept and shown as typed.                    |
+| 2026-10-24 | General preference: **no over-engineering**. Prefer the simplest solution that meets the requirements (noted in CLAUDE.md §3).                                                  |
