@@ -110,9 +110,9 @@ This is the **contract between the human developer (product owner) and the devel
 
 Ideas from agents. **Not binding until the human developer approves.** On approval, a proposal moves into the tables above.
 
-| ID  | Proposal  | Why | Proposed |
-| --- | --------- | --- | -------- |
-| –   | none open | –   | –        |
+| ID    | Proposal                                                                                                                                                                          | Why                                                                                                                      | Proposed   |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------- |
+| P-009 | **Choose the visible part of a photo** (crop/position) when adding it, so the person sits well in the card and panel frame. Not to be built until the user explicitly decides so. | Real photos rarely fit the card's shape with the person centred; today the app shows the middle (slightly above centre). | 2026-10-24 |
 
 ## Aligned deviations
 

@@ -42,6 +42,7 @@
 - Feedback wanted on: start screen, project menu, save status, the unsaved question, the download hint, the reminder note.
 - Try a few **real photos** (also an iPhone HEIC in Chrome: should give the "als JPG speichern" message).
 - A manual check on a real Mac (Safari) and on Windows.
+- **P-009 (photo cropping)** is noted as a later idea. Build it only after the user explicitly says so; don't raise it unprompted in S6.
 
 ## Pitfalls / environment notes
 
