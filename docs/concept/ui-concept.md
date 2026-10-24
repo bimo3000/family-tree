@@ -22,13 +22,13 @@
 - **Otherwise** a friendly welcome page with three large buttons:
   - **"Neuen Stammbaum anlegen"** asks for a name ("Familie Müller") and then starts with one empty person.
   - **"Stammbaum-Datei öffnen"** opens a file picker for `.stammbaum`. Drag & drop also works.
-  - **"Beispiel ansehen"** loads the fictional example family (DATA-06).
+  - **"Beispiel ansehen"** loads the fictional example family (DATA-06). It is embedded in `Stammbaum.html`, so it needs no file.
 
 ### 2.2 Main window
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
-│ Familie Müller ▾   ↶ ↷   🔍 Person suchen …         ✓ Gespeichert  [Speichern] │  ← top bar
+│ Familie Müller ▾   ↶ ↷                              ✓ Gespeichert  [Speichern] │  ← top bar
 ├───────────────────────────────────────────────────────┬───────────────────┤
 │                                                       │                   │
 │                  tree (pan / zoom)                    │  detail panel     │
@@ -42,7 +42,7 @@
 
 - **Project menu ("Familie Müller ▾"):** Neu, Öffnen …, Speichern unter …, Umbenennen, Drucken / Als Bild speichern (UI-03), Beispiel ansehen, Hilfe.
 - **↶ ↷** undo/redo (UI-01), also via Ctrl+Z / Ctrl+Y.
-- **Search** (proposal P-005, not yet agreed): type a name, matching persons are listed, and picking one centers the tree on them.
+- **No search** (P-005 was rejected, 2026-10-24): people are found by pan, zoom, "Alles anzeigen" and the family links in the panel.
 - **Save status** (UI-02): "✓ Gespeichert" or "● Nicht in Datei gespeichert".
 
 ### 2.3 Person card (in the tree, PERS-04)
