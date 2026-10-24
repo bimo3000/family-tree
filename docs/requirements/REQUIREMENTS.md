@@ -37,14 +37,17 @@ This is the **contract between the human developer (product owner) and the devel
 
 ## DATA – Projects & storage
 
-| ID      | Requirement                                                                                                                         | Status | Verified by |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------ | ----------- |
-| DATA-01 | Family data is **strictly separated** from the app logic.                                                                           | Agreed |             |
-| DATA-02 | The user can **create and open several family-tree projects**.                                                                      | Agreed |             |
-| DATA-03 | The app opens the **last used project** automatically.                                                                              | Agreed |             |
-| DATA-04 | Each project is **one file** (`Name.stammbaum`) that contains the data (JSON) and the pictures, so it is easy to email and back up. | Agreed |             |
-| DATA-05 | The data format is simple and readable (JSON inside the project file).                                                              | Agreed |             |
-| DATA-06 | A **fictional example project** (and/or an empty start) is shipped with the app and committed to the repo.                          | Agreed |             |
+| ID      | Requirement                                                                                                                                                                                                   | Status | Verified by |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ----------- |
+| DATA-01 | Family data is **strictly separated** from the app logic.                                                                                                                                                     | Agreed |             |
+| DATA-02 | The user can **create and open several family-tree projects**.                                                                                                                                                | Agreed |             |
+| DATA-03 | The app opens the **last used project** automatically.                                                                                                                                                        | Agreed |             |
+| DATA-04 | Each project is **one file** (`Name.stammbaum`) that contains the data (JSON) and the pictures, so it is easy to email and back up.                                                                           | Agreed |             |
+| DATA-05 | The data format is simple and readable (JSON inside the project file).                                                                                                                                        | Agreed |             |
+| DATA-06 | A **fictional example project** (and/or an empty start) is shipped with the app and committed to the repo.                                                                                                    | Agreed |             |
+| DATA-07 | Pictures are **automatically downscaled** when added, to max. **2000 px** on the long side (JPEG). (was P-002)                                                                                                | Agreed |             |
+| DATA-08 | **Older project files always open in newer app versions** (automatic upgrade of the data format). (was P-004)                                                                                                 | Agreed |             |
+| DATA-09 | **Saving:** in Chrome/Edge, once a project has been saved to a file, every change is written into that file automatically. In Firefox/Safari, "Speichern" downloads the file, and the app explains this once. | Agreed |             |
 
 ## PERS – Persons
 
@@ -52,20 +55,30 @@ This is the **contract between the human developer (product owner) and the devel
 | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ----------- |
 | PERS-01 | Persons can be **added, edited and removed**.                                                                                                         | Agreed |             |
 | PERS-02 | **All data fields are optional.**                                                                                                                     | Agreed |             |
-| PERS-03 | Each person can have a **picture**.                                                                                                                   | Agreed |             |
-| PERS-04 | By default, a person shows only **minimal data**: name (with the last known surname), date of birth, date of death.                                   | Agreed |             |
+| PERS-03 | Each person can have a **picture** (one portrait per person).                                                                                         | Agreed |             |
+| PERS-04 | By default, a person shows only **minimal data**: name (with the last known surname), year of birth, year of death. Full dates appear on hover/click. | Agreed |             |
 | PERS-05 | **More information** is shown on further interaction (hover or click), e.g. background text, birth name, place of birth, and other fields.            | Agreed |             |
 | PERS-06 | Dates can be **vague**: full date, month and year, year only, "ca. 1850", "vor 1900", "nach 1900". They are displayed as precisely as they are known. | Agreed |             |
+| PERS-07 | A person can have an **optional gender**. It is used for wording (Mutter/Vater, Sohn/Tochter). Without it, neutral words are used (Elternteil, Kind). | Agreed |             |
 
 ## TREE – Family tree display & relations
 
 | ID      | Requirement                                                                                                                                                                                                                                               | Status | Verified by |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ----------- |
 | TREE-01 | Family relations are displayed **clearly and intuitively**.                                                                                                                                                                                               | Agreed |             |
-| TREE-02 | Main view: a **zoomable, pannable overview of the whole family**, plus **focus** on a selected person (highlighting their line, and centering on them).                                                                                                   | Agreed |             |
+| TREE-02 | Main view: a **zoomable, pannable overview of the whole family**, plus **focus** on a selected person (highlighting their line, and centering on them). Ancestors at the top, descendants below.                                                          | Agreed |             |
 | TREE-03 | Supported relations: parents and children; partners, **including several partners** over a lifetime; **marriage details** (dates, places, divorced/separated); **adoptive/step/foster** parent-child links; **incomplete parents** (one or both unknown). | Agreed |             |
 | TREE-04 | **Progressive disclosure:** special cases (multiple partners, adoption, divorce, …) add visual or UI complexity **only when they are actually used**. A simple family looks simple.                                                                       | Agreed |             |
 | TREE-05 | Trees of **up to about 100 persons** display and react smoothly.                                                                                                                                                                                          | Agreed |             |
+
+## UI – Interaction & usability
+
+| ID    | Requirement                                                                                                            | Status | Verified by |
+| ----- | ---------------------------------------------------------------------------------------------------------------------- | ------ | ----------- |
+| UI-01 | **Undo/redo** ("Rückgängig") for every change. (was P-001)                                                             | Agreed |             |
+| UI-02 | A visible **save status** ("Gespeichert" / "Nicht in Datei gespeichert") and a gentle **backup reminder**. (was P-003) | Agreed |             |
+| UI-03 | The tree can be **printed or exported as an image/PDF**. (was P-007)                                                   | Agreed |             |
+| UI-04 | The app addresses the user informally with **"Du"**.                                                                   | Agreed |             |
 
 ## DEV – Development process (how agents work in this repo)
 
@@ -97,15 +110,11 @@ This is the **contract between the human developer (product owner) and the devel
 
 Ideas from agents. **Not binding until the human developer approves.** On approval, a proposal moves into the tables above.
 
-| ID    | Proposal                                                                                                          | Why                                                                                  | Proposed   |
-| ----- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------- |
-| P-001 | **Undo/redo** ("Rückgängig") for every change.                                                                    | Mistakes are cheap to fix. Grandma loses her fear of clicking.                       | 2026-10-24 |
-| P-002 | **Pictures are automatically downscaled** on import (e.g. max. 1200 px, JPEG).                                    | A 6 MB phone photo would otherwise make project files too big to email.              | 2026-10-24 |
-| P-003 | A visible **save status** ("Alle Änderungen gespeichert" / "Nicht gespeichert") and a gentle **backup reminder**. | In Firefox/Safari saving means downloading a new file, which users can forget to do. | 2026-10-24 |
-| P-004 | **Older project files always open in newer app versions** (automatic upgrade of the data format).                 | Trees are kept for decades while the app evolves.                                    | 2026-10-24 |
-| P-005 | **Search** a person by name.                                                                                      | Finding someone in 100 persons by panning around is tedious.                         | 2026-10-24 |
-| P-006 | **Plausibility hints** that never block saving (e.g. "Tod vor Geburt?", "Mutter bei Geburt 8 Jahre alt?").        | Catches typos in dates.                                                              | 2026-10-24 |
-| P-007 | **Print / export the tree as an image or PDF.**                                                                   | Grandma wants it on paper or on the wall.                                            | 2026-10-24 |
+| ID    | Proposal                                                                                                   | Why                                                                                                   | Proposed   |
+| ----- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------- |
+| P-005 | **Search** a person by name.                                                                               | Finding someone in 100 persons by panning around is tedious.                                          | 2026-10-24 |
+| P-006 | **Plausibility hints** that never block saving (e.g. "Tod vor Geburt?", "Mutter bei Geburt 8 Jahre alt?"). | Catches typos in dates.                                                                               | 2026-10-24 |
+| P-008 | **"Kopie zum Verschicken"**: export a copy of the project with smaller pictures (e.g. 1000 px).            | With 2000 px pictures (DATA-07), a tree with ~100 photos is ~50 MB, too big for many email providers. | 2026-10-24 |
 
 ## Aligned deviations
 
@@ -126,3 +135,7 @@ Interpretations of the original brief that were confirmed by the human developer
 | 2026-10-24 | Development tooling (Node.js) is allowed on the developer machine; end users never need it.                                                                                     |
 | 2026-10-24 | Git workflow: direct pushes to `main`, gated by the pre-push hook. No CI for now.                                                                                               |
 | 2026-10-24 | GEDCOM: maybe later (FUT-03); no feature now.                                                                                                                                   |
+| 2026-10-24 | Concept alignment: P-001, P-002 (2000 px instead of the proposed 1200 px), P-003, P-004 and P-007 approved. P-005 and P-006 stay open for later.                                |
+| 2026-10-24 | Person fields as in `docs/concept/data-model.md` §2. No extra dedicated fields; anything else goes into "Weitere Angaben".                                                      |
+| 2026-10-24 | "+ Geschwister" with unknown parents automatically creates an "unknown parent" placeholder (shown as a small "?" node).                                                         |
+| 2026-10-24 | Still open, to be decided with the mock-ups: card colours (neutral or by gender), editing in the side panel or in a dialog.                                                     |
