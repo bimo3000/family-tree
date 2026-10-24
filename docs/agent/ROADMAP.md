@@ -9,14 +9,14 @@ Each slice ends green (`npm run verify`), committed, pushed, with requirement st
 
 ## Overview
 
-| #   | Slice                         | Status | Main requirements                                       |
-| --- | ----------------------------- | ------ | ------------------------------------------------------- |
-| S1  | Core model, dates, operations | Todo   | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
-| S2  | Automatic tree layout         | Todo   | TREE-01/03/04/05 (ADR-0006)                             |
-| S3  | Tree view (read-only)         | Todo   | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
-| S4  | Editing + working copy        | Todo   | PERS-01/03, UI-01, DATA-03 (working copy)               |
-| S5  | Project files and pictures    | Todo   | DATA-02/03/04/07/09, PERS-03, UI-02                     |
-| S6  | Finish and release            | Todo   | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| #   | Slice                         | Status      | Main requirements                                       |
+| --- | ----------------------------- | ----------- | ------------------------------------------------------- |
+| S1  | Core model, dates, operations | In progress | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
+| S2  | Automatic tree layout         | Todo        | TREE-01/03/04/05 (ADR-0006)                             |
+| S3  | Tree view (read-only)         | Todo        | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
+| S4  | Editing + working copy        | Todo        | PERS-01/03, UI-01, DATA-03 (working copy)               |
+| S5  | Project files and pictures    | Todo        | DATA-02/03/04/07/09, PERS-03, UI-02                     |
+| S6  | Finish and release            | Todo        | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
 
 Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progress` at a time.
 
