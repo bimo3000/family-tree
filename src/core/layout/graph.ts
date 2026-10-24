@@ -73,3 +73,8 @@ export function get(source: Map<unknown, unknown> | readonly unknown[], key: unk
   if (value === undefined) throw new Error(`layout: unknown key ${String(key)}`);
   return value;
 }
+
+/** Average, or `undefined` for no values. */
+export function mean(values: number[]): number | undefined {
+  return values.length ? values.reduce((s, v) => s + v, 0) / values.length : undefined;
+}

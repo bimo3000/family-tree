@@ -3,7 +3,7 @@
  * always stays together. A depth-first walk gives a natural first order (siblings by birth, every family below its
  * parents); a few barycenter sweeps then move blocks to reduce crossing lines, keeping the best order found.
  */
-import { compareByBirth, get, type FamilyGraph } from './graph';
+import { compareByBirth, get, mean, type FamilyGraph } from './graph';
 import type { PersonId } from '../model/types';
 
 /** Per row, the blocks left to right; a block is a person with their partners in that row, left to right. */
@@ -207,8 +207,4 @@ function inversions(values: (number | undefined)[]): number {
     }),
   );
   return count;
-}
-
-function mean(values: number[]): number | undefined {
-  return values.length ? values.reduce((s, v) => s + v, 0) / values.length : undefined;
 }
