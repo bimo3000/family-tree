@@ -9,14 +9,14 @@ Each slice ends green (`npm run verify`), committed, pushed, with requirement st
 
 ## Overview
 
-| #   | Slice                         | Status | Main requirements                                       |
-| --- | ----------------------------- | ------ | ------------------------------------------------------- |
-| S1  | Core model, dates, operations | Done   | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
-| S2  | Automatic tree layout         | Done   | TREE-01/03/04/05 (ADR-0006)                             |
-| S3  | Tree view (read-only)         | Done   | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
-| S4  | Editing + working copy        | Todo   | PERS-01/03, UI-01, DATA-03 (working copy)               |
-| S5  | Project files and pictures    | Todo   | DATA-02/03/04/07/09, PERS-03, UI-02                     |
-| S6  | Finish and release            | Todo   | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| #   | Slice                         | Status      | Main requirements                                       |
+| --- | ----------------------------- | ----------- | ------------------------------------------------------- |
+| S1  | Core model, dates, operations | Done        | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
+| S2  | Automatic tree layout         | Done        | TREE-01/03/04/05 (ADR-0006)                             |
+| S3  | Tree view (read-only)         | Done        | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
+| S4  | Editing                       | In progress | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
+| S5  | Working copy, files, pictures | Todo        | DATA-02/03/04/07/09, PERS-03, UI-02                     |
+| S6  | Finish and release            | Todo        | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
 
 Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progress` at a time.
 
@@ -63,15 +63,17 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 - At the end, ask the user to try it: `npm run build`, then double-click `dist/Stammbaum.html`.
 - ✅ Done in session 5. Cards are HTML buttons and lines one SVG, in a layer moved by a CSS transform (like the mock-up).
 
-## S4 – Editing + working copy
+## S4 – Editing
 
 - `src/ui/state/`: open project, selection, undo/redo (UI-01), dirty status. Every change goes through a core operation.
 - Person dialog (ui-concept §2.5), add-relative flows (§2.6), delete (§2.7), relation edit/remove with the cut-off dialog (§2.8).
 - `deletePerson` (core) does not touch `images` or `view.focusPersonId`: clear the focus in state when the focused person goes.
-- Working copy in IndexedDB with autosave, reopened on start, so edits survive a reload (DATA-03, architecture §3).
+- No working copy yet (moved to S5, decided 2026-10-24): a reload shows the example again. No photo row and no save status yet (S5).
 - E2E for the main flows in all three engines.
 
-## S5 – Project files and pictures (`src/storage/`, ADR-0005)
+## S5 – Working copy, project files and pictures (`src/storage/`, ADR-0005)
+
+- Working copy in IndexedDB with autosave, reopened on start, so edits survive a reload (DATA-03, architecture §3). Moved here from S4.
 
 - Add fflate (pinned exact, note in ADR-0005). `.stammbaum` zip with `data.json` + `bilder/`: open (picker, drag & drop), save.
 - Saving per DATA-09: Chromium writes into the file (File System Access), Firefox/Safari download with a one-time hint.
@@ -93,7 +95,7 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 | S3 ✅ | "Beispiel ansehen" without network: embed the fictional example in `Stammbaum.html`, or only ship it as a file to open? | Decided: embed it                                           |
 | S3 ✅ | P-005 search, now that a real tree with many persons is visible                                                         | Decided: rejected, no search                                |
 | S3 ✅ | Show the layout choices of ADR-0006 (several partners, married siblings, "?" parent) in the real tree and confirm them  | Decided: kept; the "?" node made larger                     |
-| S4    | P-006 plausibility hints                                                                                                | Optional, small; user's call                                |
+| S4 ✅ | P-006 plausibility hints                                                                                                | Decided: rejected                                           |
 | S5    | P-008 smaller copy for email                                                                                            | Yes if photos make files too big                            |
 | S6    | Print details (paper size, fit to one page or several)                                                                  | Fit to one page, A4 landscape default, browser print dialog |
 
@@ -108,3 +110,4 @@ Anything not covered by the concept or the mock-up that changes what the user se
 | 2026-10-24 | S2 done (session 4). Siblings share a row (not only partners). New S3 decision: confirm the layout choices of ADR-0006.                                                |
 | 2026-10-24 | S3 started (session 5). Example embedded, P-005 rejected. Undo/redo buttons move to S4, the save status to S5 (no dummy buttons).                                      |
 | 2026-10-24 | S3 done (session 5). Layout choices confirmed by the user; "?" node enlarged. Next: S4. Rendering 100 persons in the browser is checked once files can be opened (S5). |
+| 2026-10-24 | S4 started (session 6). The working copy moves from S4 to S5 (user's choice: until files exist it would only keep edits to the example). P-006 rejected.               |
