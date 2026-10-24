@@ -1,11 +1,11 @@
 import { test, expect } from './fixtures';
 
 test.describe('built app opened from file://', () => {
-  test('starts and shows the German title', async ({ app, page }) => {
+  test('starts in German and shows a family tree', async ({ app, page }) => {
     await app.open();
     await expect(page).toHaveTitle('Stammbaum');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Stammbaum');
     await expect(page.locator('html')).toHaveAttribute('lang', 'de');
+    await expect(page.getByRole('button', { name: 'Alles anzeigen' })).toBeVisible();
   });
 
   test('carries a Content-Security-Policy that forbids network access', async ({ app, page }) => {

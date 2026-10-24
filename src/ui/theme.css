@@ -1,0 +1,82 @@
+/* The "Familienalbum" look (ui-concept §6), ported from mockups/shared/style.css. System fonts only (privacy). */
+
+:root {
+  --font: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --bg: #f8f0d8;
+  --canvas: #f6ecce;
+  --ink: #3a3020;
+  --muted: #7a6a45;
+  --line: #c3a660;
+  --line-hl: #9c760f;
+  --line-soft: #e8dbb2;
+  --bar-bg: #f2e5bf;
+  --bar-border: #e0cd97;
+  --panel-bg: #fdf7e5;
+  --hover: rgba(176, 134, 20, 0.12);
+  --card-bg: #fffaea;
+  --card-border: #e7d49e;
+  --card-shadow: 0 2px 6px rgba(110, 80, 10, 0.16);
+  --card-shadow-hover: 0 5px 16px rgba(110, 80, 10, 0.28);
+  --accent: #8f6b0c;
+  --selected: #d19d1c;
+  --btn-bg: #fffaea;
+  --btn-border: #dcc78c;
+  --ph-bg: #f0e2b6;
+  --ph-ink: #a58a44;
+  --tip-bg: #3a3020;
+  --tip-ink: #fdf7e5;
+  --radius: 10px;
+  --shadow: 0 10px 30px rgba(80, 60, 10, 0.22);
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+body {
+  font-family: var(--font);
+  font-size: 17px;
+  color: var(--ink);
+  background: var(--bg);
+  overflow: hidden;
+}
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+h2 {
+  font-size: 1.6rem;
+  margin: 0.4em 0 0.2em;
+  line-height: 1.2;
+}
+h3 {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 1.2rem;
+  margin: 1.4em 0 0.6em;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 4px;
+}
+.muted {
+  color: var(--muted);
+}
+.btn {
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  min-height: 44px;
+}
+.btn:hover {
+  background: var(--hover);
+}

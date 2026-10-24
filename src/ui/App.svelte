@@ -1,28 +1,60 @@
 <script lang="ts">
-  import { appTitle } from '../core/app-info';
+  import { findPerson } from '../core/model/queries';
+  import type { PersonId } from '../core/model/types';
+  import { loadExample } from './example';
+  import DetailPanel from './panel/DetailPanel.svelte';
+  import TreeView from './tree/TreeView.svelte';
+
+  // Until the start screen and project files exist (slice S5), the app opens the embedded example.
+  const project = loadExample();
+  let selectedId = $state<PersonId | null>(null);
+  const selected = $derived(selectedId ? findPerson(project, selectedId) : undefined);
+  let tree = $state<TreeView>();
+
+  function goto(id: PersonId) {
+    selectedId = id;
+    tree?.centre(id);
+  }
 </script>
 
+<svelte:window
+  onkeydown={(e) => {
+    if (e.key === 'Escape') selectedId = null;
+  }}
+/>
+
+<header class="topbar">
+  <h1 class="proj">{project.name}</h1>
+</header>
 <main>
-  <h1>Stammbaum</h1>
-  <p data-testid="status">Diese Anwendung befindet sich noch in Entwicklung.</p>
-  <p class="version">{appTitle()}</p>
+  <TreeView bind:this={tree} {project} {selectedId} onselect={(id) => (selectedId = id)} />
+  {#if selected}
+    <DetailPanel {project} person={selected} ongoto={goto} onclose={() => (selectedId = null)} />
+  {/if}
 </main>
 
 <style>
-  :global(html, body) {
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    min-height: 60px;
+    background: var(--bar-bg);
+    border-bottom: 1px solid var(--bar-border);
+    flex: none;
+    position: relative;
+    z-index: 20;
+  }
+  .proj {
+    font-size: 1.3rem;
+    font-weight: 600;
     margin: 0;
-    font-family: system-ui, 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', Arial, sans-serif;
-    background: #faf8f3;
-    color: #2b2b2b;
+    padding: 6px 10px;
   }
   main {
-    max-width: 40rem;
-    margin: 4rem auto;
-    padding: 0 1.5rem;
-    text-align: center;
-  }
-  .version {
-    color: #888;
-    font-size: 0.85rem;
+    flex: 1;
+    display: flex;
+    min-height: 0;
   }
 </style>
