@@ -1,0 +1,61 @@
+# Maintained by the agents developing this repo (see CLAUDE.md → "Housekeeping").
+# Rule of thumb: build output, caches, local tooling state and REAL FAMILY DATA never get committed.
+
+# --- Dependencies & tooling caches ---
+node_modules/
+.npm/
+.eslintcache
+.prettiercache
+*.tsbuildinfo
+.vite/
+.svelte-kit/
+
+# --- Build & release output (always reproducible via npm scripts) ---
+dist/
+release/
+
+# --- Test output ---
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+coverage/
+
+# --- Real family data: NEVER commit (privacy, see REQ-PRIV in docs/requirements) ---
+# Local working folder for your own family-tree projects:
+data/
+# Any project file anywhere in the repo ...
+*.stammbaum
+# ... except the fictional example(s):
+!examples/**/*.stammbaum
+# Loose photos dropped into the repo root by accident
+/*.jpg
+/*.jpeg
+/*.png
+/*.heic
+
+# --- Secrets & environment ---
+.env
+.env.*
+!.env.example
+
+# --- Claude Code: personal (non-shared) settings ---
+.claude/settings.local.json
+
+# --- Editors & OS junk ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs & temp files ---
+*.log
+npm-debug.log*
+tmp/
+.tmp/
