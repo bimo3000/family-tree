@@ -17,8 +17,11 @@
   // The native modal dialog keeps the focus inside and closes on Esc in every engine.
   $effect(() => {
     dialog.showModal();
-    // Focus the first field instead of the first button.
-    dialog.querySelector<HTMLElement>('input[type="text"], textarea')?.focus();
+    // Focus the first field instead of the first button. Without a field, the browser focuses the first
+    // button, which may sit at the end of a long text: start reading at the top anyway.
+    const field = dialog.querySelector<HTMLElement>('input[type="text"], textarea');
+    if (field) field.focus();
+    else dialog.scrollTop = 0;
   });
 </script>
 

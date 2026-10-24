@@ -12,6 +12,7 @@
   import type { PersonId } from '../core/model/types';
   import AddRelativeDialog, { type RelativeKind } from './dialogs/AddRelativeDialog.svelte';
   import DeleteDialog from './dialogs/DeleteDialog.svelte';
+  import HelpDialog from './dialogs/HelpDialog.svelte';
   import PersonDialog from './dialogs/PersonDialog.svelte';
   import RelationDialog from './dialogs/RelationDialog.svelte';
   import RemoveRelationDialog from './dialogs/RemoveRelationDialog.svelte';
@@ -19,6 +20,7 @@
   import DetailPanel from './panel/DetailPanel.svelte';
   import { providePhotos } from './photos';
   import { UnreadablePictureError } from '../storage/pictures';
+  import { hasSeen, markSeen } from '../storage/workingCopy';
   import type { Editor } from './state/editor.svelte';
   import { reminderDays } from './state/reminder';
   import type { Workspace } from './state/workspace.svelte';
@@ -62,7 +64,8 @@
     | { type: 'delete'; id: PersonId }
     | { type: 'relation'; relation: Relation }
     | { type: 'remove'; relation: Relation }
-    | { type: 'rename' };
+    | { type: 'rename' }
+    | { type: 'help' };
   // Only the first person of a new project opens by itself.
   const first = untrack(() => startWith);
   let dialog = $state<Dialog | null>(first ? { type: 'person', id: first } : null);
@@ -73,6 +76,17 @@
   const remindAfter = untrack(() => reminderDays(workspace.file.unsavedSince, new Date()));
   const hadFile = untrack(() => !!workspace.file.name);
   let reminderClosed = $state(false);
+  const reminderShown = $derived(!!remindAfter && workspace.unsaved && !reminderClosed);
+
+  // First use: one hint on how to use the tree (ui-concept §7), until closed or a person is selected.
+  const TREE_HINT = 'tree-hint';
+  let hintShown = $state(false);
+  void hasSeen(TREE_HINT).then((seen) => (hintShown = !seen));
+  function closeHint() {
+    if (!hintShown) return;
+    hintShown = false;
+    void markSeen(TREE_HINT);
+  }
   const dialogPerson = $derived(
     dialog && 'id' in dialog ? findPerson(project, dialog.id) : undefined,
   );
@@ -103,6 +117,7 @@
 
   function select(id: PersonId | null) {
     editor.selectedId = id;
+    if (id) closeHint();
   }
 
   function goto(id: PersonId) {
@@ -155,6 +170,7 @@
         >
         <hr />
         <button type="button" onclick={() => menu(onexample)}>Beispiel ansehen</button>
+        <button type="button" onclick={() => menu(() => (dialog = { type: 'help' }))}>Hilfe</button>
       </div>
     {/if}
   </div>
@@ -184,8 +200,8 @@
 </header>
 <p class="print-title">{project.name}</p>
 <main>
-  {#if remindAfter && workspace.unsaved && !reminderClosed}
-    <div class="reminder">
+  {#if reminderShown}
+    <div class="note reminder">
       <span>
         {hadFile
           ? `Du hast seit ${remindAfter} Tagen nicht in die Datei gespeichert.`
@@ -200,6 +216,19 @@
         title="Ausblenden"
         aria-label="Ausblenden"
         onclick={() => (reminderClosed = true)}>×</button
+      >
+    </div>
+  {:else if hintShown}
+    <div class="note hint">
+      <span
+        >Klick auf eine Person, um Details zu sehen. Ziehen verschiebt den Baum, das Mausrad zoomt.</span
+      >
+      <button
+        type="button"
+        class="close"
+        title="Ausblenden"
+        aria-label="Ausblenden"
+        onclick={closeHint}>×</button
       >
     </div>
   {/if}
@@ -284,6 +313,8 @@
     }}
     onclose={closeDialog}
   />
+{:else if dialog?.type === 'help'}
+  <HelpDialog onclose={closeDialog} />
 {:else if dialog?.type === 'rename'}
   <NameDialog
     title="Stammbaum umbenennen"
@@ -391,7 +422,8 @@
     min-height: 0;
     position: relative;
   }
-  .reminder {
+  /* The backup reminder and the first-use hint share the spot above the tree. */
+  .note {
     position: absolute;
     left: 50%;
     top: 16px;
@@ -400,6 +432,8 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    /* Without it, the box would wrap at half the width (it starts at left: 50%). */
+    width: max-content;
     max-width: calc(100% - 32px);
     padding: 8px 8px 8px 16px;
     background: var(--panel-bg);
@@ -407,7 +441,10 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow);
   }
-  .reminder .close {
+  .hint {
+    padding: 6px 6px 6px 16px;
+  }
+  .note .close {
     background: none;
     border: none;
     font-size: 1.4rem;
@@ -416,7 +453,7 @@
     border-radius: var(--radius);
     color: var(--muted);
   }
-  .reminder .close:hover {
+  .note .close:hover {
     background: var(--hover);
   }
   .print-title {
@@ -425,7 +462,7 @@
   /* Printing (UI-03): only the project name and the tree. */
   @media print {
     .topbar,
-    .reminder,
+    .note,
     main > :global(.panel) {
       display: none;
     }
