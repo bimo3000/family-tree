@@ -20,20 +20,16 @@ erDiagram
         string givenNames
         string surname "last known"
         string birthName
-        FlexDate birthDate
-        string birthPlace
-        FlexDate deathDate
-        string deathPlace
+        Event birth "{ date: FlexDate, place }"
+        Event death "{ date: FlexDate, place }"
         string biography
     }
     PARTNERSHIP {
         string id
-        string partnerA
-        string partnerB
-        string kind "marriage | partnership | unknown"
-        FlexDate startDate
-        FlexDate endDate
-        string endReason "divorce | separation"
+        string[] partners "exactly two person IDs"
+        string kind "marriage | partnership (absent: just a couple)"
+        Event start "{ date: FlexDate, place }"
+        Event end "{ date: FlexDate, reason: divorce | separation }"
     }
     PARENT_CHILD {
         string parentId
@@ -43,6 +39,8 @@ erDiagram
     IMAGE {
         string id
         string file "bilder/xyz.jpg"
+        int width
+        int height
     }
 ```
 
@@ -78,7 +76,7 @@ Shown **on hover/click** (PERS-05): everything else that is filled in.
 
 - `kind`: `marriage` (Ehe) / `partnership` (Partnerschaft). If absent, it is simply drawn as a couple.
 - `start`: date and place (wedding).
-- `end`: date and `endReason`: `divorce` (geschieden) / `separation` (getrennt). The death of a partner needs no entry.
+- `end`: date and `reason`: `divorce` (geschieden) / `separation` (getrennt). The death of a partner needs no entry.
 - Several partnerships per person are allowed. They are ordered by start date, otherwise by creation order.
 
 **Parent-child link**: `parentId`, `childId` and an optional `kind`:
