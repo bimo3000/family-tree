@@ -84,8 +84,8 @@ versions. With ~100 persons a project is a few hundred kB of JSON (pictures are 
   with any copy of Stammbaum.
 - It contains `data.json` (all persons and relations, see [data-model.md](data-model.md)) and `bilder/` (one JPEG per picture).
 - Pictures are already compressed, so they are stored as-is. Only `data.json` is compressed.
-- Zip library: **fflate** (small, no dependencies, widely used, bundled into the HTML). It gets added when storage is
-  implemented (ADR-0005).
+- Zip library: **fflate** (small, no dependencies, widely used, bundled into the HTML). Pinned at 0.8.3, used in
+  `src/storage/projectFile.ts` (ADR-0005).
 
 ### 3.2 The working copy and "last project" (DATA-03)
 

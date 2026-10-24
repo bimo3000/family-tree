@@ -13,7 +13,7 @@ and back up their tree, and the last project should reopen by itself.
 ## Decision
 
 - **One project = one file** `Name.stammbaum`: a zip with `data.json` and `bilder/*.jpg`. Zip handling via **fflate**
-  (MIT, no dependencies, bundled), to be added when storage gets implemented.
+  (MIT, no dependencies, bundled), pinned exact at `0.8.3` and added in S5 (`src/storage/projectFile.ts`).
 - **Working copy** in IndexedDB (data and pictures as blobs), autosaved after every change, plus a pointer to the last project.
 - **Storage adapters** behind one interface:
   - `FileSystemAccessAdapter` (Chromium): open/save in place. The file handle is stored in IndexedDB so the file can be re-used after a restart (needs a permission click).
