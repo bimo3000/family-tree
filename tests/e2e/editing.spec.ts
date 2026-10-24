@@ -68,6 +68,19 @@ test.describe('editing a person (PERS-01, PERS-06, UI-01)', () => {
   });
 });
 
+test('the gender chosen under "Mehr Angaben" sets the wording (PERS-07)', async ({ page }) => {
+  await card(page, 'p_mia').click();
+  await expect(panel(page)).not.toContainText('Schwester');
+  await open(page, 'p_kim', 'Bearbeiten');
+  await dialog(page).getByText('Mehr Angaben').click();
+  await dialog(page).getByLabel('Geschlecht').selectOption('female');
+  await dialog(page).getByRole('button', { name: 'Fertig' }).click();
+  await panel(page)
+    .getByRole('button', { name: /^Mia Brandt/ })
+    .click();
+  await expect(panel(page)).toContainText('Schwester');
+});
+
 test.describe('adding relatives (ui-concept §2.6)', () => {
   test('+ Kind adds a child of the couple and opens the new person', async ({ page }) => {
     await open(page, 'p_thomas', '+ Kind');
