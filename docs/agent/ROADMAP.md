@@ -9,14 +9,14 @@ Each slice ends green (`npm run verify`), committed, pushed, with requirement st
 
 ## Overview
 
-| #   | Slice                         | Status      | Main requirements                                       |
-| --- | ----------------------------- | ----------- | ------------------------------------------------------- |
-| S1  | Core model, dates, operations | Done        | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
-| S2  | Automatic tree layout         | Done        | TREE-01/03/04/05 (ADR-0006)                             |
-| S3  | Tree view (read-only)         | In progress | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
-| S4  | Editing + working copy        | Todo        | PERS-01/03, UI-01, DATA-03 (working copy)               |
-| S5  | Project files and pictures    | Todo        | DATA-02/03/04/07/09, PERS-03, UI-02                     |
-| S6  | Finish and release            | Todo        | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| #   | Slice                         | Status | Main requirements                                       |
+| --- | ----------------------------- | ------ | ------------------------------------------------------- |
+| S1  | Core model, dates, operations | Done   | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
+| S2  | Automatic tree layout         | Done   | TREE-01/03/04/05 (ADR-0006)                             |
+| S3  | Tree view (read-only)         | Done   | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
+| S4  | Editing + working copy        | Todo   | PERS-01/03, UI-01, DATA-03 (working copy)               |
+| S5  | Project files and pictures    | Todo   | DATA-02/03/04/07/09, PERS-03, UI-02                     |
+| S6  | Finish and release            | Todo   | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
 
 Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progress` at a time.
 
@@ -61,6 +61,7 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 - Draw only what `computeLayout` returns: cards by centre, couple lines as polylines (the "//" goes at `middle` when
   `ended` is set), child lines as `stems` plus one `drop` per child (highlight the focused child's drop only).
 - At the end, ask the user to try it: `npm run build`, then double-click `dist/Stammbaum.html`.
+- ✅ Done in session 5. Cards are HTML buttons and lines one SVG, in a layer moved by a CSS transform (like the mock-up).
 
 ## S4 – Editing + working copy
 
@@ -91,7 +92,7 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 | ----- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | S3 ✅ | "Beispiel ansehen" without network: embed the fictional example in `Stammbaum.html`, or only ship it as a file to open? | Decided: embed it                                           |
 | S3 ✅ | P-005 search, now that a real tree with many persons is visible                                                         | Decided: rejected, no search                                |
-| S3    | Show the layout choices of ADR-0006 (several partners, married siblings, "?" parent) in the real tree and confirm them  | Keep them; adjust only what looks wrong to the user         |
+| S3 ✅ | Show the layout choices of ADR-0006 (several partners, married siblings, "?" parent) in the real tree and confirm them  | Decided: kept; the "?" node made larger                     |
 | S4    | P-006 plausibility hints                                                                                                | Optional, small; user's call                                |
 | S5    | P-008 smaller copy for email                                                                                            | Yes if photos make files too big                            |
 | S6    | Print details (paper size, fit to one page or several)                                                                  | Fit to one page, A4 landscape default, browser print dialog |
@@ -100,9 +101,10 @@ Anything not covered by the concept or the mock-up that changes what the user se
 
 ## Change log
 
-| Date       | Change                                                                                                                              |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-24 | Roadmap created after the mock-up phase (S1–S6).                                                                                    |
-| 2026-10-24 | S1 done (session 3). Notes for S4/S5 added: deleting a person leaves its image and `view.focusPersonId` to the state/storage layer. |
-| 2026-10-24 | S2 done (session 4). Siblings share a row (not only partners). New S3 decision: confirm the layout choices of ADR-0006.             |
-| 2026-10-24 | S3 started (session 5). Example embedded, P-005 rejected. Undo/redo buttons move to S4, the save status to S5 (no dummy buttons).   |
+| Date       | Change                                                                                                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-24 | Roadmap created after the mock-up phase (S1–S6).                                                                                                                       |
+| 2026-10-24 | S1 done (session 3). Notes for S4/S5 added: deleting a person leaves its image and `view.focusPersonId` to the state/storage layer.                                    |
+| 2026-10-24 | S2 done (session 4). Siblings share a row (not only partners). New S3 decision: confirm the layout choices of ADR-0006.                                                |
+| 2026-10-24 | S3 started (session 5). Example embedded, P-005 rejected. Undo/redo buttons move to S4, the save status to S5 (no dummy buttons).                                      |
+| 2026-10-24 | S3 done (session 5). Layout choices confirmed by the user; "?" node enlarged. Next: S4. Rendering 100 persons in the browser is checked once files can be opened (S5). |

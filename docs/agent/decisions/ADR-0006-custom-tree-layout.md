@@ -1,6 +1,6 @@
 # ADR-0006: Own tree-layout algorithm in core, rendered as SVG
 
-- **Status:** Accepted (implemented in slice S2, session 4)
+- **Status:** Accepted (implemented in slice S2, session 4; layout choices confirmed by the user in S3, session 5)
 - **Date:** 2026-10-24
 - **Requirements:** TREE-01, TREE-02, TREE-03, TREE-04, TREE-05
 
@@ -14,7 +14,7 @@ or give little control over the "simple unless needed" rendering the user wants.
 
 - Write our own layout in `src/core/layout/` as pure functions: input project, output positions of cards and lines.
   Steps: generations → family units (couple + children) → ordering (birth order, fewer crossings) → coordinates.
-- Render with SVG and our own pan/zoom (no dependency).
+- Render with our own pan/zoom (no dependency): lines as SVG, cards as HTML buttons on top (text wrapping and keyboard focus for free).
 - Build a set of **fixture families** (simple couple, 4 generations, remarriage, adoption, unknown parent, cousin marriage, 100 persons)
   with unit tests on layout invariants: no overlaps, parents above children, partners adjacent, deterministic output.
 
@@ -33,7 +33,7 @@ or give little control over the "simple unless needed" rendering the user wants.
    entries for several lines into one child, straight drops for an only child, detours around cards.
 5. Unrelated parts of the tree are laid out one by one and placed side by side.
 
-Decisions taken on the user's behalf (visible, so to be confirmed when the tree view is shown in S3):
+Decisions taken on the user's behalf, **confirmed by the user in S3** (2026-10-24). Only change: the "?" node is 56 px instead of 40 px, so it is easier to see.
 
 - **Several partners:** the person stands between the first and the second partner, later partners further right.
   A couple that can't be neighbours gets a line arching over the cards in between; their children hang from both.
