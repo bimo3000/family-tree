@@ -3,7 +3,7 @@
 > Rewritten at the end of every session (skill `session-handover`). A fresh session must be able to
 > continue from this file alone. Keep it short and current. History lives in git, decisions in ADRs.
 
-**Last updated:** 2026-10-24 (session 8)
+**Last updated:** 2026-10-24 (session 9)
 
 ## Phase
 
@@ -11,24 +11,27 @@
 2. ~~Concept work~~ ✅ (session 1, `docs/concept/*`, ADR-0001…0007)
 3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history before `1bfe483`)
 4. ~~Functional development~~ ✅ S1…S6 all done (sessions 3–8). **Release 0.9.0** (test version).
+   Session 9: photo cropping (PERS-08) added on request; not in a zip yet.
 5. **Feedback and manual checks** ← current. Then 1.0.0.
+
+## Done in session 9 (photo cropping, PERS-08, was P-009)
+
+- User decisions: the part is **cut out permanently** when the photo is added (best quality: cut from the original,
+  then max. 2000 px); the crop view opens **right after "Foto wählen …"**. No "Ausschnitt ändern": choose the photo again.
+- `src/core/photoCrop.ts` (7:5 part, zoom 1–5×, move, placement), `src/ui/dialogs/PhotoCropper.svelte` (drag, arrow
+  keys, "Größe" slider, card-sized preview), shown inside `PersonDialog` in place of the form. `preparePicture(file, crop)`.
+- Tests: 342 unit, 53 E2E per engine (`photos.spec.ts`: 7:5 size, zoom, mouse/keys, cancel/Esc).
+- **The user has not seen the crop view yet.** A screenshot was shown in chat; feedback on the look is still open.
 
 ## Done in session 8 (slice S6, finish and release)
 
-- User decisions: print = browser print dialog, whole tree on **one A4 landscape page**, PDF via the dialog, no PNG;
-  help = **short dialog** plus one first-use hint; first zip = **0.9.0**.
-- Printing: `printView()` in `src/ui/tree/geometry.ts`, print styles in `TreeView`, `PersonCard`, `ProjectScreen`,
-  `App` (toast), `theme.css` (`@page`). Works from the menu and with Ctrl+P.
-- `HelpDialog.svelte`, the hint bar in `ProjectScreen` (remembered with `hasSeen`/`markSeen`, waits while the reminder shows).
-  `Modal` now opens long dialogs without a text field at the top.
-- `npm run package` builds `Beispiel.stammbaum` from `examples/familie-brandt.json` (`createProjectFile` in `scripts/lib/zip.mjs`).
-- German user guide complete. Requirements walked through; `docs/manual-checks.md` (13-step Mac/Windows checklist).
-- Tests: 333 unit, 50 E2E per engine (new: `print.spec.ts`, `help.spec.ts`).
-- Release `release/Stammbaum-0.9.0.zip` (59 kB) checked: unzipped, opened, `Beispiel.stammbaum` opened in all three engines.
-  Commit `chore(release): v0.9.0`; tag `v0.9.0` is **local only** until the user OKs pushing it.
+- Print (one A4 landscape page, browser dialog), help dialog and hint bar, `Beispiel.stammbaum` in the zip, German user
+  guide, `docs/manual-checks.md`. Release `release/Stammbaum-0.9.0.zip`; tag `v0.9.0` is **local only** until the user OKs pushing it.
 
 ## Next steps
 
+- Get the user's feedback on the crop view. Then a new test zip (0.9.1, skill `release-package`) if they want one
+  for the manual checks, since 0.9.0 has no cropping.
 - If the user agrees: `git push origin v0.9.0`.
 - The user tries 0.9.0 and runs `docs/manual-checks.md` on a real Mac (Safari) and Windows. Record the results in that
   file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, with a regression test first).
@@ -41,7 +44,7 @@
 - Try 0.9.0: unzip `release/Stammbaum-0.9.0.zip`, double-click `Stammbaum.html`. Feedback wanted on the printout,
   the help text, the hint bar, and everything from S5 (start screen, menu, save status, reminder).
 - Run the manual checklist on a Mac and on Windows.
-- **P-009 (photo cropping)** is noted as a later idea. Build it only after the user explicitly says so.
+- Feedback on the crop view (layout, slider, preview). A 0.9.1 zip for the manual checks?
 
 ## Pitfalls / environment notes
 
@@ -56,7 +59,9 @@
 - Print tests use `page.emulateMedia({ media: 'print' })` and stub `window.print` via `addInitScript`. A real PDF for a
   look: Chromium `page.pdf({ preferCSSPageSize: true })` in a scratchpad script.
 - `.svelte.ts` files: lint wants `SvelteMap`/`SvelteDate`; `workspace.svelte.ts` disables that rule file-wide.
-- `{@const x = dialog.y}` inside `{#if dialog?.type === …}` crashes when `dialog` becomes null. Read the value inside the handler.
+- `{@const x = dialog.y}` inside `{#if dialog?.type === …}` crashes when `dialog` becomes null, and a handler that clears
+  `dialog` and then uses `x` gets `undefined` (it is lazy). Read the value inside the handler first (`takePhoto` in `PersonDialog`).
+- E2E runs against `dist/`: run `npm run build` before `npx playwright test` on its own, or you test the old app.
 - **WebKit refuses Blobs in IndexedDB** in private windows and in Playwright → pictures are stored as `ArrayBuffer`.
 - Chromium has `showSaveFilePicker`: E2E for the download path removes the pickers with `addInitScript`.
 - E2E reads IndexedDB directly to wait for stored state before a reload (`storedProject` in `files.spec.ts`,
