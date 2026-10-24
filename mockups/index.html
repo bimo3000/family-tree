@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'unsafe-inline'"
+    />
+    <title>Stammbaum · Mock-ups</title>
+    <style>
+      body {
+        font:
+          17px/1.55 system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        color: #222;
+        background: #f7f7f5;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 32px 20px 60px;
+      }
+      h1 {
+        margin-bottom: 0.2em;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 28px 0;
+      }
+      .cards a {
+        display: block;
+        padding: 18px 20px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: inherit;
+        border: 1px solid #ddd;
+        background: #fff;
+      }
+      .cards a:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      }
+      .cards b {
+        display: block;
+        font-size: 1.2rem;
+        margin-bottom: 6px;
+      }
+      .a {
+        background: #f6efe2 !important;
+        font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+      }
+      .c {
+        background: #fbf8f1 !important;
+        font-family: Baskerville, 'Times New Roman', serif;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        background: #fff;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Stammbaum: three mock-ups</h1>
+    <p>
+      Clickable prototypes with a fictional family. Nothing is saved: reload the page to start over.
+      Use the dark bar at the bottom left to switch between the variants.
+    </p>
+
+    <div class="cards">
+      <a class="a" href="a-familienalbum.html"
+        ><b>A · Familienalbum</b>Warm, paper tones, big photos on the cards. Neutral colours.
+        Editing inside the side panel.</a
+      >
+      <a class="b" href="b-klar-modern.html"
+        ><b>B · Klar &amp; modern</b>White and calm, compact cards with a round photo and a subtle
+        colour edge by gender. Editing in a dialog.</a
+      >
+      <a class="c" href="c-ahnentafel.html"
+        ><b>C · Ahnentafel</b>Classic family chart: text-only boxes tinted by gender, fine lines, ⚭
+        rings for marriages. Editing inside the side panel.</a
+      >
+    </div>
+
+    <h2>What differs</h2>
+    <table>
+      <tr>
+        <th></th>
+        <th>A · Familienalbum</th>
+        <th>B · Klar &amp; modern</th>
+        <th>C · Ahnentafel</th>
+      </tr>
+      <tr>
+        <td>Look</td>
+        <td>cream/paper, warm brown, serif font</td>
+        <td>white/grey, one calm blue, sans-serif font</td>
+        <td>parchment, fine dark lines, serif, small caps</td>
+      </tr>
+      <tr>
+        <td>Card</td>
+        <td>big photo on top</td>
+        <td>small round photo on the left</td>
+        <td>text only (photo only in the panel)</td>
+      </tr>
+      <tr>
+        <td>Card colours</td>
+        <td>neutral</td>
+        <td>coloured left edge by gender</td>
+        <td>soft tint by gender</td>
+      </tr>
+      <tr>
+        <td>Editing</td>
+        <td>in the side panel</td>
+        <td>in a dialog</td>
+        <td>in the side panel</td>
+      </tr>
+    </table>
+    <p>You can mix and match, e.g. the look of A with the cards of B and editing in a dialog.</p>
+
+    <h2>Things to try</h2>
+    <ul>
+      <li>Drag the background, zoom with the mouse wheel, click <i>Alles anzeigen</i>.</li>
+      <li>
+        Hover over a card (full dates), click a person (their line is highlighted, the panel opens),
+        double-click to centre.
+      </li>
+      <li>
+        <b>Karl Brandt</b>: two marriages (his first wife died), biography, extra fields. Try
+        <i>+ Kind</i>: it asks "Mit wem?".
+      </li>
+      <li>
+        <b>Peter and Sabine</b>: divorced (the <code>//</code> on their line). <b>Jonas Seidel</b>:
+        adopted (dashed line). The small <b>?</b>: an unknown parent of two brothers.
+      </li>
+      <li>
+        <i>Bearbeiten</i>: type a date such as <code>um 1850</code>, <code>vor 1900</code>,
+        <code>März 1923</code> or <code>Ostern 1923</code> and watch the hint and the card.
+      </li>
+      <li>Delete someone, then undo with ↶ (or Ctrl+Z).</li>
+    </ul>
+    <p>
+      Not in the mock-ups: search (proposal P-005 is still open), real photos, saving, printing,
+      help. The tree layout is hand-placed here, the real app computes it.
+    </p>
+  </body>
+</html>

@@ -1,6 +1,7 @@
 # UI concept (text level)
 
-> Status: **aligned with the user** (2026-10-24). No mock-ups yet. They follow **only on the user's explicit request**.
+> Status: **aligned with the user** (2026-10-24). Three clickable mock-ups for the open questions are in
+> [`mockups/`](../../mockups/README.md) (waiting for the user's feedback).
 > The final look and feel is the **user's decision** (DEV-09). This document describes structure and behaviour, not design.
 
 ## 1. Guiding principles

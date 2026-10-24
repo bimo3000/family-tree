@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src data:"
+    />
+    <title>Mock-up C · Ahnentafel</title>
+    <link rel="stylesheet" href="shared/base.css" />
+    <style>
+      /* Variant C: classic genealogy chart. Text-only boxes tinted by gender, fine lines, ⚭ for marriages,
+         editing inside the side panel. */
+      :root {
+        --font:
+          Baskerville, 'Baskerville Old Face', 'Hoefler Text', Garamond, 'Times New Roman', serif;
+        --bg: #fbf8f1;
+        --canvas: #f9f5ea;
+        --ink: #222222;
+        --muted: #5f584b;
+        --line: #3a3a3a;
+        --line-hl: #7b2d26;
+        --line-w: 1.3;
+        --line-soft: #ddd6c6;
+        --bar-bg: #fbf8f1;
+        --bar-border: #3a3a3a;
+        --panel-bg: #fffdf8;
+        --hover: rgba(0, 0, 0, 0.05);
+        --card-bg: #ffffff;
+        --card-border: #3a3a3a;
+        --card-shadow: none;
+        --card-shadow-hover: 0 0 0 2px rgba(0, 0, 0, 0.15);
+        --accent: #7b2d26;
+        --accent-ink: #ffffff;
+        --btn-bg: #fffdf8;
+        --btn-border: #8c8475;
+        --warn: #9a4a12;
+        --danger: #9b2a22;
+        --ph-bg: #ece6d8;
+        --ph-ink: #7d7466;
+        --tip-bg: #2a2723;
+        --tip-ink: #fbf8f1;
+        --female: #a35a66;
+        --female-bg: #f6e5e7;
+        --male: #4f6e94;
+        --male-bg: #e3eaf3;
+        --diverse: #6e5d94;
+        --diverse-bg: #ebe6f3;
+        --neutral-bg: #efeee9;
+        --radius: 3px;
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+        --card-w: 180;
+        --card-h: 62;
+        --slot-w: 204;
+        --row-h: 150;
+      }
+      .topbar {
+        border-bottom: 3px double var(--bar-border);
+      }
+      .edges .marr {
+        display: inline;
+      }
+      .card .yr {
+        font-size: 0.85rem;
+      }
+      /* Oval portrait frame, like in old family registers. */
+      .p-photo {
+        width: 150px;
+        height: 190px;
+        border-radius: 50%;
+        border: 1px solid var(--ink);
+        outline: 1px solid var(--ink);
+        outline-offset: 4px;
+        margin: 20px auto 16px;
+      }
+      .p-unknown {
+        width: 90px;
+        height: 90px;
+      }
+      .panel h2 {
+        text-align: center;
+      }
+      .panel .geb {
+        text-align: center;
+      }
+      .panel h3,
+      .start h1,
+      .proj-btn {
+        font-variant: small-caps;
+        letter-spacing: 0.06em;
+      }
+      .panel h3 {
+        border-bottom: 1px solid var(--ink);
+        padding-bottom: 3px;
+      }
+      .btn,
+      .modal {
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body class="card-text g-tint" data-variant="c" data-edit-mode="panel">
+    <script src="shared/familie.js"></script>
+    <script src="shared/prototype.js"></script>
+  </body>
+</html>
