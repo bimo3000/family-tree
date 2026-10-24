@@ -80,3 +80,5 @@ docs/                  this documentation
 | **Svelte**                        | The UI framework the app is written in. It turns components into small, plain JavaScript.                                                                                          |
 | **TypeScript**                    | JavaScript with type annotations. It catches many mistakes before the code ever runs.                                                                                              |
 | **`.stammbaum` file**             | One family-tree project: a zip file containing `data.json` (the data) and `bilder/` (the pictures).                                                                                |
+| **Undo step**                     | One entry in the undo history. Typing into one field counts as a single step, so ↶ takes back the whole word, not letter by letter.                                                |
+| **Modal dialog**                  | A window on top of the tree that has to be closed (Fertig, Abbrechen, Esc) before the tree can be used again.                                                                      |

@@ -9,14 +9,14 @@ Each slice ends green (`npm run verify`), committed, pushed, with requirement st
 
 ## Overview
 
-| #   | Slice                         | Status      | Main requirements                                       |
-| --- | ----------------------------- | ----------- | ------------------------------------------------------- |
-| S1  | Core model, dates, operations | Done        | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
-| S2  | Automatic tree layout         | Done        | TREE-01/03/04/05 (ADR-0006)                             |
-| S3  | Tree view (read-only)         | Done        | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
-| S4  | Editing                       | In progress | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
-| S5  | Working copy, files, pictures | Todo        | DATA-02/03/04/07/09, PERS-03, UI-02                     |
-| S6  | Finish and release            | Todo        | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| #   | Slice                         | Status | Main requirements                                       |
+| --- | ----------------------------- | ------ | ------------------------------------------------------- |
+| S1  | Core model, dates, operations | Done   | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
+| S2  | Automatic tree layout         | Done   | TREE-01/03/04/05 (ADR-0006)                             |
+| S3  | Tree view (read-only)         | Done   | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
+| S4  | Editing                       | Done   | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
+| S5  | Working copy, files, pictures | Todo   | DATA-02/03/04/07/09, PERS-03, UI-02                     |
+| S6  | Finish and release            | Todo   | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
 
 Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progress` at a time.
 
@@ -70,6 +70,8 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 - `deletePerson` (core) does not touch `images` or `view.focusPersonId`: clear the focus in state when the focused person goes.
 - No working copy yet (moved to S5, decided 2026-10-24): a reload shows the example again. No photo row and no save status yet (S5).
 - E2E for the main flows in all three engines.
+- ✅ Done in session 6. Flows in `src/core/model/relatives.ts`, state in `src/ui/state/`, dialogs in `src/ui/dialogs/`.
+  Decided on the user's behalf: a new relative left completely empty is removed again when its dialog closes.
 
 ## S5 – Working copy, project files and pictures (`src/storage/`, ADR-0005)
 
@@ -111,3 +113,4 @@ Anything not covered by the concept or the mock-up that changes what the user se
 | 2026-10-24 | S3 started (session 5). Example embedded, P-005 rejected. Undo/redo buttons move to S4, the save status to S5 (no dummy buttons).                                      |
 | 2026-10-24 | S3 done (session 5). Layout choices confirmed by the user; "?" node enlarged. Next: S4. Rendering 100 persons in the browser is checked once files can be opened (S5). |
 | 2026-10-24 | S4 started (session 6). The working copy moves from S4 to S5 (user's choice: until files exist it would only keep edits to the example). P-006 rejected.               |
+| 2026-10-24 | S4 done (session 6). Next: S5 (working copy, project files, pictures).                                                                                                 |

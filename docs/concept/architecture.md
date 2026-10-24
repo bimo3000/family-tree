@@ -40,10 +40,12 @@ on its own, and you can open the document with any copy of the program.
 | **state**   | `src/ui/state/` | The currently open project, selection, undo/redo history, save status                                                                                  | Thin glue. Every change goes through a core operation.                                                                                |
 | **ui**      | `src/ui/`       | Svelte components: tree view, person card, detail panel, forms, dialogs                                                                                | All German texts live here, and only here. User text is always rendered as text, never as HTML.                                       |
 
-Inside `core`: `model/` (types, queries, validation, operations), `dates.ts` (reading German date input),
+Inside `core`: `model/` (types, queries, validation, operations, `relatives.ts` for the add-relative flows and the cut-off check), `dates.ts` (reading German date input),
 `migrations/` and `serialization.ts` (`data.json` in and out), `layout/` (the automatic tree layout, ADR-0006).
 
-Inside `ui`: `App.svelte` (shell), `tree/` (tree view, cards, drawing and pan/zoom helpers), `panel/` (detail panel),
+Inside `ui`: `App.svelte` (shell, top bar, which dialog is open), `state/` (the open project with undo/redo),
+`tree/` (tree view, cards, drawing and pan/zoom helpers), `panel/` (detail panel), `dialogs/` (person, add relative,
+delete, relation edit/remove, all on the native `<dialog>` element),
 `text.ts` (all German display texts for dates, names and relations), `theme.css` (colours), `example.ts` (the embedded
 example from `examples/familie-brandt.json`).
 
