@@ -49,6 +49,7 @@ test.beforeEach(async ({ app, page }) => {
 });
 
 test('a photo is scaled down to 2000 px and shown on card and panel (PERS-03, DATA-07)', async ({
+  app,
   page,
 }) => {
   await choosePhoto(page, {
@@ -69,7 +70,7 @@ test('a photo is scaled down to 2000 px and shown on card and panel (PERS-03, DA
   await expect(card(page, 'p_karl').locator('img')).toBeVisible();
 
   // It survives a reload (working copy) and a save and open (the file).
-  await page.reload();
+  await app.reload();
   await expect(card(page, 'p_karl').locator('img')).toBeVisible();
   const [download] = await Promise.all([
     page.waitForEvent('download'),

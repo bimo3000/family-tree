@@ -20,6 +20,7 @@
   import { providePhotos } from './photos';
   import { UnreadablePictureError } from '../storage/pictures';
   import type { Editor } from './state/editor.svelte';
+  import { reminderDays } from './state/reminder';
   import type { Workspace } from './state/workspace.svelte';
   import { showToast } from './toast.svelte';
   import TreeView from './tree/TreeView.svelte';
@@ -67,6 +68,11 @@
   let dialog = $state<Dialog | null>(first ? { type: 'person', id: first } : null);
   if (first) untrack(() => (editor.selectedId = first));
   let menuOpen = $state(false);
+
+  // Checked once, when the project opens: a long time without saving into a file (UI-02).
+  const remindAfter = untrack(() => reminderDays(workspace.file.unsavedSince, new Date()));
+  const hadFile = untrack(() => !!workspace.file.name);
+  let reminderClosed = $state(false);
   const dialogPerson = $derived(
     dialog && 'id' in dialog ? findPerson(project, dialog.id) : undefined,
   );
@@ -173,6 +179,25 @@
   <button type="button" class="btn primary" onclick={() => onsave(false)}>Speichern</button>
 </header>
 <main>
+  {#if remindAfter && workspace.unsaved && !reminderClosed}
+    <div class="reminder">
+      <span>
+        {hadFile
+          ? `Du hast seit ${remindAfter} Tagen nicht in die Datei gespeichert.`
+          : `Dein Stammbaum ist seit ${remindAfter} Tagen nicht in einer Datei gespeichert.`}
+      </span>
+      <button type="button" class="btn primary" onclick={() => onsave(false)}
+        >Jetzt speichern</button
+      >
+      <button
+        type="button"
+        class="close"
+        title="Ausblenden"
+        aria-label="Ausblenden"
+        onclick={() => (reminderClosed = true)}>×</button
+      >
+    </div>
+  {/if}
   <TreeView bind:this={tree} {project} selectedId={editor.selectedId} onselect={select} />
   {#if selected}
     {@const id = selected.id}
@@ -359,5 +384,34 @@
     flex: 1;
     display: flex;
     min-height: 0;
+    position: relative;
+  }
+  .reminder {
+    position: absolute;
+    left: 50%;
+    top: 16px;
+    transform: translateX(-50%);
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: calc(100% - 32px);
+    padding: 8px 8px 8px 16px;
+    background: var(--panel-bg);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .reminder .close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    color: var(--muted);
+  }
+  .reminder .close:hover {
+    background: var(--hover);
   }
 </style>

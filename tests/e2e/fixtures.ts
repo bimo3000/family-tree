@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { test as base, expect, type Request } from '@playwright/test';
+import { test as base, expect, type Dialog, type Request } from '@playwright/test';
 
 const APP_FILE = resolve(import.meta.dirname, '../../dist/Stammbaum.html');
 
@@ -14,6 +14,8 @@ type Fixtures = {
     open: () => Promise<void>;
     /** Opens the app and, from the start screen, the embedded example family. */
     openExample: () => Promise<void>;
+    /** Reloads, confirming the browser's "Seite verlassen?" question. Tells whether it was asked. */
+    reload: () => Promise<boolean>;
     networkRequests: string[];
     consoleErrors: string[];
   };
@@ -46,6 +48,17 @@ export const test = base.extend<Fixtures>({
     await use({
       open: async () => {
         await page.goto(APP_URL);
+      },
+      reload: async () => {
+        let asked = false;
+        const onDialog = (dialog: Dialog) => {
+          asked = dialog.type() === 'beforeunload';
+          void dialog.accept();
+        };
+        page.on('dialog', onDialog);
+        await page.reload();
+        page.off('dialog', onDialog);
+        return asked;
       },
       openExample: async () => {
         await page.goto(APP_URL);

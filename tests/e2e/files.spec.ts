@@ -88,7 +88,8 @@ test.describe('working copy (DATA-03)', () => {
     await app.openExample();
     await renameKarl(page, 'Carl');
     await expect.poll(() => storedName(page, 'p_karl')).toBe('Carl');
-    await page.reload();
+    // Not in a file yet: the browser asks before leaving (ui-concept §4).
+    expect(await app.reload()).toBe(true);
     await expect(card(page, 'p_karl')).toContainText('Carl Brandt');
     await expect(status(page)).toHaveText('● Nicht in Datei gespeichert');
   });
@@ -120,6 +121,8 @@ test.describe('saving and opening by download (DATA-04, DATA-09, UI-02)', () => 
     await expect(status(page)).toHaveText('✓ Gespeichert');
     await downloadBySaving(page, () => saveButton.click());
     await expect(dialog(page)).toHaveCount(0);
+    // Everything is in the file: leaving needs no question.
+    expect(await app.reload()).toBe(false);
 
     // Something else, then the saved file again.
     await menu(page, 'Neuer Stammbaum');
@@ -189,6 +192,41 @@ test.describe('saving and opening by download (DATA-04, DATA-09, UI-02)', () => 
     }, bytes);
     await page.locator('main').dispatchEvent('drop', { dataTransfer: data });
     await expect(card(page, 'p_karl')).toContainText('Carl Brandt');
+  });
+});
+
+test.describe('backup reminder (UI-02)', () => {
+  test('after a week without saving into a file, a gentle reminder shows', async ({
+    app,
+    page,
+  }) => {
+    await app.openExample();
+    await renameKarl(page, 'Carl');
+    await expect.poll(() => storedName(page, 'p_karl')).toBe('Carl');
+    // Pretend the change was made eight days ago.
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve, reject) => {
+          const open = indexedDB.open('stammbaum', 1);
+          open.onsuccess = () => {
+            const store = open.result.transaction('state', 'readwrite').objectStore('state');
+            const get = store.get('project');
+            get.onsuccess = () => {
+              const since = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000 - 60_000).toISOString();
+              const put = store.put({ ...get.result, file: { unsavedSince: since } }, 'project');
+              put.onsuccess = () => resolve();
+              put.onerror = () => reject(put.error);
+            };
+          };
+        }),
+    );
+    await app.reload();
+    const reminder = page.locator('.reminder');
+    await expect(reminder).toContainText(
+      'Dein Stammbaum ist seit 8 Tagen nicht in einer Datei gespeichert.',
+    );
+    await reminder.getByRole('button', { name: 'Ausblenden' }).click();
+    await expect(reminder).toHaveCount(0);
   });
 });
 

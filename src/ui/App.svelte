@@ -133,7 +133,15 @@
   }
 </script>
 
-<svelte:window {ondragover} {ondrop} />
+<!-- Closing the tab while changes are not in a file: the browser asks "Seite verlassen?" (ui-concept §4).
+     The working copy is safe anyway. -->
+<svelte:window
+  {ondragover}
+  {ondrop}
+  onbeforeunload={(e) => {
+    if (workspace.unsaved) e.preventDefault();
+  }}
+/>
 
 {#if ready}
   {#if workspace.editor}
