@@ -110,10 +110,9 @@ This is the **contract between the human developer (product owner) and the devel
 
 Ideas from agents. **Not binding until the human developer approves.** On approval, a proposal moves into the tables above.
 
-| ID    | Proposal                                                                                                   | Why                                                                                                   | Proposed   |
-| ----- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------- |
-| P-006 | **Plausibility hints** that never block saving (e.g. "Tod vor Geburt?", "Mutter bei Geburt 8 Jahre alt?"). | Catches typos in dates.                                                                               | 2026-10-24 |
-| P-008 | **"Kopie zum Verschicken"**: export a copy of the project with smaller pictures (e.g. 1000 px).            | With 2000 px pictures (DATA-07), a tree with ~100 photos is ~50 MB, too big for many email providers. | 2026-10-24 |
+| ID    | Proposal                                                                                        | Why                                                                                                   | Proposed   |
+| ----- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------- |
+| P-008 | **"Kopie zum Verschicken"**: export a copy of the project with smaller pictures (e.g. 1000 px). | With 2000 px pictures (DATA-07), a tree with ~100 photos is ~50 MB, too big for many email providers. | 2026-10-24 |
 
 ## Aligned deviations
 
@@ -148,3 +147,5 @@ Interpretations of the original brief that were confirmed by the human developer
 | 2026-10-24 | S3 decisions: the fictional example (Familie Brandt) is **embedded in `Stammbaum.html`** (data in `examples/familie-brandt.json`), so "Beispiel ansehen" works with one click. Until the start screen exists (S5), the app opens straight into it. |
 | 2026-10-24 | **P-005 (search) rejected.** No search box; people are found by pan, zoom, "Alles anzeigen" and the family links in the detail panel.                                                                                                              |
 | 2026-10-24 | S3 review: the layout choices of ADR-0006 (several partners, married siblings, "?" parent) are **confirmed**. The "?" node of an unknown parent is drawn larger and more visible (56 px, stronger dashed outline).                                 |
+| 2026-10-24 | Rejected P-006 (plausibility hints): the user does not want them.                                                                                                                                                                                  |
+| 2026-10-24 | The browser working copy (DATA-03) is built with slice S5 (start screen, several projects, pictures), not S4. Until then a reload shows the example again.                                                                                         |
