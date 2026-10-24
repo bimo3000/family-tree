@@ -14,6 +14,7 @@ Start here if you want to understand the project. Agents keep these documents up
 | [agent/ROADMAP.md](agent/ROADMAP.md)                         | The slices of functional development, their order and status          | Both                         |
 | [agent/decisions/](agent/decisions/)                         | Architecture Decision Records: why things are the way they are        | Both                         |
 | [user-guide/Anleitung.md](user-guide/Anleitung.md)           | German guide for end users, shipped in the zip                        | End users                    |
+| [manual-checks.md](manual-checks.md)                         | Checklist for a real Mac and Windows machine, once per release zip    | Human developer              |
 | [../CLAUDE.md](../CLAUDE.md)                                 | Operating manual for Claude Code in this repo                         | Agents                       |
 
 ## Commands (developer machine)

@@ -24,10 +24,8 @@ coverage/
 # --- Real family data: NEVER commit (privacy, see PRIV-03 in docs/requirements) ---
 # Local working folder for your own family-tree projects:
 data/
-# Any project file anywhere in the repo ...
+# Any project file anywhere in the repo (the example file is built at packaging time):
 *.stammbaum
-# ... except the fictional example(s):
-!examples/**/*.stammbaum
 # Loose photos dropped into the repo root by accident
 /*.jpg
 /*.jpeg
