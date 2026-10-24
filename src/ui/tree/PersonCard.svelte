@@ -111,11 +111,12 @@
   }
   .card.unknown {
     padding: 0;
+    border: 2px dashed var(--line-hl);
     border-radius: 50%;
-    border-style: dashed;
-    background: var(--canvas);
+    background: var(--card-bg);
     box-shadow: none;
-    color: var(--muted);
+    color: var(--accent);
+    font-size: 1.8rem;
     font-weight: 700;
     align-items: center;
     justify-content: center;

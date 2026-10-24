@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { computeLayout, type ChildLine, type Layout } from '../../../src/core/layout';
+import {
+  computeLayout,
+  DEFAULT_SIZES,
+  type ChildLine,
+  type Layout,
+} from '../../../src/core/layout';
 import { brandt, simple, stepFather, threePartners } from '../../fixtures/layout-families';
 
 const card = (layout: Layout, id: string) => layout.cards.find((c) => c.id === id)!;
@@ -70,10 +75,10 @@ describe('child lines', () => {
     const layout = computeLayout(brandt);
     const unknown = card(layout, 'p_unbekannt');
     expect(unknown.placeholder).toBe(true);
-    expect(unknown.width).toBe(40);
+    expect(unknown.width).toBe(DEFAULT_SIZES.unknownSize);
     expect(childLine(layout, ['p_unbekannt']).stems[0]![0]).toEqual({
       x: unknown.x,
-      y: unknown.y + 20,
+      y: unknown.y + DEFAULT_SIZES.unknownSize / 2,
     });
   });
 
