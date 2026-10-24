@@ -1,6 +1,6 @@
 # Data model concept
 
-> Status: **draft for alignment** (2026-10-24). ❓ = open question (see the end of this document).
+> Status: **aligned with the user** (2026-10-24). See the decisions section at the end.
 
 ## 1. Idea in one paragraph
 
@@ -62,14 +62,14 @@ Shown **on hover/click** (PERS-05): everything else that is filled in.
 | `callName`                  | Rufname           | Optional. Highlighted (underlined) in the name if set                                                                |
 | `surname`                   | Nachname          | **Last known** surname (PERS-04)                                                                                     |
 | `birthName`                 | Geburtsname       | Shown as "geb. Schmidt"                                                                                              |
-| `gender`                    | Geschlecht        | `female` / `male` / `diverse` / unknown ❓                                                                           |
+| `gender`                    | Geschlecht        | `female` / `male` / `diverse` / unknown. Optional, used for wording only (PERS-07)                                   |
 | `birth.date`, `birth.place` | Geboren am / in   | Flexible date (see §4)                                                                                               |
 | `death.date`, `death.place` | Gestorben am / in |                                                                                                                      |
 | `deceased`                  | verstorben        | Only needed if the death date is unknown but the person is dead (shows "†" without a date)                           |
 | `occupation`                | Beruf             |                                                                                                                      |
 | `residences`                | Wohnorte          | Free text, e.g. "Hamburg, ab 1960 Kiel"                                                                              |
 | `biography`                 | Lebensgeschichte  | Longer free text, line breaks preserved                                                                              |
-| `photoId`                   | Foto              | Reference to an image (one photo per person) ❓                                                                      |
+| `photoId`                   | Foto              | Reference to an image (one photo per person, PERS-03)                                                                |
 | `extraFields`               | Weitere Angaben   | List of free label/value pairs (e.g. "Konfession: ev.", "Grab: Friedhof Ohlsdorf"), for everything we didn't foresee |
 
 ## 3. Relations
@@ -178,7 +178,7 @@ bilder/
 
 ## 6. Versioning
 
-See [architecture.md §5](architecture.md#5-data-format-versioning-p-004): `schemaVersion` plus one tested migration per step.
+See [architecture.md §5](architecture.md#5-data-format-versioning-data-08): `schemaVersion` plus one tested migration per step.
 
 ## 7. GEDCOM friendliness (FUT-03)
 
@@ -186,13 +186,14 @@ See [architecture.md §5](architecture.md#5-data-format-versioning-p-004): `sche
 - Things GEDCOM has that we don't (yet): sources/citations, multiple events per type, extra name variants.
   Imports can put them into `extraFields` or `biography`, so nothing gets lost.
 
-## Open questions for the user
+## Placeholder persons
 
-1. **Field list:** is something missing that matters to you? Candidates: baptism (Taufe), burial place (Grabstätte),
-   religion, contact data for living relatives (address/phone), sources ("Quelle: Kirchenbuch Kiel").
-   _Recommendation: start with the list above. "Weitere Angaben" covers the rest without cluttering the form._
-2. **Gender field:** needed? It would only be used for wording (Mutter/Vater, Sohn/Tochter) and maybe a subtle color.
-   Options: (a) optional field, neutral wording when empty; (b) no field, always neutral words (Elternteil, Kind).
-   _Recommendation: (a)._
-3. **Photos:** one photo per person, or a small gallery (several pictures, one marked as the portrait)?
-   _Recommendation: one now. The format allows a gallery later without breaking files._
+"+ Geschwister" for a person without known parents creates an **unknown parent** automatically. In the data this is just
+a person without any fields (everything is optional anyway), and it is drawn as a small "?" node. Filling in any field
+turns it into a normal card.
+
+## Decisions (aligned with the user on 2026-10-24)
+
+1. **Field list:** as in §2. No extra dedicated fields. Anything else goes into "Weitere Angaben".
+2. **Gender:** an optional field, used for wording (PERS-07).
+3. **Photos:** one photo per person (PERS-03). The format allows a gallery later without breaking files.

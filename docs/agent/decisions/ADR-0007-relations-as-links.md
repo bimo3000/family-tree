@@ -1,6 +1,6 @@
 # ADR-0007: Relations stored as partnerships + parent-child links
 
-- **Status:** Proposed (part of the data-model concept under alignment)
+- **Status:** Accepted (data-model concept aligned with the user on 2026-10-24)
 - **Date:** 2026-10-24
 - **Requirements:** TREE-03, TREE-04, PERS-02, FUT-03
 

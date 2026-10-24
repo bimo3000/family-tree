@@ -4,12 +4,12 @@
 
 1. Den Ordner **Stammbaum** aus der ZIP-Datei auspacken (Rechtsklick → „Alle extrahieren …“).
 2. Im Ordner doppelt auf **Stammbaum.html** klicken.
-3. Der Stammbaum öffnet sich in Ihrem Internet-Browser (z. B. Chrome, Edge, Firefox oder Safari).
+3. Der Stammbaum öffnet sich in deinem Internet-Browser (z. B. Chrome, Edge, Firefox oder Safari).
 
-Sie brauchen dafür **kein Internet** und müssen **nichts installieren**.
-Ihre Daten bleiben auf Ihrem Computer. Es wird nichts verschickt.
+Du brauchst dafür **kein Internet** und musst **nichts installieren**.
+Deine Daten bleiben auf deinem Computer. Es wird nichts verschickt.
 
-## Ihre Daten
+## Deine Daten
 
 Jeder Stammbaum wird als eigene Datei mit der Endung **.stammbaum** gespeichert,
 zum Beispiel `Familie-Mueller.stammbaum`. Diese Datei enthält alle Personen und Bilder.

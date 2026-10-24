@@ -1,7 +1,6 @@
 # Architecture concept
 
-> Status: **draft for alignment** (2026-10-24). Decisions marked ✅ are aligned with the user.
-> Decisions marked ❓ are open questions (see the end of this document).
+> Status: **aligned with the user** (2026-10-24). Decisions marked ✅ are aligned. See the decisions section at the end.
 
 ## 1. The big picture
 
@@ -65,7 +64,7 @@ sequenceDiagram
     Note over S,F: Chrome/Edge: also written to the file automatically<br/>Firefox/Safari: on "Speichern" (download)
 ```
 
-Every change is a **pure function** `project → new project`. That makes undo/redo trivial (P-001): we keep the previous
+Every change is a **pure function** `project → new project`. That makes undo/redo trivial (UI-01): we keep the previous
 versions. With ~100 persons a project is a few hundred kB of JSON (pictures are stored separately), so keeping 100 undo steps is cheap.
 
 ## 3. Storage ✅ (format aligned, details below)
@@ -105,16 +104,17 @@ never leaves the device), and it is documented here for transparency. A real Saf
 | ------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | **Open**            | File picker, or drag & drop the file onto the window                                                       | File picker, or drag & drop                                                                            |
 | **First save**      | "Speichern unter …" dialog, user picks name and folder                                                     | The file is downloaded as `Name.stammbaum` (normally into the Downloads folder)                        |
-| **Later saves**     | Automatically into the same file after every change ❓                                                     | "Speichern" downloads a new version. The browser may add `(1)` to the name. A hint explains this once. |
+| **Later saves**     | Automatically into the same file after every change ✅ (DATA-09)                                           | "Speichern" downloads a new version. The browser may add `(1)` to the name. A hint explains this once. |
 | **After a restart** | Working copy restored. Writing to the file needs one click ("Erlaubnis erneuern"), a browser security rule | Working copy restored                                                                                  |
 
-The UI always shows the save status ("✓ Gespeichert" / "● Nicht in Datei gespeichert") (P-003).
+The UI always shows the save status ("✓ Gespeichert" / "● Nicht in Datei gespeichert") (UI-02).
 
 ### 3.4 Pictures
 
 - Imported via file picker or drag & drop.
-- Automatically downscaled (P-002), e.g. to max. 1000 px on the long side, JPEG quality ~0.85, giving about 100–200 kB per picture.
-  100 persons with pictures then come to about 10–20 MB per project file, which fits through most email providers.
+- Automatically downscaled ✅ (DATA-07) to max. **2000 px** on the long side, JPEG quality ~0.85, giving about 300–600 kB per picture.
+  100 persons with pictures then come to about 30–60 MB per project file. That is fine for backups and USB sticks, but
+  too big for many email providers, so proposal P-008 suggests a "Kopie zum Verschicken" export with smaller pictures.
 - Displayed via `blob:` URLs, which the CSP allows.
 - iPhone HEIC photos only decode in Safari. Other browsers show a friendly message ("Bitte als JPG speichern").
 
@@ -136,7 +136,7 @@ The UI always shows the save status ("✓ Gespeichert" / "● Nicht in Datei ges
   Double-click centers on them.
 - **Performance:** 100 persons is small. The layout is recomputed fully on every change, which is simpler and safe (TREE-05).
 
-## 5. Data format versioning (P-004)
+## 5. Data format versioning (DATA-08)
 
 - `data.json` carries `"format": "stammbaum"` and a `schemaVersion` number.
 - `src/core/migrations/` holds one small upgrade function per version step (v1→v2, v2→v3, …). Older files are upgraded on open,
@@ -151,7 +151,7 @@ Agents don't read real family data either (`data/` is denied in `.claude/setting
 
 ## 7. Robustness
 
-- **Unexpected errors:** a friendly German message ("Etwas ist schiefgelaufen. Ihre Daten sind sicher.") with a button to reload.
+- **Unexpected errors:** a friendly German message ("Etwas ist schiefgelaufen. Deine Daten sind sicher.") with a button to reload.
   The working copy is saved before risky operations.
 - **Two tabs with the same project:** detected locally (`BroadcastChannel`, no network). The second tab warns and opens read-only.
 - **Closing with unsaved changes:** the browser's standard "Seite verlassen?" prompt (Firefox/Safari, when the file is outdated).
@@ -173,13 +173,8 @@ requirement to decide when FUT-01 comes up.
 Current versions of Chrome, Edge, Firefox and Safari (desktop) at the time of each release. Older browsers are not tested.
 JavaScript must be enabled (a `<noscript>` message explains this).
 
-## Open questions for the user
+## Decisions (aligned with the user on 2026-10-24)
 
-1. **Auto-save into the file (Chrome/Edge):** after the first "Speichern unter …", should every change go straight into the
-   file (like Google Docs), or should the file only be written when the user clicks "Speichern" (like Word)? The
-   working copy is always saved automatically either way.
-   _Recommendation: auto-save into the file. Nothing gets lost, and there is one thing less to think about._
-2. **Picture size:** is max. 1000 px (good on screen, ~150 kB) enough, or do you want higher quality for printing (2000 px, ~500 kB, so the files get ~4× bigger)?
-   _Recommendation: 1000 px now. If printing becomes a thing (P-007), originals could be kept optionally._
-3. **Firefox/Safari saving via download:** is it acceptable that each "Speichern" there creates a new file in the Downloads folder?
-   (The alternative, asking users to use Chrome/Edge, contradicts GEN-02.)
+1. **Auto-save into the file (Chrome/Edge):** yes. After the first "Speichern unter …", every change goes straight into the file (DATA-09).
+2. **Picture size:** max. 2000 px (DATA-07). The user chose quality over file size. For emailing, see proposal P-008.
+3. **Firefox/Safari saving via download:** accepted, with a one-time hint and the save status (DATA-09, UI-02).

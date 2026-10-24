@@ -15,4 +15,4 @@ Template: copy [ADR-0000-template.md](ADR-0000-template.md). Number sequentially
 | [0004](ADR-0004-testing-strategy.md)                      | Testing strategy: Vitest + Playwright (3 engines) + pre-push hook | Accepted |
 | [0005](ADR-0005-storage-project-file-and-working-copy.md) | Storage: `.stammbaum` zip file + browser working copy             | Accepted |
 | [0006](ADR-0006-custom-tree-layout.md)                    | Own tree-layout algorithm in core, rendered as SVG                | Proposed |
-| [0007](ADR-0007-relations-as-links.md)                    | Relations stored as partnerships + parent-child links             | Proposed |
+| [0007](ADR-0007-relations-as-links.md)                    | Relations stored as partnerships + parent-child links             | Accepted |

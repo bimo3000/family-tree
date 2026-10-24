@@ -16,7 +16,7 @@ description: Procedure for proposing, approving and recording changes to the Sta
 
 ## B. The user approves a proposal
 
-1. Move it into the matching area table (GEN/PRIV/DATA/PERS/TREE/DEV/FUT) with the next free ID in that area, status `Agreed`.
+1. Move it into the matching area table (GEN/PRIV/DATA/PERS/TREE/UI/DEV/FUT) with the next free ID in that area, status `Agreed`.
 2. Delete the `P-NNN` row. IDs are never reused, so note `(was P-NNN)` at the end of the new requirement text.
 3. If it changes the architecture, write or update an ADR.
 
