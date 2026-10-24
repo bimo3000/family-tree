@@ -17,15 +17,15 @@ This is the **contract between the human developer (product owner) and the devel
 
 ## GEN – Platform & distribution
 
-| ID     | Requirement                                                                                                                       | Status      | Verified by                                                                                  |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------- |
-| GEN-01 | The app is a self-contained web app with **one entry point**: double-click `Stammbaum.html`.                                      | Verified    | `tests/e2e/smoke.spec.ts` (opens `Stammbaum.html` from a file, no server)                    |
-| GEN-02 | Works in current desktop versions of **Chrome, Edge, Firefox and Safari** on **Windows, Linux and macOS**.                        | Implemented | E2E in Chromium, Firefox, WebKit; manual Mac/Windows check pending (`docs/manual-checks.md`) |
-| GEN-03 | The app can be **zipped and emailed**; after unzipping it works out of the box.                                                   | In progress | `npm run package`, `tests/unit/zip.test.ts`                                                  |
-| GEN-04 | No installation and no dependencies for end users (no server, no internet, no extra software).                                    | Verified    | `scripts/check-no-external-refs.mjs` (build step), E2E fixture (no network)                  |
-| GEN-05 | The user interface is in **German**.                                                                                              | Verified    | German texts only in `src/ui/`; `tests/e2e/*` find everything by its German text             |
-| GEN-06 | Usable by people **without any computer-science background** ("grandma test"). Extensive accessibility features are not required. | Implemented | manual check with real users pending (`docs/manual-checks.md`)                               |
-| GEN-07 | Designed for **desktop** use (mouse, keyboard, larger screen). Phone/tablet is out of scope for now (see FUT-02).                 | Verified    | E2E run at desktop window size (`playwright.config.ts`)                                      |
+| ID     | Requirement                                                                                                                       | Status      | Verified by                                                                                          |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+| GEN-01 | The app is a self-contained web app with **one entry point**: double-click `Stammbaum.html`.                                      | Verified    | `tests/e2e/smoke.spec.ts` (opens `Stammbaum.html` from a file, no server)                            |
+| GEN-02 | Works in current desktop versions of **Chrome, Edge, Firefox and Safari** on **Windows, Linux and macOS**.                        | Implemented | E2E in Chromium, Firefox, WebKit; manual Mac/Windows check pending (`docs/manual-checks.md`)         |
+| GEN-03 | The app can be **zipped and emailed**; after unzipping it works out of the box.                                                   | Verified    | `tests/unit/zip.test.ts`; release check of 0.9.0 (unzipped, opened in all three engines, 2026-10-24) |
+| GEN-04 | No installation and no dependencies for end users (no server, no internet, no extra software).                                    | Verified    | `scripts/check-no-external-refs.mjs` (build step), E2E fixture (no network)                          |
+| GEN-05 | The user interface is in **German**.                                                                                              | Verified    | German texts only in `src/ui/`; `tests/e2e/*` find everything by its German text                     |
+| GEN-06 | Usable by people **without any computer-science background** ("grandma test"). Extensive accessibility features are not required. | Implemented | manual check with real users pending (`docs/manual-checks.md`)                                       |
+| GEN-07 | Designed for **desktop** use (mouse, keyboard, larger screen). Phone/tablet is out of scope for now (see FUT-02).                 | Verified    | E2E run at desktop window size (`playwright.config.ts`)                                              |
 
 ## PRIV – Privacy & offline
 
