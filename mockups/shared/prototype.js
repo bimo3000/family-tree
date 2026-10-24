@@ -567,6 +567,14 @@
     panel.innerHTML = detailsHtml(p);
   }
 
+  // Drawn icons instead of font characters (✎ renders small and unclear in many fonts).
+  const icon = (d) =>
+    `<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="${d}" /></svg>`;
+  const ICON_PENCIL = icon(
+    'M4 16l.9-3.6L13.3 4a1.5 1.5 0 0 1 2.1 0l.6.6a1.5 1.5 0 0 1 0 2.1L7.6 15.1 4 16zM12 5.3l2.7 2.7',
+  );
+  const ICON_X = icon('M5.5 5.5l9 9M14.5 5.5l-9 9');
+
   // `rel` identifies the relation for the ✎/× buttons: "u:<partnershipId>" or "pc:<parentId>:<childId>".
   function familyEntry(q, role, detail, rel) {
     const name = q.placeholder ? '<i>unbekannt</i>' : esc(shortName(q));
@@ -575,8 +583,8 @@
       .map(esc)
       .join('<span class="sep">|</span>');
     const tools = rel
-      ? `<button class="fam-tool" data-action="rel-edit" data-rel="${rel}" title="Beziehung bearbeiten">✎</button>
-         <button class="fam-tool remove" data-action="rel-remove" data-rel="${rel}" title="Verbindung entfernen">×</button>`
+      ? `<button class="fam-tool" data-action="rel-edit" data-rel="${rel}" title="Beziehung bearbeiten">${ICON_PENCIL}</button>
+         <button class="fam-tool remove" data-action="rel-remove" data-rel="${rel}" title="Verbindung entfernen">${ICON_X}</button>`
       : '';
     return `<div class="fam-row">
       <button class="fam-link" data-action="goto" data-id="${q.id}">

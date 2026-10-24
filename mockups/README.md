@@ -24,7 +24,8 @@ The decisions are recorded in `docs/concept/ui-concept.md` (Decisions 5 to 9). B
 - **Divorce:** select Peter and zoom in on the "//" between Peter and Sabine. Peter's ✎ next to Sabine lets you change it.
 
 Not in the mock-up: search (P-005 still open), real photos, saving, printing, help, an automatic layout.
-New persons are placed in the nearest free spot. The real app will compute the layout.
+New persons are placed in the nearest free spot, and deleting a person leaves a gap. The real app recomputes the whole
+layout after every change (cards glide to their new places), so there are no gaps.
 
 ## Structure
 

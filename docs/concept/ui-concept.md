@@ -119,6 +119,10 @@ e.g. a cousin marriage or a person added twice by mistake).
 - **Pan:** drag the background. **Zoom:** mouse wheel or the `+`/`−` buttons. **⤢ "Alles anzeigen"** fits the whole tree on screen.
 - **Focus:** selecting a person highlights their direct line and slightly fades the others. Esc clears the selection.
 - **Orientation:** ancestors at the top, descendants below (TREE-02).
+- **Arrangement is automatic:** the app recomputes the whole layout after every change (architecture §4, ADR-0006), so deleting
+  a person never leaves a gap. To keep the user oriented, cards **glide** to their new places, and the view stays anchored on the
+  selected or newly added person. There is **no manual dragging of cards** (positions would have to be stored and would go stale
+  with the next change). The mock-up places persons by hand, so there gaps do remain.
 - **Relations drawn:** partners joined by a horizontal line, and children hanging from the middle of that line.
   - Divorced/separated: the couple line is interrupted by a small "//", and the children's line starts below it. **Only when it applies.**
   - Adoptive/step/foster: a dashed child line plus a label on hover. **Only when it applies.** A child keeps the
