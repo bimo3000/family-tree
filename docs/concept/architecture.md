@@ -40,6 +40,9 @@ on its own, and you can open the document with any copy of the program.
 | **state**   | `src/ui/state/` | The currently open project, selection, undo/redo history, save status                                                                                  | Thin glue. Every change goes through a core operation.                                                                                |
 | **ui**      | `src/ui/`       | Svelte components: tree view, person card, detail panel, forms, dialogs                                                                                | All German texts live here, and only here. User text is always rendered as text, never as HTML.                                       |
 
+Inside `core`: `model/` (types, queries, validation, operations), `dates.ts` (reading German date input),
+`migrations/` and `serialization.ts` (`data.json` in and out). `layout/` follows with slice S2.
+
 The dependency direction is strictly `ui → state → core` and `storage → core`. Core depends on nothing.
 This is what keeps **data separate from logic** (DATA-01) and makes a future read-only website (FUT-01) a matter of
 leaving out the editing UI.

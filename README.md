@@ -7,7 +7,7 @@ A private, self-contained web app to **create, edit and view family trees**.
 - **No data ever leaves the device.** The family data stays in local project files (`*.stammbaum`).
 - App language: **German**.
 
-> Status: development setup and concept phase. No functional features yet.
+> Status: functional development. The core logic (data model, dates, relations) is built and tested; the visible app follows slice by slice ([roadmap](docs/agent/ROADMAP.md)).
 > The current state is always in [docs/agent/HANDOVER.md](docs/agent/HANDOVER.md).
 
 ## Where to find what

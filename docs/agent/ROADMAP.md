@@ -9,14 +9,14 @@ Each slice ends green (`npm run verify`), committed, pushed, with requirement st
 
 ## Overview
 
-| #   | Slice                         | Status      | Main requirements                                       |
-| --- | ----------------------------- | ----------- | ------------------------------------------------------- |
-| S1  | Core model, dates, operations | In progress | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
-| S2  | Automatic tree layout         | Todo        | TREE-01/03/04/05 (ADR-0006)                             |
-| S3  | Tree view (read-only)         | Todo        | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
-| S4  | Editing + working copy        | Todo        | PERS-01/03, UI-01, DATA-03 (working copy)               |
-| S5  | Project files and pictures    | Todo        | DATA-02/03/04/07/09, PERS-03, UI-02                     |
-| S6  | Finish and release            | Todo        | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| #   | Slice                         | Status | Main requirements                                       |
+| --- | ----------------------------- | ------ | ------------------------------------------------------- |
+| S1  | Core model, dates, operations | Done   | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
+| S2  | Automatic tree layout         | Todo   | TREE-01/03/04/05 (ADR-0006)                             |
+| S3  | Tree view (read-only)         | Todo   | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
+| S4  | Editing + working copy        | Todo   | PERS-01/03, UI-01, DATA-03 (working copy)               |
+| S5  | Project files and pictures    | Todo   | DATA-02/03/04/07/09, PERS-03, UI-02                     |
+| S6  | Finish and release            | Todo   | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
 
 Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progress` at a time.
 
@@ -39,7 +39,7 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
   connected component (for the "cut off" warning, ui-concept §2.8).
 - Serialization: JSON with `schemaVersion` 1 and a migration registry (DATA-05, DATA-08), roundtrip-tested.
 - Port the fictional "Familie Brandt" from `mockups/shared/familie.js` into `tests/fixtures/` (without `x`/`row`).
-- **Done when:** every operation and rule has unit tests, `npm run verify` is green.
+- **Done when:** every operation and rule has unit tests, `npm run verify` is green. ✅ Done in session 3.
 
 ## S2 – Automatic tree layout (`src/core/layout/`, ADR-0006)
 
@@ -63,6 +63,7 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 
 - `src/ui/state/`: open project, selection, undo/redo (UI-01), dirty status. Every change goes through a core operation.
 - Person dialog (ui-concept §2.5), add-relative flows (§2.6), delete (§2.7), relation edit/remove with the cut-off dialog (§2.8).
+- `deletePerson` (core) does not touch `images` or `view.focusPersonId`: clear the focus in state when the focused person goes.
 - Working copy in IndexedDB with autosave, reopened on start, so edits survive a reload (DATA-03, architecture §3).
 - E2E for the main flows in all three engines.
 
@@ -71,7 +72,7 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 - Add fflate (pinned exact, note in ADR-0005). `.stammbaum` zip with `data.json` + `bilder/`: open (picker, drag & drop), save.
 - Saving per DATA-09: Chromium writes into the file (File System Access), Firefox/Safari download with a one-time hint.
 - Start screen (new, open, example), several projects (DATA-02), last project on start (DATA-03).
-- Save status and backup reminder (UI-02). Photos: one per person, downscaled to 2000 px JPEG (DATA-07, PERS-03).
+- Save status and backup reminder (UI-02). Remove an image from `images` when its person is deleted or the photo is replaced. Photos: one per person, downscaled to 2000 px JPEG (DATA-07, PERS-03).
 - E2E: save/open roundtrip in every engine.
 
 ## S6 – Finish and release
@@ -95,6 +96,7 @@ Anything not covered by the concept or the mock-up that changes what the user se
 
 ## Change log
 
-| Date       | Change                                           |
-| ---------- | ------------------------------------------------ |
-| 2026-10-24 | Roadmap created after the mock-up phase (S1–S6). |
+| Date       | Change                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-24 | Roadmap created after the mock-up phase (S1–S6).                                                                                    |
+| 2026-10-24 | S1 done (session 3). Notes for S4/S5 added: deleting a person leaves its image and `view.focusPersonId` to the state/storage layer. |

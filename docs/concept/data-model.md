@@ -91,6 +91,15 @@ Shown **on hover/click** (PERS-05): everything else that is filled in.
 - A partnership needs two different persons, and the same two persons can't have duplicate partnerships.
 - Deleting a person removes their links and partnerships. Their children and partners stay.
 
+**How the code applies these rules** (`src/core/model/`, slice S1):
+
+- Every change is a pure operation in `operations.ts` that returns a new project (see the glossary: pure function).
+- A broken rule throws a `ModelError` with a **code** (`loop`, `too-many-biological-parents`, `self-partnership`,
+  `duplicate-partnership`, `duplicate-link`, `unknown-person`, `unknown-relation`). The UI turns the code into a German message.
+- Empty values (`""`, `false`, empty lists and objects) are dropped when saving a person or partnership, and a biological
+  link is stored without `kind`. So the stored data stays as simple as the family (TREE-04).
+- Siblings are derived: **full** siblings have exactly the same parents, **half** siblings share only some.
+
 **Plausibility hints** (P-006) never block anything. Examples: death before birth, a parent younger than 12 at the
 child's birth, a person older than 110 without a death date.
 
@@ -179,6 +188,8 @@ bilder/
 ## 6. Versioning
 
 See [architecture.md §5](architecture.md#5-data-format-versioning-data-08): `schemaVersion` plus one tested migration per step.
+The code lives in `src/core/migrations/` and `src/core/serialization.ts`; a stored sample of every version
+(`tests/fixtures/schema-v1.json`, …) must keep opening.
 
 ## 7. GEDCOM friendliness (FUT-03)
 
@@ -190,7 +201,9 @@ See [architecture.md §5](architecture.md#5-data-format-versioning-data-08): `sc
 
 "+ Geschwister" for a person without known parents creates an **unknown parent** automatically. In the data this is just
 a person without any fields (everything is optional anyway), and it is drawn as a small "?" node. Filling in any field
-turns it into a normal card.
+turns it into a normal card. When its last child link goes away (removing the link or deleting the child), the
+placeholder is removed too. Only the persons touched by that change are checked, so a newly added, still empty person
+is never removed by accident.
 
 ## Decisions (aligned with the user on 2026-10-24)
 
