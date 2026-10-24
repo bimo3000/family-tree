@@ -30,9 +30,12 @@ export function orderRows(graph: FamilyGraph, rowOf: Map<PersonId, number>): Row
     }
   };
   for (let i = 0; i < SWEEPS && fewest > 0; i++) {
-    for (let r = 1; r < rowCount; r++) reorderRow(graph, blocks, rows, r, 'parents');
+    for (let r = 1; r < rowCount; r++) reorderRow(graph, blocks, rows, r, 'parents', false);
     keepIfBetter();
-    for (let r = rowCount - 2; r >= 0; r--) reorderRow(graph, blocks, rows, r, 'children');
+    // Every other upward sweep breaks ties the other way round: two families with the same children
+    // position would otherwise never pass each other, even when that removes a crossing further down.
+    for (let r = rowCount - 2; r >= 0; r--)
+      reorderRow(graph, blocks, rows, r, 'children', i % 2 === 1);
     keepIfBetter();
   }
   rows = best.rows;
@@ -150,7 +153,7 @@ function initialOrder(
 /**
  * One barycenter step: every block moves to the average position of its members' parents (or children).
  * A block is mirrored when that fits its neighbours better. Blocks without such relatives keep their place;
- * ties keep siblings in birth order.
+ * ties keep siblings in birth order, other ties keep the current order (or reverse it with `flipTies`).
  */
 function reorderRow(
   graph: FamilyGraph,
@@ -158,6 +161,7 @@ function reorderRow(
   rows: number[][],
   r: number,
   towards: 'parents' | 'children',
+  flipTies: boolean,
 ): void {
   const pos = positions(blocks, rows);
   const related = towards === 'parents' ? graph.parents : graph.children;
@@ -183,7 +187,7 @@ function reorderRow(
       (a, b) =>
         get(bary, a) - get(bary, b) ||
         (towards === 'parents' ? birth(a) - birth(b) : 0) ||
-        row.indexOf(a) - row.indexOf(b),
+        (row.indexOf(a) - row.indexOf(b)) * (flipTies ? -1 : 1),
     );
   rows[r] = row.map((b) => (bary.has(b) ? (movable.shift() ?? b) : b));
 }

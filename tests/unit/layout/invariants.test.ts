@@ -1,9 +1,42 @@
 // Rules every layout must keep, checked on every fixture family (ADR-0006).
 import { describe, expect, it } from 'vitest';
-import { computeLayout, DEFAULT_SIZES, type CardBox, type Point } from '../../../src/core/layout';
+import {
+  computeLayout,
+  DEFAULT_SIZES,
+  type CardBox,
+  type Layout,
+  type Point,
+} from '../../../src/core/layout';
+import { addPerson, addPartnership } from '../../../src/core/model/operations';
+import { addChild } from '../../../src/core/model/relatives';
 import { connectedComponent, parentLinksOf, partnershipsOf } from '../../../src/core/model/queries';
 import { dateSortKey } from '../../../src/core/dates';
-import { allFamilies, disconnected, generatedFamily, simple } from '../../fixtures/layout-families';
+import {
+  allFamilies,
+  brandt,
+  disconnected,
+  generatedFamily,
+  simple,
+} from '../../fixtures/layout-families';
+
+/** How often lines of different child lines cross each other in the drawing. Touching does not count. */
+function lineCrossings(layout: Layout): number {
+  const segments = (points: Point[]) => points.slice(1).map((p, i) => [points[i]!, p] as const);
+  const side = (p: Point, q: Point, r: Point) =>
+    Math.sign((q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x));
+  const families = layout.childLines.map((l) =>
+    [...l.stems, ...l.drops.map((d) => d.points)].flatMap(segments),
+  );
+  let count = 0;
+  families.forEach((mine, i) =>
+    families.slice(i + 1).forEach((theirs) => {
+      for (const [a, b] of mine)
+        for (const [c, d] of theirs)
+          if (side(a, b, c) * side(a, b, d) < 0 && side(c, d, a) * side(c, d, b) < 0) count++;
+    }),
+  );
+  return count;
+}
 
 /** Does the axis-parallel segment a–b run through the inside of the card? Touching an edge is fine. */
 function crosses(a: Point, b: Point, c: CardBox): boolean {
@@ -111,6 +144,26 @@ describe('layout as a whole', () => {
     const parts = [span('a1'), span('loner'), span('b1')].sort((a, b) => a[0] - b[0]);
     for (let i = 1; i < parts.length; i++)
       expect(parts[i]![0]).toBeGreaterThanOrEqual(parts[i - 1]![1]);
+  });
+
+  it('draws Familie Brandt without crossing lines', () => {
+    expect(lineCrossings(computeLayout(brandt))).toBe(0);
+  });
+
+  it('lets two families pass each other to avoid a crossing (user report, S4)', () => {
+    // Two new children of Wilhelm and Elise Kühn are a couple with a child. Their family and the "?" above
+    // Michael Seidel tie for the same place; they must end up in the order without a crossing line.
+    let project = brandt;
+    const add = (name: string, parents: string[]) => {
+      const added = addPerson(project, { givenNames: name });
+      project = addChild(added.project, parents, { existingId: added.id }).project;
+      return added.id;
+    };
+    const a = add('Anna', ['p_wilhelm', 'p_elise']);
+    const b = add('Bernd', ['p_wilhelm', 'p_elise']);
+    project = addPartnership(project, a, b).project;
+    add('Clara', [a, b]);
+    expect(lineCrossings(computeLayout(project))).toBe(0);
   });
 
   it('lays out an empty project', () => {

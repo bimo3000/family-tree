@@ -26,7 +26,9 @@ or give little control over the "simple unless needed" rendering the user wants.
    groups are pulled down towards their children when that shortens more lines than it stretches, so married-in
    grandparents sit right above their child. A pair that would form a loop (partner is an ancestor) is not merged.
 2. **Order** (`order.ts`): partners in a row form a rigid **block**. A depth-first walk gives the first order,
-   barycenter sweeps and neighbour swaps reduce crossings, the order with the fewest crossings wins.
+   barycenter sweeps and neighbour swaps reduce crossings, the order with the fewest crossings wins. Every other
+   upward sweep breaks ties the other way round, so two families competing for the same place can pass each other
+   (user report after S4: a new couple's child line crossed the "?" line above Michael Seidel).
 3. **x positions** (`coordinates.ts`): every block is pulled towards its parents and towards the middle of its children;
    per row a pool-adjacent-violators solver keeps order and minimum gaps. 30 down-and-up iterations.
 4. **Lines** (`lines.ts`): the mock-up's drawing rules, plus separate levels for overlapping bars, side-by-side
@@ -44,7 +46,9 @@ Decisions taken on the user's behalf, **confirmed by the user in S3** (2026-10-2
   around the cards in between. A partner who is also an ancestor: different rows, diagonal couple line.
 - Gaps: partners and siblings 42 px, divorced couples 70 px, other neighbours 84 px, unrelated parts 168 px.
 
-Measured: 100 persons in about 25 ms. The 100-person fixture keeps 5 crossings (all other fixtures 0).
+Measured: 100 persons in about 25 ms (about 45 ms on the development machine in session 6). The 100-person fixture
+keeps 5 crossings by the ordering's count (all other fixtures 0). `tests/unit/layout/invariants.test.ts` counts real
+line crossings in the drawing for Familie Brandt and the reported case (both 0).
 
 ## Consequences
 
