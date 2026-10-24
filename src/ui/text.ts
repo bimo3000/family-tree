@@ -19,7 +19,7 @@ function qualified(d: Exclude<FlexDate, { text: string }>, plain: string): strin
   if (d.q === 'about') return `ca. ${d.y}`;
   if (d.q === 'before') return `vor ${d.y}`;
   if (d.q === 'after') return `nach ${d.y}`;
-  return `${d.y} bis ${d.y2}`;
+  return 'y2' in d ? `${d.y} bis ${d.y2}` : plain;
 }
 
 /** Full precision, for the panel and the tooltip: "12.03.1923", "03.1923", "ca. 1850", "1890 bis 1895". */
