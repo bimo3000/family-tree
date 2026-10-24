@@ -86,6 +86,9 @@
 - **"Mehr Angaben ▾":** Geschlecht, Beruf, Wohnorte, Lebensgeschichte, Weitere Angaben (+ Feld hinzufügen).
 - **Date fields** are plain text fields with a live interpretation underneath: "→ 12. März 1923", "→ ungefähr 1850",
   "→ wird so übernommen". See data-model §4.
+- **"Foto wählen …"** first shows the crop view "Ausschnitt wählen" in the same dialog (PERS-08): drag the photo
+  (or use the arrow keys), set "Größe" with a slider (1× to 5×), with a card-sized preview beside it. "Übernehmen" stores
+  only that part, "Abbrechen" or Esc adds nothing. To change the part later, the photo is chosen again.
 - Changes apply immediately, with undo. "Fertig" closes the form. There is no "Abbrechen" that loses work: the user undoes instead.
 
 ### 2.6 Adding relatives (the main way the tree grows)

@@ -132,6 +132,8 @@ The UI always shows the save status ("✓ Gespeichert" / "● Nicht in Datei ges
 ### 3.4 Pictures
 
 - Imported via file picker or drag & drop.
+- Cut to the part the user chose ✅ (PERS-08, `src/core/photoCrop.ts`): always the card's photo shape (7:5), cut from the
+  original before downscaling, so a zoomed-in part keeps its detail. Only that part is stored.
 - Automatically downscaled ✅ (DATA-07) to max. **2000 px** on the long side, JPEG quality ~0.85, giving about 300–600 kB per picture.
   100 persons with pictures then come to about 30–60 MB per project file. That is fine for backups and USB sticks, but
   too big for many email providers. A "Kopie zum Verschicken" with smaller pictures (P-008) was rejected by the user.

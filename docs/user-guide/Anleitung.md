@@ -40,8 +40,10 @@ Beim nächsten Start ist dein Stammbaum sofort wieder da.
 
 ## Fotos
 
-Jede Person kann ein Foto haben: „Bearbeiten“, dann „Foto wählen …“. Große Bilder werden
-automatisch verkleinert. Fotos vom iPhone (HEIC) kann nicht jeder Browser öffnen. Speichere sie dann
+Jede Person kann ein Foto haben: „Bearbeiten“, dann „Foto wählen …“. Danach wählst du den
+Ausschnitt: Verschiebe das Foto mit der Maus und stelle mit „Größe“ ein, wie nah es herangeholt wird.
+So findest du auch eine Person auf einem Gruppenfoto. Gespeichert wird nur dieser Ausschnitt. Willst
+du ihn ändern, wähle das Foto noch einmal. Große Bilder werden automatisch verkleinert. Fotos vom iPhone (HEIC) kann nicht jeder Browser öffnen. Speichere sie dann
 vorher als JPG.
 
 ## Den Baum ansehen
