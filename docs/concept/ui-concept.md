@@ -28,7 +28,7 @@
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
-│ Familie Müller ▾   ↶ ↷                              ✓ Gespeichert  [Speichern] │  ← top bar
+│ Familie Müller ▾   ↶ ↷                         ✓ Gespeichert  [Speichern] │  ← top bar
 ├───────────────────────────────────────────────────────┬───────────────────┤
 │                                                       │                   │
 │                  tree (pan / zoom)                    │  detail panel     │
