@@ -66,7 +66,6 @@
 
   let withId = $state(partners.at(-1) ?? '');
   let parentKind = $state<ParentChildKind>('adoptive');
-  let couple = $state(true);
   let who = $state<'new' | 'existing'>('new');
   let existingId = $state(candidates[0]?.id ?? '');
   let childKind = $state<ParentChildKind>('adoptive');
@@ -93,7 +92,8 @@
     if (kind === 'partner') return (p) => addPartner(p, id, options);
     if (kind === 'sibling') return (p) => addSibling(p, id, options);
     if (biological.length >= 2) options.kind = parentKind;
-    const known = biological.length === 1 && couple ? { partnerOf: biological[0]! } : {};
+    // A second parent becomes the first one's partner, like "+ Kind" (decided 2026-10-24).
+    const known = biological.length === 1 ? { partnerOf: biological[0]! } : {};
     return (p) => addParent(p, id, { ...options, ...known });
   }
 
@@ -143,10 +143,7 @@
       {/each}
     </fieldset>
   {:else if kind === 'parent' && biological.length === 1}
-    <label class="radio">
-      <input type="checkbox" bind:checked={couple} />
-      ist Partner/in von {name(biological[0]!)}
-    </label>
+    <p class="muted">Der Elternteil wird als Partner/in von {name(biological[0]!)} eingetragen.</p>
   {/if}
 
   {#if kind === 'sibling' && parents.length === 0}

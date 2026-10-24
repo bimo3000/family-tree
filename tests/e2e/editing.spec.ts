@@ -82,6 +82,30 @@ test('the gender chosen under "Mehr Angaben" sets the wording (PERS-07)', async 
 });
 
 test.describe('adding relatives (ui-concept §2.6)', () => {
+  test('a second parent becomes the partner of the first, without asking', async ({ page }) => {
+    const addPerson = async (button: string, name: string) => {
+      await panel(page).getByRole('button', { name: button, exact: true }).click();
+      await dialog(page).getByRole('button', { name: 'Hinzufügen' }).click();
+      await dialog(page).getByLabel('Vornamen').fill(name);
+      await dialog(page).getByRole('button', { name: 'Fertig' }).click();
+    };
+    await page.getByRole('heading', { level: 1 }).getByRole('button').click();
+    await page.locator('.menu').getByRole('button', { name: 'Neuer Stammbaum' }).click();
+    await dialog(page).getByLabel('Name').fill('Familie Test');
+    await dialog(page).getByRole('button', { name: 'Anlegen' }).click();
+    await dialog(page).getByLabel('Vornamen').fill('Anna');
+    await dialog(page).getByRole('button', { name: 'Fertig' }).click();
+    await addPerson('+ Elternteil', 'Maria');
+
+    await page.locator('.card', { hasText: 'Anna' }).click();
+    await panel(page).getByRole('button', { name: '+ Elternteil', exact: true }).click();
+    await expect(dialog(page).getByRole('checkbox')).toHaveCount(0);
+    await expect(dialog(page)).toContainText('wird als Partner/in von Maria eingetragen');
+    await dialog(page).getByRole('button', { name: 'Abbrechen' }).click();
+    await addPerson('+ Elternteil', 'Josef');
+    await expect(panel(page)).toContainText(/Partner\/in\s*Maria/);
+  });
+
   test('+ Kind adds a child of the couple and opens the new person', async ({ page }) => {
     await open(page, 'p_thomas', '+ Kind');
     await expect(dialog(page)).toContainText(
