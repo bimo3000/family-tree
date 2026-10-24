@@ -13,6 +13,7 @@ import {
   checkPersonExists,
 } from './validation';
 import type {
+  ImageRef,
   ParentChildKind,
   ParentChildLink,
   PartnershipDetails,
@@ -45,6 +46,31 @@ export function updatePerson(project: Project, person: Person): Project {
 export function deletePerson(project: Project, id: PersonId): Project {
   checkPersonExists(project, id);
   return dropEmptyPlaceholders(removePersonAndRelations(project, id), relativesAbove(project, id));
+}
+
+// ---------------------------------------------------------------- photos (PERS-03)
+
+/** Gives the person this picture. A previous one is dropped: one photo per person. */
+export function setPhoto(project: Project, personId: PersonId, image: ImageRef): Project {
+  const removed = removePhoto(project, personId);
+  return {
+    ...removed,
+    persons: removed.persons.map((p) => (p.id === personId ? { ...p, photoId: image.id } : p)),
+    images: [...removed.images, image],
+  };
+}
+
+export function removePhoto(project: Project, personId: PersonId): Project {
+  checkPersonExists(project, personId);
+  return {
+    ...withoutImageOf(project, personId),
+    persons: project.persons.map((p) => {
+      if (p.id !== personId) return p;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- dropped on purpose
+      const { photoId, ...rest } = p;
+      return rest;
+    }),
+  };
 }
 
 // ---------------------------------------------------------------- partnerships (TREE-03)
@@ -143,11 +169,16 @@ export function dropEmptyPlaceholders(project: Project, candidates: PersonId[]):
 
 function removePersonAndRelations(project: Project, id: PersonId): Project {
   return {
-    ...project,
+    ...withoutImageOf(project, id),
     persons: project.persons.filter((p) => p.id !== id),
     partnerships: project.partnerships.filter((r) => !r.partners.includes(id)),
     parentChild: project.parentChild.filter((l) => l.parentId !== id && l.childId !== id),
   };
+}
+
+function withoutImageOf(project: Project, personId: PersonId): Project {
+  const photoId = findPerson(project, personId)?.photoId;
+  return photoId ? { ...project, images: project.images.filter((i) => i.id !== photoId) } : project;
 }
 
 /** Parents and partners: the persons that might be left as childless placeholders. */

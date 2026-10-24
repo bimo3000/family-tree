@@ -7,8 +7,10 @@ import {
   deletePerson,
   dropEmptyPlaceholders,
   removeParentChild,
+  removePhoto,
   removePartnership,
   setParentChildKind,
+  setPhoto,
   updatePartnership,
   updatePerson,
 } from '../../src/core/model/operations';
@@ -86,6 +88,35 @@ describe('persons', () => {
 
   it('refuses to delete a person who does not exist', () => {
     expectCode(() => deletePerson(brandt, 'p_nobody'), 'unknown-person');
+  });
+});
+
+describe('photos (PERS-03)', () => {
+  const first = { id: 'img_1', file: 'bilder/img_1.jpg', width: 800, height: 1000 };
+  const second = { id: 'img_2', file: 'bilder/img_2.jpg', width: 1000, height: 800 };
+
+  it('sets a photo and replaces an earlier one (one per person)', () => {
+    const once = setPhoto(brandt, 'p_erna', first);
+    expect(findPerson(once, 'p_erna')?.photoId).toBe('img_1');
+    expect(once.images).toEqual([first]);
+    const twice = setPhoto(once, 'p_erna', second);
+    expect(findPerson(twice, 'p_erna')?.photoId).toBe('img_2');
+    expect(twice.images).toEqual([second]);
+  });
+
+  it('removes a photo', () => {
+    const project = removePhoto(setPhoto(brandt, 'p_erna', first), 'p_erna');
+    expect(findPerson(project, 'p_erna')).not.toHaveProperty('photoId');
+    expect(project.images).toEqual([]);
+  });
+
+  it('deleting a person also drops their photo', () => {
+    const project = setPhoto(setPhoto(brandt, 'p_erna', first), 'p_stefan', second);
+    expect(deletePerson(project, 'p_erna').images).toEqual([second]);
+  });
+
+  it('refuses a person who does not exist', () => {
+    expectCode(() => setPhoto(brandt, 'p_nobody', first), 'unknown-person');
   });
 });
 
