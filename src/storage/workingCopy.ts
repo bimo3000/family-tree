@@ -135,18 +135,26 @@ export async function saveHandle(handle: FileSystemFileHandle | null): Promise<v
   }
 }
 
-/** One-time hints the user has already seen. */
+/** One-time hints the user has already seen. Best effort: without the database, a hint shows again. */
 export async function hasSeen(hint: string): Promise<boolean> {
   let seen = false;
-  await transaction('readonly', (state) => {
-    const get = state.get(`seen:${hint}`);
-    get.onsuccess = () => (seen = get.result === true);
-  });
+  try {
+    await transaction('readonly', (state) => {
+      const get = state.get(`seen:${hint}`);
+      get.onsuccess = () => (seen = get.result === true);
+    });
+  } catch {
+    // Not remembered.
+  }
   return seen;
 }
 
-export function markSeen(hint: string): Promise<void> {
-  return transaction('readwrite', (state) => state.put(true, `seen:${hint}`));
+export async function markSeen(hint: string): Promise<void> {
+  try {
+    await transaction('readwrite', (state) => state.put(true, `seen:${hint}`));
+  } catch {
+    // Not remembered.
+  }
 }
 
 /** The chosen UI language (GEN-05): per browser, not in the project file. Null until one is chosen. */

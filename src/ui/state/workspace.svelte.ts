@@ -89,8 +89,13 @@ export class Workspace {
     handle: FileSystemFileHandle | null = null,
   ): Promise<void> {
     this.#generation++;
-    await workingCopy.replaceWorkingCopy({ project, file, images });
-    if (handle) await workingCopy.saveHandle(handle);
+    try {
+      await workingCopy.replaceWorkingCopy({ project, file, images });
+      if (handle) await workingCopy.saveHandle(handle);
+    } catch {
+      // The browser refuses its database: the project still opens, it just isn't kept there.
+      this.problem = 'working-copy';
+    }
     await this.#show(project, images, file, handle);
   }
 

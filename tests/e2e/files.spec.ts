@@ -94,6 +94,35 @@ test.describe('working copy (DATA-03)', () => {
     await expect(status(page)).toHaveText('● Nicht in Datei gespeichert');
   });
 
+  // E.g. "sites may not save data" or a locked-down browser: files still open and save.
+  test('without the browser database, the app still works', async ({ app, page }) => {
+    await withoutFilePickers(page);
+    await page.addInitScript(() => {
+      Object.defineProperty(window, 'indexedDB', {
+        value: {
+          open: () => {
+            throw new DOMException('blocked', 'SecurityError');
+          },
+        },
+      });
+    });
+    await app.open();
+    await expect(page.getByRole('status')).toHaveText(
+      'Der Browser lässt das Speichern einer Arbeitskopie nicht zu.',
+    );
+    await page.getByRole('button', { name: 'Beispiel ansehen' }).click();
+    await renameKarl(page, 'Carl');
+    const file = await downloadBySaving(page, () =>
+      page.getByRole('button', { name: 'Speichern', exact: true }).click(),
+    );
+    await dialog(page).getByRole('button', { name: 'Verstanden' }).click();
+    await menu(page, 'Beispiel ansehen');
+    await expect(card(page, 'p_karl')).toContainText('Karl Heinrich Brandt');
+    const [chooser] = await Promise.all([page.waitForEvent('filechooser'), menu(page, 'Öffnen …')]);
+    await chooser.setFiles(file.path);
+    await expect(card(page, 'p_karl')).toContainText('Carl Brandt');
+  });
+
   test('renaming the tree is a change like any other', async ({ app, page }) => {
     await app.openExample();
     await menu(page, 'Umbenennen');
