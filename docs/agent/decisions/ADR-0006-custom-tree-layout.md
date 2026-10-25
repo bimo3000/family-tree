@@ -25,14 +25,23 @@ or give little control over the "simple unless needed" rendering the user wants.
 1. **Rows** (`generations.ts`): partners and siblings share a row; children sit below every parent (all link kinds);
    groups are pulled down towards their children when that shortens more lines than it stretches, so married-in
    grandparents sit right above their child. A pair that would form a loop (partner is an ancestor) is not merged.
+   **Passages** (`passages.ts`, session 12): a child more than one row below their parents gets a **stand-in**
+   (virtual node) in every row their line passes. Stand-ins take part in ordering and spacing like cards of width 0
+   with 24 px to their neighbours. Before, such a long line was invisible to the crossing count and squeezed through the
+   nearest free spot, once right between two partners next to their own child line (user report after S11).
 2. **Order** (`order.ts`): partners in a row form a rigid **block**. A depth-first walk gives the first order,
    barycenter sweeps and neighbour swaps reduce crossings, the order with the fewest crossings wins. Every other
    upward sweep breaks ties the other way round, so two families competing for the same place can pass each other
-   (user report after S4: a new couple's child line crossed the "?" line above Michael Seidel).
+   (user report after S4: a new couple's child line crossed the "?" line above Michael Seidel). When crossings remain,
+   the walk also starts from the bottom row and/or visits in-laws right to left (4 starts); another start wins only with
+   strictly fewer crossings, so a crossing-free tree keeps its order. Crossings are counted per pair of rows by sorting
+   (inversion count), and a neighbour swap re-counts only the two row pairs it touches.
 3. **x positions** (`coordinates.ts`): every block is pulled towards its parents and towards the middle of its children;
    per row a pool-adjacent-violators solver keeps order and minimum gaps. 30 down-and-up iterations.
-4. **Lines** (`lines.ts`): the mock-up's drawing rules, plus separate levels for overlapping bars, side-by-side
-   entries for several lines into one child, straight drops for an only child, detours around cards.
+4. **Lines** (`lines.ts`): the mock-up's drawing rules, plus separate levels for overlapping bars (including the
+   horizontal pieces of long lines in lower gaps), side-by-side entries for several lines into one child, straight
+   drops for an only child, long lines through their stand-ins. Where a vertical piece of one line crosses a horizontal
+   piece of another, the horizontal line gets a **break** (`breaks`, drawn as a 10 px gap; the user chose it over a hop).
 5. Unrelated parts of the tree are laid out one by one and placed side by side.
 
 Decisions taken on the user's behalf, **confirmed by the user in S3** (2026-10-24). Only change: the "?" node is 56 px instead of 40 px, so it is easier to see.
@@ -49,6 +58,9 @@ Decisions taken on the user's behalf, **confirmed by the user in S3** (2026-10-2
 Measured: 100 persons in about 25 ms (about 45 ms on the development machine in session 6). The 100-person fixture
 keeps 5 crossings by the ordering's count (all other fixtures 0). `tests/unit/layout/invariants.test.ts` counts real
 line crossings in the drawing for Familie Brandt and the reported case (both 0).
+Session 12: 100 persons about 30 ms, 200 persons about 130 ms (was 60 ms: the extra starts run when crossings remain).
+The fixture `mismatched-generations` went from 2 to 1 crossing, the user's tree from 10 to 4. Only trees with lines
+that skip a row get a different layout.
 
 ## Consequences
 

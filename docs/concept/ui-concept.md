@@ -143,6 +143,10 @@ e.g. a cousin marriage or a person added twice by mistake).
   - Adoptive/step/foster: a dashed child line plus a label on hover. **Only when it applies.** A child keeps the
     solid line to the biological parents, and each additional parent gets its own dashed line.
   - Several partners: the person sits next to each partner in turn, each couple with its own children.
+  - Crossing lines: the arrangement avoids them where it can. Where two lines still cross, the horizontal one has a small
+    break, so a crossing never looks like a junction (user's choice after session 11, over a small hop or no mark).
+- **Focus line through couples:** when an ancestor is selected, the highlight runs from a descendant along their half of
+  the couple line to the middle and down to the child, even though the descendant's partner is faded.
 
 ## 4. Saving behaviour as the user experiences it
 

@@ -157,9 +157,12 @@ The UI always shows the save status ("✓ Gespeichert" / "● Nicht in Datei ges
   - Multiple partners: the person stands between or next to their partners, each with their own children.
   - Adoption/step/foster: a dashed line, drawn only where it applies.
   - Unknown parent: the child hangs from the single known parent.
-  - Cousin marriages and other loops: the layout must not break. One person may then have a long connecting line,
-    which goes around the cards in the rows it passes.
+  - Cousin marriages, a partner from a family with more generations, and other loops: the layout must not break.
+    One person may then have a long connecting line. It gets a stand-in in every row it passes, so it is counted when
+    crossings are reduced and passes each row in a gap of its own.
+  - Lines that still cross: the horizontal one gets a small break, so a crossing never looks like a junction.
 - **Focus (TREE-02):** clicking a person highlights their ancestors and descendants and slightly fades everyone else.
+  The highlighted line runs through a descendant's couple line to the middle, where the line to their child starts.
   Double-click centers on them.
 - **Performance:** 100 persons is small. The layout is recomputed fully on every change, which is simpler and safe (TREE-05).
 

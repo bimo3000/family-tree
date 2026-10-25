@@ -3,7 +3,7 @@
 > Rewritten at the end of every session (skill `session-handover`). A fresh session must be able to
 > continue from this file alone. Keep it short and current. History lives in git, decisions in ADRs.
 
-**Last updated:** 2026-10-25 (session 11)
+**Last updated:** 2026-10-25 (session 12)
 
 ## Phase
 
@@ -13,19 +13,22 @@
 4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, **0.10.0** (languages).
 5. **Feedback and manual checks** ← current. Then 1.0.0.
 
-## Done in session 11 (pre-1.0 review and fixes, not released yet)
+## Done in session 12 (user feedback on crossing lines, not released yet)
 
-- **Review** with three helper agents (data safety, core logic, offline/tests), every finding re-checked. No data-loss
-  bug found: save/open round trip, dates in 3 languages, wrong files, autosave order all solid.
-- **Card dates (D-001, user):** full dates on the card when they fit, else years, then smaller. Vague years with symbols,
-  the same in every language: `~1850`, `<1900`, `>1900`, `1890/1895`; a wider space (`\u2002`) before `†`. Panel,
-  tooltip and hints keep words. `<1900`/`>1900` can be typed; "v. 1900" is no longer read as "about".
-  Root cause of the tiny year line: `fit()` read `line-height: normal` as NaN, so every year line shrank to 65 %.
-- **Fixes (each with a regression test):** the app opens and saves files when the browser refuses IndexedDB;
-  Chrome/Edge "Speichern" asks for a file again when the saved one was moved; an empty new relative is rewound
-  (`History.rewind`), so ↶ can't bring back a "?"; step/foster siblings are no half siblings (user); an existing
-  person linked as sibling gets the chosen kind only on the biological links.
-- Left as is (reported to the user): layout gets slow above ~200 persons (TREE-05 says ~100); French "divers" wording.
+- **Long lines get stand-ins** (`src/core/layout/passages.ts`, ADR-0006): a child more than one row below their parents
+  (married into a family with more generations) gets an invisible stand-in in every row the line passes. The ordering
+  now counts that line, and it passes each row in a gap of its own (before: squeezed between two partners, 9 px from
+  their child line, in the user's tree). Only trees with such lines get a different layout; Brandt is unchanged.
+- **More starting orders** (`order.ts`): when crossings remain, the walk also starts from the bottom and/or right to left;
+  another start wins only with fewer crossings. Crossing count per row pair by sorting. User's tree: 10 → 4 crossings.
+- **Breaks at crossings** (user's choice of three options): the horizontal line gets a 10 px gap (`breaks` in the layout,
+  `pathD(points, breaks)` in `geometry.ts`).
+- **Highlight through the couple line:** an ancestor selected → a descendant's half of the couple line is lit up to the
+  middle where the lit child line starts (`Highlight.halves`, `halfCouple`). Parents without a couple line light only
+  their own stem.
+- Tests: fixture `mismatched-generations` (fictional, the shape of the user's case), invariant "a line passing a row keeps
+  12 px from cards and other lines", `passages.test.ts`, breaks, halves, E2E half line.
+- Previous session (11): pre-1.0 review and fixes, card dates D-001 (see git history and ADRs).
 
 ## Next steps
 
@@ -38,7 +41,7 @@
 ## Open items for the user
 
 - Push the tags `v0.10.0` / `v0.9.0`? (Local only; optional.)
-- A new zip with the session 11 fixes? (Not built yet.)
+- A new zip with the session 11 and 12 changes? (Not built yet.)
 - Run the manual checklist on a Mac and on Windows. A French reader for `fr.ts` ("divers" for the gender option).
 
 ## Pitfalls / environment notes
@@ -78,6 +81,9 @@
 - Never keep a version of the project in a `$state` object (e.g. the dialog): Svelte wraps it in a proxy, and identity
   checks against the history fail. `ProjectScreen` keeps `beforeAdd` in a plain variable for that reason.
 - `fit()` in `PersonCard.svelte`: `line-height: normal` is not a number; the half-line tolerance falls back to the font size.
+- Quick layout experiments without vitest: `node --import <loader>` with a resolve hook that appends `.ts` / `/index.ts`
+  (Node 24 strips types itself), e.g. to count crossings of a project file. Keep such scripts in the scratchpad.
+- `data_x.json` (repo root, untracked) is the user's anonymized tree from session 12. Never commit it.
 - WebKit system deps (`libevent-2.1-7t64 libavif16`) are installed on this machine; a new machine needs them (sudo, by the user).
 
 ## Known gaps
@@ -89,4 +95,6 @@
 - Opening by drag & drop gives no file handle: in Chrome/Edge, "Speichern" then asks for a file ("Speichern unter").
 - Changes that are undone back to the saved state still count as unsaved.
 - "+ Geschwister" for a person without parents, then leaving the new sibling empty: the new "?" parent stays.
-- Lines don't glide with the cards; they jump to the new layout. Line crossings can still happen in some shapes.
+- Lines don't glide with the cards; they jump to the new layout. Some crossings remain where no simple order avoids
+  them (user's tree: 4, around a family with children between two siblings); they are drawn with a break.
+- Layout time: 100 persons ~30 ms, 200 persons ~130 ms when crossings remain (the extra starting orders).
