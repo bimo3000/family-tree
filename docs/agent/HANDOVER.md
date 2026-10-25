@@ -3,65 +3,43 @@
 > Rewritten at the end of every session (skill `session-handover`). A fresh session must be able to
 > continue from this file alone. Keep it short and current. History lives in git, decisions in ADRs.
 
-**Last updated:** 2026-10-25 (session 10)
+**Last updated:** 2026-10-25 (session 11)
 
 ## Phase
 
 1. ~~Development setup~~ ✅ (session 1)
 2. ~~Concept work~~ ✅ (session 1, `docs/concept/*`, ADR-0001…0008)
 3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history before `1bfe483`)
-4. ~~Functional development~~ ✅ S1…S6 all done (sessions 3–8). **Release 0.9.0** (test version).
-   Session 9: photo cropping (PERS-08). **Release 0.9.1**. Session 10: **S7 languages** (GEN-05). **Release 0.10.0**.
+4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, **0.10.0** (languages).
 5. **Feedback and manual checks** ← current. Then 1.0.0.
 
-## Done in session 10 (slice S7, English and French, GEN-05, was P-010)
+## Done in session 11 (pre-1.0 review and fixes, not released yet)
 
-- User decisions (2026-10-25, clarifications log): language choice on the start screen and at the bottom of the project
-  menu, remembered per browser (IndexedDB key `language`), not in the project file; no choice → browser language, else
-  English; three guides in the zip; dates DE `12.03.1923`, EN `12 Mar 1923`, FR `12/03/1923`; years must fit on the card.
-- **How texts work now (ADR-0008):** every UI text is in `src/ui/i18n/de.ts` (master copy). `en.ts` and `fr.ts` are typed
-  `Texts`, so a missing text fails the typecheck. Components read `t.section.text` from `i18n/index.svelte.ts` (a Proxy
-  over the current dictionary, reactive: switching re-renders without a reload). Grammar (relation words, articles,
-  dates) is written per language as small functions. `tests/unit/ui/i18n.test.ts` fails on text written in a `.svelte`
-  file's markup or a German string literal outside `i18n/`.
-- **Dates:** `parseDate` (core) reads German, English and French at once, always day first; `jui` stays text. Display per
-  language; the card uses short qualifiers (`dates.card`). Each language round-trips `parseDate(fmtDate(d))` (unit test).
-- **Bugs found and fixed (regression tests first):** a range shown as "1890 bis 1895" was read back as a text date when
-  any field of the person changed; a long year line ("* vor 1890 † nach 1925") was cut off on the card, also in German.
-  The year line now shrinks like the name (`fit()` in `PersonCard.svelte`, down to 65 %).
-- French texts and `Mode-d-emploi.md` were written by a helper agent and reviewed. "Annuler" is both undo and cancel
-  (usual in French apps); a step-child is "Bel-enfant"; the app keeps its name "Stammbaum" in every language.
-- **Release 0.10.0** (`release/Stammbaum-0.10.0.zip`): Anleitung.txt, Guide.txt, Mode-d-emploi.txt. Tag `v0.10.0` is
-  **local only** until the user OKs pushing it.
-
-## Done after 0.9.1 (feedback)
-
-- **Long names on a card:** all given names if they fit, else only the first; then the name shrinks (down to 70 %), so
-  the surname is never cut off. Fitting is measured in `PersonCard.svelte` (`fit`). Letters below the line ("g")
-  are no longer cut off (line height 1.3). Firefox reports a few px more height for a clamped box: the fit check allows
-  half a line. The chosen name depends on the font, so engines may differ ("Heinrich Brandt" in WebKit).
-  Since session 10 the same `fit()` also shrinks the year line.
-
-## Done in session 8 (slice S6, finish and release)
-
-- Print (one A4 landscape page, browser dialog), help dialog and hint bar, `Beispiel.stammbaum` in the zip, German user
-  guide, `docs/manual-checks.md`. Release `release/Stammbaum-0.9.0.zip`; tag `v0.9.0` is **local only** until the user OKs pushing it.
+- **Review** with three helper agents (data safety, core logic, offline/tests), every finding re-checked. No data-loss
+  bug found: save/open round trip, dates in 3 languages, wrong files, autosave order all solid.
+- **Card dates (D-001, user):** full dates on the card when they fit, else years, then smaller. Vague years with symbols,
+  the same in every language: `~1850`, `<1900`, `>1900`, `1890/1895`; a wider space (`\u2002`) before `†`. Panel,
+  tooltip and hints keep words. `<1900`/`>1900` can be typed; "v. 1900" is no longer read as "about".
+  Root cause of the tiny year line: `fit()` read `line-height: normal` as NaN, so every year line shrank to 65 %.
+- **Fixes (each with a regression test):** the app opens and saves files when the browser refuses IndexedDB;
+  Chrome/Edge "Speichern" asks for a file again when the saved one was moved; an empty new relative is rewound
+  (`History.rewind`), so ↶ can't bring back a "?"; step/foster siblings are no half siblings (user); an existing
+  person linked as sibling gets the chosen kind only on the biological links.
+- Left as is (reported to the user): layout gets slow above ~200 persons (TREE-05 says ~100); French "divers" wording.
 
 ## Next steps
 
-- The user tries 0.10.0 (all three languages) and, ideally, a French-speaking relative reads the French texts once.
-  Wording changes are small edits in `src/ui/i18n/fr.ts` (and `Mode-d-emploi.md`).
-- The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 14, languages). Record the
+- The user tries the fixes (build a new zip with `release-package`, e.g. 0.10.1, when they want one).
+- The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 9a, moved file). Record the
   results in that file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, regression test first).
 - Feedback rounds: each piece of feedback that changes behaviour goes through `requirement-change` first.
 - After the checks and fixes: 1.0.0 (skill `release-package`).
 
 ## Open items for the user
 
-- Push the tag `v0.10.0`? (Local only. `v0.9.0` is also still local only; pushing it is optional.)
-- Try 0.10.0: unzip `release/Stammbaum-0.10.0.zip`, double-click `Stammbaum.html`, switch the language at the bottom of
-  the start screen. Feedback wanted on the English and French wording and the language row's look.
-- Run the manual checklist on a Mac and on Windows.
+- Push the tags `v0.10.0` / `v0.9.0`? (Local only; optional.)
+- A new zip with the session 11 fixes? (Not built yet.)
+- Run the manual checklist on a Mac and on Windows. A French reader for `fr.ts` ("divers" for the gender option).
 
 ## Pitfalls / environment notes
 
@@ -97,6 +75,9 @@
 - A `|` inside a Markdown table cell must be written `\|`, or prettier splits the row into extra columns.
 - `npm run package` overwrites `release/Stammbaum-<version>.zip`: bump the version first. An old zip is rebuilt from its
   tag in a `git worktree` with a `node_modules` symlink.
+- Never keep a version of the project in a `$state` object (e.g. the dialog): Svelte wraps it in a proxy, and identity
+  checks against the history fail. `ProjectScreen` keeps `beforeAdd` in a plain variable for that reason.
+- `fit()` in `PersonCard.svelte`: `line-height: normal` is not a number; the half-line tolerance falls back to the font size.
 - WebKit system deps (`libevent-2.1-7t64 libavif16`) are installed on this machine; a new machine needs them (sudo, by the user).
 
 ## Known gaps
@@ -104,6 +85,7 @@
 - No real Safari/macOS or Windows check yet; the real Chrome/Edge file picker and the restart permission are untested by E2E.
 - Printing on another paper size than A4 landscape: the tree stays sized for A4 landscape (smaller or cut off).
 - No two-tab protection (architecture §7): two tabs with the same working copy overwrite each other. Not planned.
+- The working copy in IndexedDB has no schema version yet; version it at the first schema bump (architecture §5).
 - Opening by drag & drop gives no file handle: in Chrome/Edge, "Speichern" then asks for a file ("Speichern unter").
 - Changes that are undone back to the saved state still count as unsaved.
 - "+ Geschwister" for a person without parents, then leaving the new sibling empty: the new "?" parent stays.

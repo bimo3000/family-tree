@@ -145,3 +145,4 @@ Anything not covered by the concept or the mock-up that changes what the user se
 | 2026-10-25 | Crop preview dropped after the user's test. Release 0.9.1 (with cropping) for the manual checks. P-010 (multi-language UI) noted as an idea.                           |
 | 2026-10-25 | S7 (languages) started on the user's request: P-010 approved as the new GEN-05 (ADR-0008).                                                                             |
 | 2026-10-25 | S7 done (session 10). Release 0.10.0 with English and French.                                                                                                          |
+| 2026-10-25 | Session 11: pre-1.0 review (no data-loss issues found) and its small fixes; card dates with symbols and full dates where they fit (D-001). No new slice.               |
