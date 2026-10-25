@@ -10,7 +10,7 @@
 1. ~~Development setup~~ ✅ (session 1)
 2. ~~Concept work~~ ✅ (session 1, `docs/concept/*`, ADR-0001…0008)
 3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history before `1bfe483`)
-4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, **0.10.0** (languages).
+4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, 0.10.0 (languages), **0.11.0** (session 11 fixes, layout work of session 12, years only on the card).
 5. **Feedback and manual checks** ← current. Then 1.0.0.
 
 ## Done in session 12 (user feedback on crossing lines, not released yet)
@@ -28,11 +28,13 @@
   their own stem.
 - Tests: fixture `mismatched-generations` (fictional, the shape of the user's case), invariant "a line passing a row keeps
   12 px from cards and other lines", `passages.test.ts`, breaks, halves, E2E half line.
+- **Card shows years only again** (user: full dates too busy); D-001 updated, symbols for vague years stay.
+- **Release 0.11.0** built (`release/Stammbaum-0.11.0.zip`), checked from the unzipped folder.
 - Previous session (11): pre-1.0 review and fixes, card dates D-001 (see git history and ADRs).
 
 ## Next steps
 
-- The user tries the fixes (build a new zip with `release-package`, e.g. 0.10.1, when they want one).
+- The user tries 0.11.0 (`release/Stammbaum-0.11.0.zip`).
 - The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 9a, moved file). Record the
   results in that file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, regression test first).
 - Feedback rounds: each piece of feedback that changes behaviour goes through `requirement-change` first.
@@ -40,8 +42,7 @@
 
 ## Open items for the user
 
-- Push the tags `v0.10.0` / `v0.9.0`? (Local only; optional.)
-- A new zip with the session 11 and 12 changes? (Not built yet.)
+- Push the tags `v0.11.0` / `v0.10.0` / `v0.9.0`? (Local only; optional.)
 - Run the manual checklist on a Mac and on Windows. A French reader for `fr.ts` ("divers" for the gender option).
 - Timing test flaky (see Known gaps): OK to time the best of 3 runs?
 - Look at the new crossing breaks and the highlight through the couple line in your tree; do they look right?

@@ -128,22 +128,22 @@ Anything not covered by the concept or the mock-up that changes what the user se
 
 ## Change log
 
-| Date       | Change                                                                                                                                                                 |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-24 | Roadmap created after the mock-up phase (S1–S6).                                                                                                                       |
-| 2026-10-24 | S1 done (session 3). Notes for S4/S5 added: deleting a person leaves its image and `view.focusPersonId` to the state/storage layer.                                    |
-| 2026-10-24 | S2 done (session 4). Siblings share a row (not only partners). New S3 decision: confirm the layout choices of ADR-0006.                                                |
-| 2026-10-24 | S3 started (session 5). Example embedded, P-005 rejected. Undo/redo buttons move to S4, the save status to S5 (no dummy buttons).                                      |
-| 2026-10-24 | S3 done (session 5). Layout choices confirmed by the user; "?" node enlarged. Next: S4. Rendering 100 persons in the browser is checked once files can be opened (S5). |
-| 2026-10-24 | S4 started (session 6). The working copy moves from S4 to S5 (user's choice: until files exist it would only keep edits to the example). P-006 rejected.               |
-| 2026-10-24 | S4 done (session 6). Next: S5 (working copy, project files, pictures).                                                                                                 |
-| 2026-10-24 | S5 started (session 7). P-008 rejected. One working copy in the browser; before replacing an unsaved tree the app asks (user's choice).                                |
-| 2026-10-24 | S5 done (session 7). Next: S6 (finish and release). Real file picker (Chrome/Edge) and Safari need a manual check.                                                     |
-| 2026-10-24 | S6 started (session 8). Print: browser dialog, one A4 landscape page, PDF via the dialog, no PNG. Help: short dialog plus one hint. First zip: 0.9.0.                  |
-| 2026-10-24 | S6 done (session 8). All slices done. Release 0.9.0. Next: manual Mac/Windows checks and the user's feedback, then 1.0.0.                                              |
-| 2026-10-24 | Session 9: photo cropping (P-009 → PERS-08) built on the user's request before the manual checks. A feedback item, no new slice.                                       |
-| 2026-10-25 | Crop preview dropped after the user's test. Release 0.9.1 (with cropping) for the manual checks. P-010 (multi-language UI) noted as an idea.                           |
-| 2026-10-25 | S7 (languages) started on the user's request: P-010 approved as the new GEN-05 (ADR-0008).                                                                             |
-| 2026-10-25 | S7 done (session 10). Release 0.10.0 with English and French.                                                                                                          |
-| 2026-10-25 | Session 11: pre-1.0 review (no data-loss issues found) and its small fixes; card dates with symbols and full dates where they fit (D-001). No new slice.               |
-| 2026-10-25 | Session 12: user feedback on crossing lines: stand-ins for long lines, more starting orders, breaks at crossings, highlight through the couple line. No new slice.     |
+| Date       | Change                                                                                                                                                                                             |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-24 | Roadmap created after the mock-up phase (S1–S6).                                                                                                                                                   |
+| 2026-10-24 | S1 done (session 3). Notes for S4/S5 added: deleting a person leaves its image and `view.focusPersonId` to the state/storage layer.                                                                |
+| 2026-10-24 | S2 done (session 4). Siblings share a row (not only partners). New S3 decision: confirm the layout choices of ADR-0006.                                                                            |
+| 2026-10-24 | S3 started (session 5). Example embedded, P-005 rejected. Undo/redo buttons move to S4, the save status to S5 (no dummy buttons).                                                                  |
+| 2026-10-24 | S3 done (session 5). Layout choices confirmed by the user; "?" node enlarged. Next: S4. Rendering 100 persons in the browser is checked once files can be opened (S5).                             |
+| 2026-10-24 | S4 started (session 6). The working copy moves from S4 to S5 (user's choice: until files exist it would only keep edits to the example). P-006 rejected.                                           |
+| 2026-10-24 | S4 done (session 6). Next: S5 (working copy, project files, pictures).                                                                                                                             |
+| 2026-10-24 | S5 started (session 7). P-008 rejected. One working copy in the browser; before replacing an unsaved tree the app asks (user's choice).                                                            |
+| 2026-10-24 | S5 done (session 7). Next: S6 (finish and release). Real file picker (Chrome/Edge) and Safari need a manual check.                                                                                 |
+| 2026-10-24 | S6 started (session 8). Print: browser dialog, one A4 landscape page, PDF via the dialog, no PNG. Help: short dialog plus one hint. First zip: 0.9.0.                                              |
+| 2026-10-24 | S6 done (session 8). All slices done. Release 0.9.0. Next: manual Mac/Windows checks and the user's feedback, then 1.0.0.                                                                          |
+| 2026-10-24 | Session 9: photo cropping (P-009 → PERS-08) built on the user's request before the manual checks. A feedback item, no new slice.                                                                   |
+| 2026-10-25 | Crop preview dropped after the user's test. Release 0.9.1 (with cropping) for the manual checks. P-010 (multi-language UI) noted as an idea.                                                       |
+| 2026-10-25 | S7 (languages) started on the user's request: P-010 approved as the new GEN-05 (ADR-0008).                                                                                                         |
+| 2026-10-25 | S7 done (session 10). Release 0.10.0 with English and French.                                                                                                                                      |
+| 2026-10-25 | Session 11: pre-1.0 review (no data-loss issues found) and its small fixes; card dates with symbols and full dates where they fit (D-001). No new slice.                                           |
+| 2026-10-25 | Session 12: user feedback on crossing lines: stand-ins for long lines, more starting orders, breaks at crossings, highlight through the couple line. Years only on the card again. Release 0.11.0. |
