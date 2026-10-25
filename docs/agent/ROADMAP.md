@@ -126,3 +126,4 @@ Anything not covered by the concept or the mock-up that changes what the user se
 | 2026-10-24 | S6 started (session 8). Print: browser dialog, one A4 landscape page, PDF via the dialog, no PNG. Help: short dialog plus one hint. First zip: 0.9.0.                  |
 | 2026-10-24 | S6 done (session 8). All slices done. Release 0.9.0. Next: manual Mac/Windows checks and the user's feedback, then 1.0.0.                                              |
 | 2026-10-24 | Session 9: photo cropping (P-009 → PERS-08) built on the user's request before the manual checks. A feedback item, no new slice.                                       |
+| 2026-10-25 | Crop preview dropped after the user's test. Release 0.9.1 (with cropping) for the manual checks. P-010 (multi-language UI) noted as an idea.                           |

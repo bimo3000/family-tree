@@ -3,7 +3,7 @@
 > Rewritten at the end of every session (skill `session-handover`). A fresh session must be able to
 > continue from this file alone. Keep it short and current. History lives in git, decisions in ADRs.
 
-**Last updated:** 2026-10-24 (session 9)
+**Last updated:** 2026-10-25 (session 9)
 
 ## Phase
 
@@ -11,7 +11,7 @@
 2. ~~Concept work~~ ✅ (session 1, `docs/concept/*`, ADR-0001…0007)
 3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history before `1bfe483`)
 4. ~~Functional development~~ ✅ S1…S6 all done (sessions 3–8). **Release 0.9.0** (test version).
-   Session 9: photo cropping (PERS-08) added on request; not in a zip yet.
+   Session 9: photo cropping (PERS-08) added on request. **Release 0.9.1** (test version for the manual checks).
 5. **Feedback and manual checks** ← current. Then 1.0.0.
 
 ## Done in session 9 (photo cropping, PERS-08, was P-009)
@@ -21,6 +21,10 @@
 - `src/core/photoCrop.ts` (7:5 part, zoom 1–5×, move, placement), `src/ui/dialogs/PhotoCropper.svelte` (drag, arrow
   keys, "Größe" slider; 560×400 frame, no extra preview), shown inside `PersonDialog` in place of the form. `preparePicture(file, crop)`.
 - Tests: 342 unit, 53 E2E per engine (`photos.spec.ts`: 7:5 size, zoom, mouse/keys, cancel/Esc).
+- **Release 0.9.1** (`release/Stammbaum-0.9.1.zip`, 61 kB): zip checked, unzipped app opened in all three engines,
+  `Beispiel.stammbaum` opened, a photo cropped. Tag `v0.9.1` pushed (user's OK).
+- **P-010 multi-language UI** (German, English, French) noted as an idea only: app texts only; project data, `Stammbaum.html`
+  and `.stammbaum` stay as they are. No concept yet; build only after the user decides.
 - User tried it ("works nice"): the preview was dropped as redundant. "Speichern unter" with an own file name in
   Firefox/Safari was discussed and dropped (clarifications log, 2026-10-25).
 
@@ -31,21 +35,17 @@
 
 ## Next steps
 
-- A new test zip (0.9.1, skill `release-package`) if they want one
-  for the manual checks, since 0.9.0 has no cropping.
-- If the user agrees: `git push origin v0.9.0`.
-- The user tries 0.9.0 and runs `docs/manual-checks.md` on a real Mac (Safari) and Windows. Record the results in that
+- The user tries 0.9.1 and runs `docs/manual-checks.md` on a real Mac (Safari) and Windows. Record the results in that
   file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, with a regression test first).
 - Feedback rounds: each piece of feedback that changes behaviour goes through `requirement-change` first.
 - After the checks and fixes: 1.0.0 (skill `release-package`).
 
 ## Open items for the user
 
-- Push the tag `v0.9.0`? (skill rule: ask first)
-- Try 0.9.0: unzip `release/Stammbaum-0.9.0.zip`, double-click `Stammbaum.html`. Feedback wanted on the printout,
+- The tag `v0.9.0` is still local only (0.9.1 replaces it for testing; pushing it is optional).
+- Try 0.9.1: unzip `release/Stammbaum-0.9.1.zip`, double-click `Stammbaum.html`. Feedback wanted on the printout,
   the help text, the hint bar, and everything from S5 (start screen, menu, save status, reminder).
 - Run the manual checklist on a Mac and on Windows.
-- A 0.9.1 zip for the manual checks (0.9.0 has no cropping)?
 
 ## Pitfalls / environment notes
 
