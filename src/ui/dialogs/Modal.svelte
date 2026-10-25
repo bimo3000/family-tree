@@ -36,6 +36,17 @@
     e.preventDefault();
     onclose();
   }}
+  onkeydown={(e) => {
+    // Enter in a field presses the highlighted button („Fertig“, „Hinzufügen“). Not in a text area (new
+    // line), on a button (it presses itself), in a select (an open list) or in a form (it submits itself).
+    const target = e.target as HTMLElement;
+    if (e.key !== 'Enter' || e.isComposing || !target.matches('input') || target.closest('form'))
+      return;
+    const primary = dialog.querySelector<HTMLButtonElement>('.btn.primary:not(:disabled)');
+    if (!primary) return;
+    e.preventDefault();
+    primary.click();
+  }}
   onpointerdown={(e) => (pressedOutside = e.target === dialog)}
   onclick={(e) => {
     if (e.target === dialog && pressedOutside) onclose();

@@ -34,7 +34,7 @@ nehmen, die `.stammbaum`-Datei bleibt dieselbe.
 - **Klick auf eine Person**: Rechts erscheinen ihre Angaben und ihre Familie.
 - **Bearbeiten**: Namen, Geburt, Tod, Orte und ein Foto. Unter „Mehr Angaben“ findest du Geschlecht,
   Beruf, Wohnorte, Lebensgeschichte und eigene Felder. **Alle Angaben sind freiwillig.**
-  Was du eintippst, gilt sofort. „Fertig“ schließt das Fenster.
+  Was du eintippst, gilt sofort. „Fertig“ (oder die Eingabetaste) schließt das Fenster.
 - **Ungenaue Daten** gehen auch: „12.03.1923“, „03.1923“, „1923“, „ca. 1850“, „vor 1900“ oder
   „nach 1900“. Unter dem Feld siehst du, wie das Programm deine Eingabe verstanden hat. Englische
   und französische Schreibweisen versteht es auch („12/03/1923“, „about 1850“, „vers 1850“).
@@ -60,7 +60,7 @@ vorher als JPG.
 
 - **Verschieben**: mit gedrückter Maustaste ziehen.
 - **Zoomen**: Mausrad oder die Knöpfe + und − unten rechts. „Alles anzeigen“ zeigt den ganzen Baum.
-- **Doppelklick** auf eine Person holt sie in die Mitte. Die Taste Esc hebt die Auswahl auf.
+- **Doppelklick** auf eine Person öffnet sie zum Bearbeiten. Die Taste Esc hebt die Auswahl auf.
 
 ## Speichern
 

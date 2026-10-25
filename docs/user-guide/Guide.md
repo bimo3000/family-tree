@@ -34,7 +34,7 @@ their own computer; the `.stammbaum` file stays the same.
 - **Click a person**: their details and family appear on the right.
 - **Edit**: names, birth, death, places and a photo. Under “More details” you find gender,
   occupation, places lived, life story and your own fields. **Every detail is optional.**
-  What you type applies at once. “Done” closes the window.
+  What you type applies at once. “Done” (or the Enter key) closes the window.
 - **Vague dates** work too: “12 Mar 1923”, “12/03/1923”, “March 1923”, “1923”, “about 1850”,
   “before 1900” or “after 1900”. Always write the day before the month. Below the field you see how
   the program understood what you typed. On a card, vague years are short: “~1850” (about),
@@ -59,7 +59,7 @@ as JPG first in that case.
 
 - **Move**: drag with the mouse button held down.
 - **Zoom**: mouse wheel or the + and − buttons at the bottom right. “Show all” shows the whole tree.
-- **Double-click** a person to bring them to the middle. The Esc key clears the selection.
+- **Double-click** a person to open them for editing. The Esc key clears the selection.
 
 ## Saving
 

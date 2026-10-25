@@ -68,6 +68,48 @@ test.describe('editing a person (PERS-01, PERS-06, UI-01)', () => {
   });
 });
 
+test.describe('Enter presses the highlighted button', () => {
+  test('in the person dialog: „Fertig“', async ({ page }) => {
+    await open(page, 'p_karl', 'Bearbeiten');
+    await dialog(page).getByLabel('Vornamen').fill('Carl');
+    await dialog(page).getByLabel('Vornamen').press('Enter');
+    await expect(dialog(page)).toBeHidden();
+    await expect(card(page, 'p_karl')).toContainText('Carl Brandt');
+  });
+
+  test('in „+ Kind“: „Hinzufügen“, then „Fertig“ in the new person', async ({ page }) => {
+    await open(page, 'p_thomas', '+ Kind');
+    // No text field here: the focus is on the first choice.
+    await page.keyboard.press('Enter');
+    await expect(dialog(page).getByRole('heading')).toHaveText('Person eintragen');
+    await page.keyboard.type('Paul');
+    await page.keyboard.press('Enter');
+    await expect(dialog(page)).toBeHidden();
+    await expect(page.locator('.card')).toHaveCount(22);
+    await expect(panel(page).getByRole('heading', { level: 2 })).toHaveText('Paul');
+  });
+
+  test('in „Lebensgeschichte“ Enter starts a new line', async ({ page }) => {
+    await open(page, 'p_karl', 'Bearbeiten');
+    const bio = dialog(page).getByLabel('Lebensgeschichte');
+    if (!(await bio.isVisible())) await dialog(page).getByText('Mehr Angaben').click();
+    await bio.fill('Erste Zeile');
+    await bio.press('Enter');
+    await bio.pressSequentially('Zweite Zeile');
+    await expect(dialog(page)).toBeVisible();
+    await expect(bio).toHaveValue('Erste Zeile\nZweite Zeile');
+  });
+});
+
+test('a double-click on a card opens the person for editing', async ({ page }) => {
+  await card(page, 'p_karl').dblclick();
+  await expect(dialog(page).getByRole('heading')).toHaveText('Person bearbeiten');
+  await expect(dialog(page).getByLabel('Vornamen')).toHaveValue('Karl Heinrich');
+  await page.keyboard.press('Escape');
+  await expect(dialog(page)).toBeHidden();
+  await expect(panel(page).getByRole('heading', { level: 2 })).toHaveText('Karl Heinrich Brandt');
+});
+
 test('the gender chosen under "Mehr Angaben" sets the wording (PERS-07)', async ({ page }) => {
   await card(page, 'p_mia').click();
   await expect(panel(page)).not.toContainText('Schwester');

@@ -23,8 +23,9 @@
     project: Project;
     selectedId: PersonId | null;
     onselect: (id: PersonId | null) => void;
+    onedit: (id: PersonId) => void;
   }
-  let { project, selectedId, onselect }: Props = $props();
+  let { project, selectedId, onselect, onedit }: Props = $props();
 
   const layout = $derived(computeLayout(project));
   const boxes = $derived(new Map(layout.cards.map((c) => [c.id, c])));
@@ -210,7 +211,7 @@
           selected={box.id === selectedId}
           dim={!!focus && !focus.has(box.id)}
           onselect={() => select(box.id)}
-          oncentre={() => centre(box.id)}
+          onedit={() => onedit(box.id)}
           onhover={(e) => hover(person, e)}
         />
       {/if}

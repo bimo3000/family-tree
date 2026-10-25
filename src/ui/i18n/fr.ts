@@ -356,7 +356,7 @@ export const fr: Texts = {
       },
       {
         title: 'Déplacer et zoomer',
-        text: 'Fais glisser avec la souris pour déplacer l’arbre. Avec la molette ou avec + et −, tu zoomes. «\u00a0Tout afficher\u00a0» montre l’arbre entier. Un double-clic sur une personne la place au centre.',
+        text: 'Fais glisser avec la souris pour déplacer l’arbre. Avec la molette ou avec + et −, tu zoomes. «\u00a0Tout afficher\u00a0» montre l’arbre entier. Un double-clic sur une personne l’ouvre pour la modifier.',
       },
       {
         title: 'Modifier les relations',

@@ -234,7 +234,13 @@
       >
     </div>
   {/if}
-  <TreeView bind:this={tree} {project} selectedId={editor.selectedId} onselect={select} />
+  <TreeView
+    bind:this={tree}
+    {project}
+    selectedId={editor.selectedId}
+    onselect={select}
+    onedit={(id) => (dialog = { type: 'person', id })}
+  />
   {#if selected}
     {@const id = selected.id}
     <DetailPanel

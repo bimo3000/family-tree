@@ -223,13 +223,15 @@ test.describe('pan and zoom (TREE-02)', () => {
     await expect.poll(async () => (await view(page)).k).toBeGreaterThan(start.k);
   });
 
-  test('double-click centres a person, also next to the open panel', async ({ page }) => {
-    await card(page, 'p_jonas').dblclick();
-    await expect(panel(page)).toBeVisible();
+  test('a name in the panel centres that person, next to the open panel', async ({ page }) => {
+    await card(page, 'p_peter').click();
+    await panel(page)
+      .getByRole('button', { name: /^Karl Brandt/ })
+      .click();
     await expect
       .poll(async () => {
         const viewport = await page.locator('.viewport').boundingBox();
-        const box = await card(page, 'p_jonas').boundingBox();
+        const box = await card(page, 'p_karl').boundingBox();
         return box && viewport
           ? Math.abs(box.x + box.width / 2 - viewport.x - viewport.width / 2)
           : 999;

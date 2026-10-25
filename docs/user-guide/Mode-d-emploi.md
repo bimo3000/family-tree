@@ -32,7 +32,7 @@ Au démarrage suivant, ton arbre est tout de suite de retour.
 - **Modifier** : noms, naissance, décès, lieux et une photo. Sous « Plus d’informations », tu trouves
   le sexe, la profession, les lieux de résidence, la biographie et tes propres champs. **Toutes les
   informations sont facultatives.** Ce que tu tapes est pris en compte tout de suite. « Terminé »
-  ferme la fenêtre.
+  (ou la touche Entrée) ferme la fenêtre.
 - **Les dates approximatives** fonctionnent aussi : « 12/03/1923 », « 03/1923 », « 1923 »,
   « vers 1850 », « avant 1900 » ou « après 1900 ». Sous le champ, tu vois comment le programme a
   compris ta saisie. Sur une carte, les années approximatives sont abrégées : « ~1850 » (vers),
@@ -62,7 +62,7 @@ alors d’abord en JPG.
 - **Déplacer** : faire glisser en gardant le bouton de la souris enfoncé.
 - **Zoomer** : la molette de la souris ou les boutons + et − en bas à droite. « Tout afficher »
   montre l’arbre entier.
-- **Double-clic** sur une personne : elle se place au centre. La touche Échap annule la sélection.
+- **Double-clic** sur une personne : elle s’ouvre pour être modifiée. La touche Échap annule la sélection.
 
 ## Enregistrer
 

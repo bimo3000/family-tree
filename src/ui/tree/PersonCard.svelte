@@ -12,10 +12,11 @@
     selected: boolean;
     dim: boolean;
     onselect: () => void;
-    oncentre: () => void;
+    /** A double-click opens the person for editing. */
+    onedit: () => void;
     onhover: (e: MouseEvent | null) => void;
   }
-  let { person, box, selected, dim, onselect, oncentre, onhover }: Props = $props();
+  let { person, box, selected, dim, onselect, onedit, onhover }: Props = $props();
 
   const photoUrl = usePhotos();
   const photo = $derived(photoUrl(person.photoId));
@@ -65,7 +66,7 @@
     e.stopPropagation();
     onselect();
   }}
-  ondblclick={oncentre}
+  ondblclick={onedit}
   onmouseenter={(e) => onhover(e)}
   onmousemove={(e) => onhover(e)}
   onmouseleave={() => onhover(null)}

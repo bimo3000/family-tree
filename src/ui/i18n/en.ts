@@ -327,7 +327,7 @@ export const en: Texts = {
       },
       {
         title: 'Moving and zooming the tree',
-        text: 'Drag with the mouse to move the tree. Zoom with the mouse wheel or with + and −. “Show all” shows the whole tree. A double-click on a person brings them to the middle.',
+        text: 'Drag with the mouse to move the tree. Zoom with the mouse wheel or with + and −. “Show all” shows the whole tree. A double-click on a person opens them for editing.',
       },
       {
         title: 'Changing relationships',

@@ -71,7 +71,7 @@
 - No photo: a neutral placeholder with initials. Neutral card colours (no colours by gender).
 - **Hover:** a small tooltip with full dates and places, plus "geb. Schmidt" if a birth name exists (PERS-05).
 - **Click:** selects the person, highlights their line (ancestors and descendants) and opens the detail panel.
-- **Double-click:** centers the tree on the person.
+- **Double-click:** opens the person dialog, like „Bearbeiten“ in the panel (decided 2026-10-25; before, it centred the person).
 
 ### 2.4 Detail panel (PERS-05)
 
@@ -95,6 +95,8 @@
   (or use the arrow keys), set "Größe" with a slider (1× to 5×). The frame has the card's photo shape, so no extra preview is needed. "Übernehmen" stores
   only that part, "Abbrechen" or Esc adds nothing. To change the part later, the photo is chosen again.
 - Changes apply immediately, with undo. "Fertig" closes the form. There is no "Abbrechen" that loses work: the user undoes instead.
+- **Enter** in a field presses the highlighted button of any dialog ("Fertig", "Hinzufügen", …); in the multi-line
+  Lebensgeschichte it starts a new line (decided 2026-10-25).
 
 ### 2.6 Adding relatives (the main way the tree grows)
 

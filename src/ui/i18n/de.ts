@@ -369,7 +369,7 @@ export const de = {
       },
       {
         title: 'Baum bewegen und zoomen',
-        text: 'Zieh mit der Maus, um den Baum zu verschieben. Mit dem Mausrad oder mit + und − zoomst du. „Alles anzeigen“ zeigt den ganzen Baum. Ein Doppelklick auf eine Person holt sie in die Mitte.',
+        text: 'Zieh mit der Maus, um den Baum zu verschieben. Mit dem Mausrad oder mit + und − zoomst du. „Alles anzeigen“ zeigt den ganzen Baum. Ein Doppelklick auf eine Person öffnet sie zum Bearbeiten.',
       },
       {
         title: 'Beziehungen ändern',
