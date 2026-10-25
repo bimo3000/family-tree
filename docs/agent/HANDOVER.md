@@ -19,9 +19,10 @@
 - User decisions: the part is **cut out permanently** when the photo is added (best quality: cut from the original,
   then max. 2000 px); the crop view opens **right after "Foto wählen …"**. No "Ausschnitt ändern": choose the photo again.
 - `src/core/photoCrop.ts` (7:5 part, zoom 1–5×, move, placement), `src/ui/dialogs/PhotoCropper.svelte` (drag, arrow
-  keys, "Größe" slider, card-sized preview), shown inside `PersonDialog` in place of the form. `preparePicture(file, crop)`.
+  keys, "Größe" slider; 560×400 frame, no extra preview), shown inside `PersonDialog` in place of the form. `preparePicture(file, crop)`.
 - Tests: 342 unit, 53 E2E per engine (`photos.spec.ts`: 7:5 size, zoom, mouse/keys, cancel/Esc).
-- **The user has not seen the crop view yet.** A screenshot was shown in chat; feedback on the look is still open.
+- User tried it ("works nice"): the preview was dropped as redundant. "Speichern unter" with an own file name in
+  Firefox/Safari was discussed and dropped (clarifications log, 2026-10-25).
 
 ## Done in session 8 (slice S6, finish and release)
 
@@ -30,7 +31,7 @@
 
 ## Next steps
 
-- Get the user's feedback on the crop view. Then a new test zip (0.9.1, skill `release-package`) if they want one
+- A new test zip (0.9.1, skill `release-package`) if they want one
   for the manual checks, since 0.9.0 has no cropping.
 - If the user agrees: `git push origin v0.9.0`.
 - The user tries 0.9.0 and runs `docs/manual-checks.md` on a real Mac (Safari) and Windows. Record the results in that
@@ -44,7 +45,7 @@
 - Try 0.9.0: unzip `release/Stammbaum-0.9.0.zip`, double-click `Stammbaum.html`. Feedback wanted on the printout,
   the help text, the hint bar, and everything from S5 (start screen, menu, save status, reminder).
 - Run the manual checklist on a Mac and on Windows.
-- Feedback on the crop view (layout, slider, preview). A 0.9.1 zip for the manual checks?
+- A 0.9.1 zip for the manual checks (0.9.0 has no cropping)?
 
 ## Pitfalls / environment notes
 
