@@ -35,6 +35,7 @@ Run these in the repo folder. Prerequisite: `nvm use` (selects the Node version 
 | `npm run test:e2e`  | Browser tests of the built app in Chromium, Firefox and WebKit (Playwright). Needs `build` first.      |
 | `npm run verify`    | Everything above in order. This is exactly what the pre-push hook runs.                                |
 | `npm run package`   | Builds `release/Stammbaum-<version>.zip`, ready to email.                                              |
+| `npm run demo-gif`  | Records the README demo `docs/assets/demo.gif` (Chromium, English). Needs Python 3 with Pillow.        |
 
 To view the latest browser-test report: `npx playwright show-report`.
 

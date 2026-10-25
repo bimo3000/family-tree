@@ -49,6 +49,9 @@
 
 ## Pitfalls / environment notes
 
+- **README demo GIF** (`docs/assets/demo.gif`): recorded by `npm run demo-gif` (storyline `scripts/demo-gif/demo.spec.ts`,
+  frames → GIF with Python/Pillow in `make-gif.py`). Re-run it after visible UI changes and look at the result before committing.
+
 - `node` may not be on PATH in the Bash tool → `export PATH=$HOME/.nvm/versions/node/$(cat .nvmrc)/bin:$PATH`.
 - `prettier --check` is part of `npm run lint`. Run `npx prettier --write <files>` after editing code or Markdown.
   Prettier re-wraps German text: use `&nbsp;` where a break must not happen ("„+&nbsp;Kind“").

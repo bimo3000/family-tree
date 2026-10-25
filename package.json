@@ -19,7 +19,8 @@
     "test:unit:watch": "vitest",
     "test:e2e": "playwright test",
     "verify": "npm run typecheck && npm run lint && npm run test:unit && npm run build && npm run test:e2e",
-    "package": "npm run build && node scripts/package-release.mjs"
+    "package": "npm run build && node scripts/package-release.mjs",
+    "demo-gif": "npm run build && playwright test -c scripts/demo-gif && python3 scripts/demo-gif/make-gif.py"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
