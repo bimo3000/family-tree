@@ -20,19 +20,26 @@
   const photoUrl = usePhotos();
   const photo = $derived(photoUrl(person.photoId));
 
-  /** Fits the name into two lines (ui-concept §2.3): all given names, else only the first, then smaller down to 70 %. */
-  function fitName(names: string[]): Attachment<HTMLElement> {
+  /**
+   * Fits a text into its box: the first variant that fits, else the last one smaller, down to `min` %.
+   * The name (two lines, ui-concept §2.3): all given names, else only the first, down to 70 %. The years
+   * (one line): down to 65 %, so two date ranges still show in full in every language (user, 2026-10-25).
+   */
+  function fit(texts: string[], min: number): Attachment<HTMLElement> {
     return (el) => {
       // Firefox reports a few px more than the two lines; a third line would add a whole line.
       const fits = () =>
         el.scrollHeight < el.clientHeight + parseFloat(getComputedStyle(el).lineHeight) / 2 &&
         el.scrollWidth <= el.clientWidth + 1;
-      for (const name of names) {
-        el.textContent = name;
+      for (const text of texts) {
+        el.textContent = text;
         el.style.fontSize = '';
         if (fits()) return;
       }
-      for (let pct = 95; pct >= 70 && !fits(); pct -= 5) el.style.fontSize = `${pct}%`;
+      // In pixels of its own size: the year line is already smaller than the card's text.
+      const size = parseFloat(getComputedStyle(el).fontSize);
+      for (let pct = 95; pct >= min && !fits(); pct -= 5)
+        el.style.fontSize = `${(size * pct) / 100}px`;
     };
   }
 </script>
@@ -66,8 +73,8 @@
       {#if photo}<img src={photo} alt="" draggable="false" />{:else}{initials(person)}{/if}
     </span>
     <span class="txt">
-      <span class="nm" {@attach fitName([fullName(person), shortName(person)])}></span>
-      <span class="yr">{yearsLine(person)}</span>
+      <span class="nm" {@attach fit([fullName(person), shortName(person)], 70)}></span>
+      <span class="yr" {@attach fit([yearsLine(person)], 65)}></span>
     </span>
   {/if}
 </button>

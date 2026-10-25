@@ -100,6 +100,18 @@ test.describe('long names on a card (PERS-04)', () => {
   });
 });
 
+test('a long year line gets smaller instead of being cut off (PERS-04)', async ({ page }) => {
+  await card(page, 'p_karl').click();
+  await panel(page).getByRole('button', { name: 'Bearbeiten', exact: true }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel('Geboren am').fill('zw. 1890 und 1895');
+  await dialog.getByLabel('Gestorben am').fill('zw. 1920 und 1925');
+  await dialog.getByRole('button', { name: 'Fertig' }).click();
+  const yr = card(page, 'p_karl').locator('.yr');
+  await expect(yr).toHaveText('* 1890 bis 1895 † 1920 bis 1925');
+  expect(await yr.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+});
+
 test.describe('selection and detail panel (PERS-05, PERS-07)', () => {
   test('selecting a person highlights their line and opens the panel', async ({ page }) => {
     await card(page, 'p_peter').click();
