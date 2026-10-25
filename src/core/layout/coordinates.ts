@@ -43,25 +43,39 @@ export function placeRows(
     setStarts(row, starts);
   }
 
+  // What each block is pulled towards, worked out once: its members' parents, and per set of parents in the
+  // block their children (whose middle they should stand above).
+  const pulls = new Map(
+    order.flat().map((block) => {
+      const ups = block.flatMap((id) => {
+        const parents = get(graph.parents, id);
+        return parents.length ? [{ id, parents }] : [];
+      });
+      const families = new Map<string, { parents: PersonId[]; kids: PersonId[] }>();
+      for (const id of block)
+        for (const kid of get(graph.children, id)) {
+          const parents = get(graph.parents, kid).filter((p) => block.includes(p));
+          const key = parents.join(' ');
+          const family = families.get(key) ?? { parents, kids: [] };
+          family.kids.push(kid);
+          families.set(key, family);
+        }
+      const downs = [...families.values()].map(({ parents, kids }) => ({
+        kids,
+        offset: mean(parents.map((p) => get(offset, p))) ?? 0,
+      }));
+      return [block, { ups, downs }] as const;
+    }),
+  );
   const wish = (block: PersonId[]): [number, number] => {
+    const { ups, downs } = get(pulls, block);
     const wishes: number[] = [];
-    for (const id of block) {
-      const above = mean(get(graph.parents, id).map((p) => get(x, p)));
-      if (above !== undefined) wishes.push(above - get(offset, id));
-    }
+    for (const { id, parents } of ups)
+      wishes.push((mean(parents.map((p) => get(x, p))) ?? 0) - get(offset, id));
     // One wish per set of parents in this block: their middle above the middle of their children.
-    const families = new Map<string, { parents: PersonId[]; kids: number[] }>();
-    for (const id of block)
-      for (const kid of get(graph.children, id)) {
-        const parents = get(graph.parents, kid).filter((p) => block.includes(p));
-        const key = parents.join(' ');
-        const family = families.get(key) ?? { parents, kids: [] };
-        family.kids.push(get(x, kid));
-        families.set(key, family);
-      }
-    for (const { parents, kids } of families.values()) {
-      const middle = (Math.min(...kids) + Math.max(...kids)) / 2;
-      wishes.push(middle - (mean(parents.map((p) => get(offset, p))) ?? 0));
+    for (const { kids, offset: at } of downs) {
+      const xs = kids.map((kid) => get(x, kid));
+      wishes.push((Math.min(...xs) + Math.max(...xs)) / 2 - at);
     }
     const value = mean(wishes);
     return value === undefined ? [get(x, get(block, 0)), IDLE_WEIGHT] : [value, wishes.length];

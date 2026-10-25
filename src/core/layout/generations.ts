@@ -43,6 +43,8 @@ export function assignRows(graph: FamilyGraph): Map<PersonId, number> {
  */
 function sameRowGroups(graph: FamilyGraph): PersonId[][] {
   const rep = new Map(graph.ids.map((id) => [id, id]));
+  // Members of each group, by the group's representative.
+  const members = new Map(graph.ids.map((id) => [id, [id]]));
   const find = (id: PersonId): PersonId => {
     let r = id;
     while (get(rep, r) !== r) r = get(rep, r);
@@ -53,7 +55,7 @@ function sameRowGroups(graph: FamilyGraph): PersonId[][] {
     const seen = new Set([from]);
     const todo = [from];
     for (let g = todo.pop(); g !== undefined; g = todo.pop())
-      for (const id of graph.ids.filter((m) => find(m) === g))
+      for (const id of get(members, g))
         for (const c of get(graph.children, id)) {
           const cg = find(c);
           if (cg === to) return true;
@@ -67,7 +69,10 @@ function sameRowGroups(graph: FamilyGraph): PersonId[][] {
   const join = (x: PersonId, y: PersonId) => {
     const a = find(x);
     const b = find(y);
-    if (a !== b && !reaches(a, b) && !reaches(b, a)) rep.set(b, a);
+    if (a !== b && !reaches(a, b) && !reaches(b, a)) {
+      rep.set(b, a);
+      members.set(a, [...get(members, a), ...get(members, b)]);
+    }
   };
   for (const id of graph.ids) for (const partner of get(graph.partners, id)) join(id, partner);
   for (const id of graph.ids) {

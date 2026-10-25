@@ -80,23 +80,32 @@ function swapNeighbours(
   blocks: PersonId[][],
   rows: number[][],
 ): number {
+  const ids = rows.map((row) => persons(blocks, row));
+  const pos = ids.map(indexOf);
   // Crossings between row r - 1 and row r; a swap in row r only changes those of r and r + 1.
-  const pairs = rows.map((_, r) => (r ? rowCrossings(above, blocks, rows, r) : 0));
+  const between = (r: number) =>
+    r > 0 && r < rows.length ? rowCrossings(above, get(pos, r - 1), get(ids, r)) : 0;
+  const pairs = rows.map((_, r) => between(r));
   let count = pairs.reduce((sum, n) => sum + n, 0);
+  const swap = (row: number[], r: number, i: number) => {
+    row.splice(i, 2, get(row, i + 1), get(row, i));
+    ids[r] = persons(blocks, row);
+    pos[r] = indexOf(get(ids, r));
+  };
   for (let improved = true; improved && count > 0;) {
     improved = false;
     rows.forEach((row, r) => {
       for (let i = 0; i + 1 < row.length; i++) {
-        row.splice(i, 2, get(row, i + 1), get(row, i));
-        const upper = r ? rowCrossings(above, blocks, rows, r) : 0;
-        const lower = r + 1 < rows.length ? rowCrossings(above, blocks, rows, r + 1) : 0;
+        swap(row, r, i);
+        const upper = between(r);
+        const lower = between(r + 1);
         const before = get(pairs, r) + (pairs[r + 1] ?? 0);
         if (upper + lower < before) {
           count -= before - upper - lower;
           pairs[r] = upper;
           if (r + 1 < rows.length) pairs[r + 1] = lower;
           improved = true;
-        } else row.splice(i, 2, get(row, i + 1), get(row, i));
+        } else swap(row, r, i);
       }
     });
   }
@@ -200,7 +209,8 @@ function reorderRow(
   towards: 'parents' | 'children',
   flipTies: boolean,
 ): void {
-  const pos = new Map(rows.flatMap((row) => [...positions(blocks, row)]));
+  const pos = new Map<PersonId, number>();
+  for (const row of rows) persons(blocks, row).forEach((id, i) => pos.set(id, i));
   const related = towards === 'parents' ? graph.parents : graph.children;
   const memberBary = (id: PersonId) => mean(get(related, id).map((n) => get(pos, n)));
   const row = get(rows, r);
@@ -235,26 +245,24 @@ function crossings(
   blocks: PersonId[][],
   rows: number[][],
 ): number {
+  const ids = rows.map((row) => persons(blocks, row));
   let count = 0;
-  for (let r = 1; r < rows.length; r++) count += rowCrossings(above, blocks, rows, r);
+  for (let r = 1; r < rows.length; r++)
+    count += rowCrossings(above, indexOf(get(ids, r - 1)), get(ids, r));
   return count;
 }
 
-/** Crossing lines between row r - 1 and row r. */
+/** Crossing lines between a row (its persons left to right) and the row above it (index of each person). */
 function rowCrossings(
   above: Map<PersonId, PersonId[]>,
-  blocks: PersonId[][],
-  rows: number[][],
-  r: number,
+  upper: Map<PersonId, number>,
+  lower: PersonId[],
 ): number {
-  const upper = positions(blocks, get(rows, r - 1));
   const edges: [number, number][] = [];
-  get(rows, r)
-    .flatMap((b) => get(blocks, b))
-    .forEach((id, x) => {
-      const middle = mean(get(above, id).map((p) => get(upper, p)));
-      if (middle !== undefined) edges.push([middle, x]);
-    });
+  lower.forEach((id, x) => {
+    const middle = mean(get(above, id).map((p) => get(upper, p)));
+    if (middle !== undefined) edges.push([middle, x]);
+  });
   // Two lines cross when their order above and below differ: sort by the upper end, count pairs out of order below.
   edges.sort(([a1, b1], [a2, b2]) => a1 - a2 || b1 - b2);
   return descents(edges.map(([, b]) => b));
@@ -270,9 +278,15 @@ function parentsAbove(graph: FamilyGraph, rowOf: Map<PersonId, number>): Map<Per
   );
 }
 
-/** Pairs i < j with values[i] > values[j], counted while merge-sorting `values` (in place). */
+/** Pairs i < j with values[i] > values[j]; long lists are counted while merge-sorting them (in place). */
 function descents(values: number[]): number {
-  if (values.length < 2) return 0;
+  if (values.length < 32) {
+    let count = 0;
+    values.forEach((a, i) => {
+      for (let j = i + 1; j < values.length; j++) if (a > get(values, j)) count++;
+    });
+    return count;
+  }
   const left = values.slice(0, values.length >> 1);
   const right = values.slice(values.length >> 1);
   let count = descents(left) + descents(right);
@@ -288,11 +302,14 @@ function descents(values: number[]): number {
   return count;
 }
 
+/** The persons of a row, left to right. */
+function persons(blocks: PersonId[][], row: number[]): PersonId[] {
+  return row.flatMap((b) => get(blocks, b));
+}
+
 /** Index of every person within their row. */
-function positions(blocks: PersonId[][], row: number[]): Map<PersonId, number> {
-  const pos = new Map<PersonId, number>();
-  row.flatMap((b) => get(blocks, b)).forEach((id, i) => pos.set(id, i));
-  return pos;
+function indexOf(ids: PersonId[]): Map<PersonId, number> {
+  return new Map(ids.map((id, i) => [id, i]));
 }
 
 /** Pairs out of order, ignoring missing values. */
