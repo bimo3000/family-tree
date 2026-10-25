@@ -42,6 +42,17 @@ export class History<T> {
     this.#key = undefined;
   }
 
+  /** Back to an earlier version, forgetting every step after it. False if it is no longer kept. */
+  rewind(version: T): boolean {
+    const i = this.#past.lastIndexOf(version);
+    if (i < 0) return false;
+    this.#past.length = i;
+    this.#present = version;
+    this.#future = [];
+    this.#key = undefined;
+    return true;
+  }
+
   undo(): boolean {
     return this.#step(this.#past, this.#future);
   }

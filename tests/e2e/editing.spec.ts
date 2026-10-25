@@ -139,6 +139,8 @@ test.describe('adding relatives (ui-concept §2.6)', () => {
     await expect(page.locator('.card')).toHaveCount(22);
     await dialog(page).getByRole('button', { name: 'Fertig' }).click();
     await expect(page.locator('.card')).toHaveCount(21);
+    // Nothing to undo from it: ↶ must not bring the empty person back.
+    await expect(page.getByRole('button', { name: 'Rückgängig' })).toBeDisabled();
   });
 
   test('"Mit wem?" appears for a person with several partners', async ({ page }) => {

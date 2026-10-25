@@ -9,7 +9,7 @@
     sameRelation,
   } from '../core/model/queries';
   import { removeRelation } from '../core/model/relatives';
-  import type { PersonId } from '../core/model/types';
+  import type { PersonId, Project } from '../core/model/types';
   import type { Crop } from '../core/photoCrop';
   import AddRelativeDialog, { type RelativeKind } from './dialogs/AddRelativeDialog.svelte';
   import DeleteDialog from './dialogs/DeleteDialog.svelte';
@@ -99,6 +99,8 @@
     );
   });
   const closeDialog = () => (dialog = null);
+  /** The version before the last added relative. Not in `dialog`: $state would wrap it in a proxy. */
+  let beforeAdd: Project | undefined;
 
   /** Nothing entered, nothing added: a new relative left completely empty is removed again. */
   function closePersonDialog() {
@@ -106,8 +108,9 @@
     dialog = null;
     if (d?.type !== 'person' || !d.isNew) return;
     const person = findPerson(project, d.id);
+    // Undone as a whole, so ↶ can't bring the empty person back.
     if (person && isPlaceholder(person) && !childLinksOf(project, d.id).length)
-      editor.apply((p) => deletePerson(p, d.id));
+      if (!beforeAdd || !editor.rewind(beforeAdd)) editor.apply((p) => deletePerson(p, d.id));
   }
 
   /** Runs a menu entry and closes the menu. */
@@ -275,6 +278,7 @@
     person={dialogPerson}
     kind={dialog.kind}
     onadd={(change, isNew) => {
+      beforeAdd = project;
       const id = editor.add(change);
       select(id);
       // A new person is still empty: go straight on to entering their data.

@@ -56,6 +56,18 @@ describe('History (UI-01)', () => {
     expect(h.present).toBe('x');
   });
 
+  it('rewinds to an earlier version as if the steps after it never happened', () => {
+    const h = new History('a');
+    h.commit('b');
+    h.commit('c', 'name');
+    expect(h.rewind('a')).toBe(true);
+    expect(h.present).toBe('a');
+    expect(h.canUndo).toBe(false);
+    expect(h.canRedo).toBe(false);
+    expect(h.rewind('x')).toBe(false);
+    expect(h.present).toBe('a');
+  });
+
   it('keeps at most the given number of steps', () => {
     const h = new History(0, 3);
     for (let i = 1; i <= 5; i++) h.commit(i);

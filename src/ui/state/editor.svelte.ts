@@ -53,6 +53,13 @@ export class Editor {
     if (this.#history.redo()) this.#restored();
   }
 
+  /** Back to an earlier version as if nothing happened since (see `History.rewind`). */
+  rewind(version: Project): boolean {
+    if (!this.#history.rewind(version)) return false;
+    this.#restored();
+    return true;
+  }
+
   #restored(): void {
     this.revision++;
     this.#sync();
