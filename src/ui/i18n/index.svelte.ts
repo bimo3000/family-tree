@@ -11,8 +11,11 @@ const DICTIONARIES = { de, en, fr } satisfies Record<string, Texts>;
 
 export type Language = keyof typeof DICTIONARIES;
 
-/** In the order of the language choice. */
-export const LANGUAGES = Object.keys(DICTIONARIES) as Language[];
+/** In the order of the language choice, each named in itself ("Français"). */
+export const LANGUAGES = Object.entries(DICTIONARIES).map(([code, texts]) => ({
+  code: code as Language,
+  name: texts.name,
+}));
 
 const current = $state({ language: 'de' as Language });
 

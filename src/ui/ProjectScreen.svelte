@@ -23,6 +23,7 @@
   import { UnreadablePictureError } from '../storage/pictures';
   import { hasSeen, markSeen } from '../storage/workingCopy';
   import { t } from './i18n/index.svelte';
+  import LanguageChoice from './LanguageChoice.svelte';
   import type { Editor } from './state/editor.svelte';
   import { reminderDays } from './state/reminder';
   import type { Workspace } from './state/workspace.svelte';
@@ -171,6 +172,8 @@
         <button type="button" onclick={() => menu(() => (dialog = { type: 'help' }))}
           >{t.project.help}</button
         >
+        <hr />
+        <div class="menu-languages"><LanguageChoice onchoose={() => (menuOpen = false)} /></div>
       </div>
     {/if}
   </div>
@@ -377,6 +380,9 @@
   }
   .menu button:hover {
     background: var(--hover);
+  }
+  .menu-languages {
+    padding: 2px 4px;
   }
   .menu hr {
     border: none;

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { t } from './i18n/index.svelte';
+  import LanguageChoice from './LanguageChoice.svelte';
 
   /** Shown when there is no last project (ui-concept §2.1). A file can also be dropped onto it. */
   interface Props {
@@ -16,6 +17,7 @@
   <button type="button" class="btn primary" onclick={onnew}>{t.start.new}</button>
   <button type="button" class="btn" onclick={onopen}>{t.start.open}</button>
   <button type="button" class="btn" onclick={onexample}>{t.start.example}</button>
+  <div class="language"><LanguageChoice /></div>
 </main>
 
 <style>
@@ -38,6 +40,10 @@
     margin: 0 0 18px;
     color: var(--muted);
     font-size: 1.1rem;
+  }
+  .language {
+    margin-top: 18px;
+    font-size: 1.05rem;
   }
   .btn {
     width: 360px;

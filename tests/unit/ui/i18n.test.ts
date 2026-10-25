@@ -1,6 +1,10 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
+import { parseDate } from '../../../src/core/dates';
+import type { FlexDate } from '../../../src/core/model/types';
+import { LANGUAGES, pickLanguage, setLanguage } from '../../../src/ui/i18n/index.svelte';
+import { fmtDate, yearsLine } from '../../../src/ui/text';
 
 const UI = join(import.meta.dirname, '../../../src/ui');
 
@@ -53,5 +57,50 @@ describe('UI texts come from the dictionaries (GEN-05, ADR-0008)', () => {
       ),
     );
     expect(found).toEqual([]);
+  });
+});
+
+describe('languages', () => {
+  it('picks the first browser language the app knows, else English', () => {
+    expect(pickLanguage(['de-AT'])).toBe('de');
+    expect(pickLanguage(['fr-CA', 'de'])).toBe('fr');
+    expect(pickLanguage(['it-IT', 'fr'])).toBe('fr');
+    expect(pickLanguage(['EN-us'])).toBe('en');
+    expect(pickLanguage(['it', 'es'])).toBe('en');
+    expect(pickLanguage([])).toBe('en');
+  });
+
+  const dates: FlexDate[] = [
+    { y: 1923, m: 3, d: 12 },
+    { y: 1923, m: 3, d: 1 },
+    { y: 1923, m: 3 },
+    { y: 1923 },
+    { y: 1850, q: 'about' },
+    { y: 1900, q: 'before' },
+    { y: 1900, q: 'after' },
+    { y: 1890, q: 'between', y2: 1895 },
+    { text: 'Ostern 1920' },
+  ];
+
+  describe.each(LANGUAGES.map((l) => [l.code]))('%s', (code) => {
+    afterEach(() => setLanguage('de'));
+
+    // The person dialog fills its date fields with fmtDate and reads them back on every input.
+    it('reads every displayed date back unchanged', () => {
+      setLanguage(code);
+      for (const date of dates) expect(parseDate(fmtDate(date))).toEqual(date);
+    });
+
+    // The card's year line must still fit in every language (user, 2026-10-25).
+    it('keeps the year line on the card no longer than in German', () => {
+      const longest = () =>
+        Math.max(
+          ...dates.map((date) => yearsLine({ id: 'a', birth: { date }, death: { date } }).length),
+        );
+      setLanguage('de');
+      const german = longest();
+      setLanguage(code);
+      expect(longest()).toBeLessThanOrEqual(german);
+    });
   });
 });

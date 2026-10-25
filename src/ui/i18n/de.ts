@@ -382,6 +382,10 @@ export const de = {
         text: 'Deine Änderungen bleiben im Browser erhalten, auch wenn du ihn schließt. Richtig sicher ist dein Stammbaum aber erst in einer Datei: Klick auf „Speichern“. In Chrome und Edge wählst du einmal einen Ort, danach kommt jede Änderung von selbst in die Datei. In Firefox und Safari landet die Datei im Download-Ordner. Klick nach Änderungen einfach wieder auf „Speichern“. Kopier die Datei ab und zu auf einen USB-Stick.',
       },
       {
+        title: 'Sprache',
+        text: 'Unten auf der Startseite und unten im Menü (Klick auf den Namen deines Stammbaums) wählst du Deutsch, English oder Français. Jeder kann auf seinem Computer eine andere Sprache nehmen, die Datei bleibt dieselbe.',
+      },
+      {
         title: 'Drucken',
         text: 'Klick oben links auf den Namen deines Stammbaums und dann auf „Drucken / Als PDF speichern“. Der ganze Baum kommt auf eine Seite im Querformat. Für eine PDF-Datei wählst du im Druckfenster als Drucker „Als PDF speichern“ (auf dem Mac unten „PDF“, dann „Als PDF sichern“).',
       },
