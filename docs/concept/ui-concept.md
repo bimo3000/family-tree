@@ -63,6 +63,9 @@
 └──────────────┘
 ```
 
+- **Long names:** the name wraps over two lines. If it doesn't fit, only the first given name is shown
+  ("Monique Lindemann"); if it still doesn't fit, the name gets smaller, down to 70 % ("Elena Champeroux-Lindemann").
+  The surname is never cut off; "…" only as a last resort. Tooltip and detail panel show the full name (decided 2026-10-25).
 - No photo: a neutral placeholder with initials. Neutral card colours (no colours by gender).
 - **Hover:** a small tooltip with full dates and places, plus "geb. Schmidt" if a birth name exists (PERS-05).
 - **Click:** selects the person, highlights their line (ancestors and descendants) and opens the detail panel.

@@ -42,6 +42,64 @@ test.describe('tree view (TREE-02, PERS-04)', () => {
   });
 });
 
+test.describe('long names on a card (PERS-04)', () => {
+  async function rename(page: Page, id: string, given: string, surname: string) {
+    await card(page, id).click();
+    await panel(page).getByRole('button', { name: 'Bearbeiten', exact: true }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByLabel('Vornamen').fill(given);
+    await dialog.getByLabel('Nachname (zuletzt bekannt)').fill(surname);
+    await dialog.getByRole('button', { name: 'Fertig' }).click();
+    await expect(dialog).toBeHidden();
+  }
+
+  /** What the card's name shows and whether it fits: within two lines, inside the card, letters not cut off. */
+  function nameBox(page: Page, id: string) {
+    return card(page, id).evaluate((c) => {
+      const nm = c.querySelector<HTMLElement>('.nm')!;
+      const yr = c.querySelector<HTMLElement>('.yr')!;
+      const cs = getComputedStyle(nm);
+      const size = parseFloat(cs.fontSize);
+      const box = c.getBoundingClientRect();
+      return {
+        text: nm.textContent,
+        scale: size / parseFloat(getComputedStyle(c).fontSize),
+        fits:
+          nm.scrollHeight < nm.clientHeight + parseFloat(cs.lineHeight) / 2 &&
+          nm.scrollWidth <= nm.clientWidth + 1,
+        lineHeight: parseFloat(cs.lineHeight) / size,
+        inside: yr.getBoundingClientRect().bottom <= box.bottom,
+      };
+    });
+  }
+
+  test('a short name stays as it is', async ({ page }) => {
+    const box = await nameBox(page, 'p_karl');
+    expect(box).toMatchObject({ text: 'Karl Heinrich Brandt', scale: 1, fits: true, inside: true });
+    // Room for letters below the line ("g"), they were cut off with 1.2.
+    expect(box.lineHeight).toBeCloseTo(1.3, 2);
+  });
+
+  test('drops further given names first, then shrinks, and keeps the surname', async ({ page }) => {
+    await rename(page, 'p_karl', 'Monique Véronique', 'Lindemann');
+    await expect(card(page, 'p_karl').locator('.nm')).toHaveText('Monique Lindemann');
+    expect(await nameBox(page, 'p_karl')).toMatchObject({ scale: 1, fits: true, inside: true });
+    // The full name stays in the tooltip and for screen readers.
+    await expect(card(page, 'p_karl')).toHaveAttribute('aria-label', 'Monique Véronique Lindemann');
+
+    await rename(page, 'p_karl', 'Elena', 'Champeroux-Lindemann');
+    await expect(card(page, 'p_karl').locator('.nm')).toHaveText('Elena Champeroux-Lindemann');
+    const box = await nameBox(page, 'p_karl');
+    expect(box).toMatchObject({ fits: true, inside: true });
+    expect(box.scale).toBeLessThan(1);
+    expect(box.scale).toBeGreaterThanOrEqual(0.7);
+
+    // Shorter again: back to the normal size.
+    await rename(page, 'p_karl', 'Karl', 'Brandt');
+    expect(await nameBox(page, 'p_karl')).toMatchObject({ text: 'Karl Brandt', scale: 1 });
+  });
+});
+
 test.describe('selection and detail panel (PERS-05, PERS-07)', () => {
   test('selecting a person highlights their line and opens the panel', async ({ page }) => {
     await card(page, 'p_peter').click();

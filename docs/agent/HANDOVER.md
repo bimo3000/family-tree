@@ -28,6 +28,13 @@
 - User tried it ("works nice"): the preview was dropped as redundant. "Speichern unter" with an own file name in
   Firefox/Safari was discussed and dropped (clarifications log, 2026-10-25).
 
+## Done after 0.9.1 (feedback)
+
+- **Long names on a card:** all given names if they fit, else only the first; then the name shrinks (down to 70 %), so
+  the surname is never cut off. Fitting is measured in `PersonCard.svelte` (`fitName`). Letters below the line ("g")
+  are no longer cut off (line height 1.3). Firefox reports a few px more height for a clamped box: the fit check allows
+  half a line. The chosen name depends on the font, so engines may differ ("Heinrich Brandt" in WebKit).
+
 ## Done in session 8 (slice S6, finish and release)
 
 - Print (one A4 landscape page, browser dialog), help dialog and hint bar, `Beispiel.stammbaum` in the zip, German user

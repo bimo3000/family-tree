@@ -1,8 +1,9 @@
 <script lang="ts">
+  import type { Attachment } from 'svelte/attachments';
   import type { CardBox } from '../../core/layout';
   import type { Person } from '../../core/model/types';
   import { usePhotos } from '../photos';
-  import { fullName, initials, yearsLine } from '../text';
+  import { fullName, initials, shortName, yearsLine } from '../text';
 
   interface Props {
     person: Person;
@@ -17,6 +18,22 @@
 
   const photoUrl = usePhotos();
   const photo = $derived(photoUrl(person.photoId));
+
+  /** Fits the name into two lines (ui-concept §2.3): all given names, else only the first, then smaller down to 70 %. */
+  function fitName(names: string[]): Attachment<HTMLElement> {
+    return (el) => {
+      // Firefox reports a few px more than the two lines; a third line would add a whole line.
+      const fits = () =>
+        el.scrollHeight < el.clientHeight + parseFloat(getComputedStyle(el).lineHeight) / 2 &&
+        el.scrollWidth <= el.clientWidth + 1;
+      for (const name of names) {
+        el.textContent = name;
+        el.style.fontSize = '';
+        if (fits()) return;
+      }
+      for (let pct = 95; pct >= 70 && !fits(); pct -= 5) el.style.fontSize = `${pct}%`;
+    };
+  }
 </script>
 
 <!-- A button, so every person can also be reached with the keyboard. The tooltip follows the mouse. -->
@@ -48,7 +65,7 @@
       {#if photo}<img src={photo} alt="" draggable="false" />{:else}{initials(person)}{/if}
     </span>
     <span class="txt">
-      <span class="nm">{fullName(person)}</span>
+      <span class="nm" {@attach fitName([fullName(person), shortName(person)])}></span>
       <span class="yr">{yearsLine(person)}</span>
     </span>
   {/if}
@@ -107,11 +124,12 @@
   }
   .txt {
     min-width: 0;
-    padding: 6px 4px;
+    padding: 4px;
   }
   .nm {
     font-weight: 600;
-    line-height: 1.2;
+    /* 1.2 cut off letters below the line ("g"). */
+    line-height: 1.3;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
