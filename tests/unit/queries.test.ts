@@ -14,6 +14,7 @@ import {
   sameRelation,
   siblingsOf,
 } from '../../src/core/model/queries';
+import type { ParentChildLink } from '../../src/core/model/types';
 import { familieBrandt as brandt } from '../fixtures/familie-brandt';
 
 const sorted = (ids: Iterable<string>) => [...ids].sort();
@@ -81,6 +82,21 @@ describe('siblingsOf', () => {
 
   it('counts a shared unknown parent', () => {
     expect(siblingsOf(brandt, 'p_michael')).toEqual([{ id: 'p_stefan', full: true }]);
+  });
+
+  // A step or foster parent's other children are no half siblings; an adoptive parent's are.
+  it('counts biological and adoptive parents only', () => {
+    const withLink = (link: ParentChildLink) => ({
+      ...brandt,
+      parentChild: [...brandt.parentChild, link],
+    });
+    const step = withLink({ parentId: 'p_karl', childId: 'p_stefan', kind: 'step' });
+    expect(siblingsOf(step, 'p_peter')).toEqual(siblingsOf(brandt, 'p_peter'));
+    expect(siblingsOf(step, 'p_stefan')).toEqual(siblingsOf(brandt, 'p_stefan'));
+    const foster = withLink({ parentId: 'p_karl', childId: 'p_stefan', kind: 'foster' });
+    expect(siblingsOf(foster, 'p_peter')).toEqual(siblingsOf(brandt, 'p_peter'));
+    const adoptive = withLink({ parentId: 'p_karl', childId: 'p_stefan', kind: 'adoptive' });
+    expect(siblingsOf(adoptive, 'p_peter')).toContainEqual({ id: 'p_stefan', full: false });
   });
 
   it('is empty for an only child and for a person without parents', () => {

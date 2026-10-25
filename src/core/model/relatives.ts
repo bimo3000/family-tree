@@ -87,9 +87,10 @@ export function addSibling(
   if (parentLinksOf(result, personId).length === 0)
     result = addUnknownParent(result, personId).project;
   const sibling = relative(result, opts.existingId);
+  // The given kind replaces the biological links only; adoptive, step and foster stay as they are.
   const links = parentLinksOf(result, personId).map((l) => ({
     parentId: l.parentId,
-    kind: opts.kind ?? l.kind,
+    kind: isBiological(l) ? (opts.kind ?? l.kind) : l.kind,
   }));
   return { project: linkChild(sibling.project, sibling.id, links), id: sibling.id };
 }

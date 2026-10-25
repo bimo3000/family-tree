@@ -63,11 +63,14 @@
   let childKind = $state<ParentChildKind>('adoptive');
   let error = $state('');
 
-  /** The parents the new or chosen person gets in the child and sibling flows. */
+  /**
+   * The parents the new or chosen person gets in the child flow. A sibling gets all of the person's
+   * parents, but only the biological ones can need another kind (the others are copied as they are).
+   */
   const newParents = $derived(
     kind === 'child'
       ? [id, ...(partners.length > 1 ? [withId] : partners)].filter(Boolean)
-      : parents,
+      : biological,
   );
   /** "Was für ein Kind …?" appears only if the chosen person would get a third biological parent. */
   const askChildKind = $derived(

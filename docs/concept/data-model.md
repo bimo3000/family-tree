@@ -98,6 +98,7 @@ Shown **on hover/click** (PERS-05): everything else that is filled in.
 - Empty values (`""`, `false`, empty lists and objects) are dropped when saving a person or partnership, and a biological
   link is stored without `kind`. So the stored data stays as simple as the family (TREE-04).
 - Siblings are derived: **full** siblings have exactly the same parents, **half** siblings share only some.
+  Only biological and adoptive parents count: a step or foster parent's other children are no siblings (user, 2026-10-25).
 
 **Plausibility hints** (P-006) never block anything. Examples: death before birth, a parent younger than 12 at the
 child's birth, a person older than 110 without a death date.

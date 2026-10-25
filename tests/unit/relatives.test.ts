@@ -160,6 +160,24 @@ describe('addSibling', () => {
     expect(parents(project, 'p_jonas')).toContainEqual(['p_thomas', 'foster']);
   });
 
+  it('applies the given kind only to links that would be biological', () => {
+    // Peter: Karl and Erna, plus Frieda as adoptive mother. The other links stay as they are.
+    const adopted = {
+      ...brandt,
+      parentChild: [
+        ...brandt.parentChild,
+        { parentId: 'p_frieda', childId: 'p_peter', kind: 'adoptive' as const },
+      ],
+    };
+    const { project } = addSibling(adopted, 'p_peter', { existingId: 'p_julia', kind: 'foster' });
+    expect(parents(project, 'p_julia')).toEqual([
+      ['p_karl', 'foster'],
+      ['p_erna', 'foster'],
+      ['p_frieda', 'adoptive'],
+    ]);
+    validateProject(project);
+  });
+
   it('creates an unknown parent when the person has no parents', () => {
     const { project, id } = addSibling(brandt, 'p_julia');
     const [placeholder] = parentLinksOf(project, 'p_julia');

@@ -51,14 +51,28 @@ export function partnerOf(partnership: Partnership, personId: PersonId): PersonI
   return partnership.partners[0] === personId ? partnership.partners[1] : partnership.partners[0];
 }
 
-/** Everyone sharing at least one parent with the person, ordered by birth date. */
+/**
+ * Everyone sharing at least one biological or adoptive parent with the person, ordered by birth date.
+ * A step or foster parent's other children are no siblings (user, 2026-10-25).
+ */
 export function siblingsOf(project: Project, personId: PersonId): Sibling[] {
-  const mine = parentIds(project, personId);
-  const siblingIds = new Set(mine.flatMap((id) => childLinksOf(project, id).map((l) => l.childId)));
+  const counts = (l: ParentChildLink) => l.kind !== 'step' && l.kind !== 'foster';
+  const siblingParents = (id: PersonId) =>
+    parentLinksOf(project, id)
+      .filter(counts)
+      .map((l) => l.parentId);
+  const mine = siblingParents(personId);
+  const siblingIds = new Set(
+    mine.flatMap((id) =>
+      childLinksOf(project, id)
+        .filter(counts)
+        .map((l) => l.childId),
+    ),
+  );
   siblingIds.delete(personId);
   return [...siblingIds]
     .map((id) => {
-      const theirs = parentIds(project, id);
+      const theirs = siblingParents(id);
       const full = theirs.length === mine.length && theirs.every((p) => mine.includes(p));
       return { id, full };
     })
