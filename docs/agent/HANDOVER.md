@@ -43,6 +43,8 @@
 - Push the tags `v0.10.0` / `v0.9.0`? (Local only; optional.)
 - A new zip with the session 11 and 12 changes? (Not built yet.)
 - Run the manual checklist on a Mac and on Windows. A French reader for `fr.ts` ("divers" for the gender option).
+- Timing test flaky (see Known gaps): OK to time the best of 3 runs?
+- Look at the new crossing breaks and the highlight through the couple line in your tree; do they look right?
 
 ## Pitfalls / environment notes
 
@@ -97,4 +99,7 @@
 - "+ Geschwister" for a person without parents, then leaving the new sibling empty: the new "?" parent stays.
 - Lines don't glide with the cards; they jump to the new layout. Some crossings remain where no simple order avoids
   them (user's tree: 4, around a family with children between two siblings); they are drawn with a break.
-- Layout time: 100 persons ~30 ms, 200 persons ~130 ms when crossings remain (the extra starting orders).
+- Layout time: 100 persons ~20 ms, 200 persons ~90 ms.
+- **Flaky test (pre-existing):** "lays out 100 persons quickly (TREE-05)" fails about 1 in 15 full unit runs on this
+  machine (layout ~20 ms alone, >100 ms when all test files run in parallel). The code before session 12 fails the same
+  way. Proposal for the user: time the best of 3 runs instead of one. Not changed without their OK.

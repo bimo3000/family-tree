@@ -58,7 +58,8 @@ Decisions taken on the user's behalf, **confirmed by the user in S3** (2026-10-2
 Measured: 100 persons in about 25 ms (about 45 ms on the development machine in session 6). The 100-person fixture
 keeps 5 crossings by the ordering's count (all other fixtures 0). `tests/unit/layout/invariants.test.ts` counts real
 line crossings in the drawing for Familie Brandt and the reported case (both 0).
-Session 12: 100 persons about 30 ms, 200 persons about 130 ms (was 60 ms: the extra starts run when crossings remain).
+Session 12: 100 persons about 20 ms, 200 persons about 90 ms, even with the extra starts (they run when crossings remain),
+after making the swap pass, the row step and the placement cheaper.
 The fixture `mismatched-generations` went from 2 to 1 crossing, the user's tree from 10 to 4. Only trees with lines
 that skip a row get a different layout.
 
