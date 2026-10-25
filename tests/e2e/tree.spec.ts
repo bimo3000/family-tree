@@ -142,6 +142,18 @@ test.describe('selection and detail panel (PERS-05, PERS-07)', () => {
     await expect(details).toContainText('Halbbruder');
   });
 
+  test('the highlight runs from a descendant through the couple line to the child', async ({
+    page,
+  }) => {
+    // Karl selected: Peter is his son, Peter's former wife Sabine is not in Karl's line, their children are.
+    await card(page, 'p_karl').click();
+    await expect(card(page, 'p_sabine')).toHaveClass(/dim/);
+    await expect(page.getByTestId('half-couple').first()).toBeAttached();
+    // Peter selected: his couple line with Sabine is lit in full, no half lines.
+    await card(page, 'p_peter').click();
+    await expect(page.getByTestId('half-couple')).toHaveCount(0);
+  });
+
   test('a name in the panel jumps to that person', async ({ page }) => {
     await card(page, 'p_peter').click();
     await panel(page)

@@ -5,6 +5,7 @@ import {
   centerOn,
   endMarkD,
   fitView,
+  halfCouple,
   highlight,
   isOnScreen,
   MAX_ZOOM,
@@ -15,6 +16,7 @@ import {
   zoomAt,
 } from '../../../src/ui/tree/geometry';
 import { familieBrandt } from '../../fixtures/familie-brandt';
+import { family } from '../../fixtures/layout-families';
 
 const viewport = { width: 1000, height: 800 };
 
@@ -27,6 +29,36 @@ describe('svg paths', () => {
         { x: 10, y: 5 },
       ]),
     ).toBe('M0 0 L10 0 L10 5');
+  });
+
+  it('leaves a small gap where another line crosses a horizontal piece', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 0, y: 20 },
+      { x: 100, y: 20 },
+    ];
+    expect(pathD(points, [{ x: 40, y: 20 }])).toBe('M0 0 L0 20 L35 20 M45 20 L100 20');
+    // Right to left, two breaks in the order of drawing; a break on another path's piece is ignored.
+    expect(
+      pathD([...points].reverse(), [
+        { x: 30, y: 20 },
+        { x: 60, y: 20 },
+        { x: 0, y: 10 },
+        { x: 200, y: 20 },
+      ]),
+    ).toBe('M100 20 L65 20 M55 20 L35 20 M25 20 L0 20 L0 0');
+  });
+
+  it('keeps a gap near a corner inside its piece', () => {
+    expect(
+      pathD(
+        [
+          { x: 0, y: 0 },
+          { x: 10, y: 0 },
+        ],
+        [{ x: 2, y: 0 }],
+      ),
+    ).toBe('M0 0 L0 0 M7 0 L10 0');
   });
 
   it('draws the "//" around the given point', () => {
@@ -111,7 +143,7 @@ describe('highlighted line of the selected person', () => {
     const hl = highlight(familieBrandt, layout, focusSet(familieBrandt, 'p_peter'));
     expect([...hl.couples].sort()).toEqual(['u_1', 'u_2', 'u_3', 'u_5']);
     const karlErna = hl.childLines[lineOf(['p_karl', 'p_erna'])];
-    expect(karlErna?.stems).toBe(true);
+    expect(karlErna?.stems).toEqual([true]);
     expect([...(karlErna?.drops ?? [])]).toEqual(['p_peter']);
     expect([...(hl.childLines[lineOf(['p_peter', 'p_sabine'])]?.drops ?? [])].sort()).toEqual([
       'p_felix',
@@ -119,7 +151,7 @@ describe('highlighted line of the selected person', () => {
     ]);
     // Karl's second marriage and Thomas, Peter's half brother, are not part of Peter's line.
     expect(hl.couples.has('u_4')).toBe(false);
-    expect(hl.childLines[lineOf(['p_karl', 'p_hildegard'])]?.stems).toBe(false);
+    expect(hl.childLines[lineOf(['p_karl', 'p_hildegard'])]?.stems).toEqual([false]);
   });
 
   it('includes adoptive lines of descendants', () => {
@@ -127,5 +159,45 @@ describe('highlighted line of the selected person', () => {
     const adoptive = layout.childLines.findIndex((l) => l.kind === 'adoptive');
     expect(adoptive).toBeGreaterThanOrEqual(0);
     expect(hl.childLines[adoptive]?.drops.has('p_jonas')).toBe(true);
+  });
+
+  it("lights the half of a descendant's couple line up to where the lit line to their child starts", () => {
+    // Karl selected: his son Peter is in his line, Peter's former wife Sabine is not, their children are.
+    const hl = highlight(familieBrandt, layout, focusSet(familieBrandt, 'p_karl'));
+    expect(hl.couples.has('u_5')).toBe(false);
+    expect(hl.halves.get('u_5')).toBe('p_peter');
+    const line = layout.coupleLines.find((l) => l.partnershipId === 'u_5')!;
+    const peter = layout.cards.find((c) => c.id === 'p_peter')!;
+    const half = halfCouple(line, peter);
+    expect(half.at(-1)).toEqual(line.middle);
+    expect(Math.abs(half[0]!.x - peter.x)).toBe(peter.width / 2);
+  });
+
+  it('lights no half couple line when both partners are in the line or no child line is lit', () => {
+    expect(highlight(familieBrandt, layout, focusSet(familieBrandt, 'p_peter')).halves.size).toBe(
+      0,
+    );
+    // Sabine selected: Peter is her partner, so their couple line is fully lit.
+    const hl = highlight(familieBrandt, layout, focusSet(familieBrandt, 'p_sabine'));
+    expect(hl.couples.has('u_5')).toBe(true);
+    expect(hl.halves.has('u_5')).toBe(false);
+  });
+
+  it('lights only the stem of the parent in the line when the parents have no couple line', () => {
+    // Alex and Dora are not neighbours (Cora stands between them), so each has a stem to their children.
+    const project = family('dora-has-a-mother', (f) => {
+      f.persons('alex:1940 bea:1942 cora:1945 dora:1950 kid3:1982 mum:1925');
+      f.couple('alex', 'bea');
+      f.couple('alex', 'cora');
+      f.couple('alex', 'dora');
+      f.children(['alex', 'dora'], 'kid3');
+      f.children(['mum'], 'dora');
+    });
+    const tree = computeLayout(project);
+    const i = tree.childLines.findIndex((l) => l.parentIds.join(' ') === 'alex dora');
+    expect(tree.childLines[i]?.stems).toHaveLength(2);
+    const hl = highlight(project, tree, focusSet(project, 'mum'));
+    expect(hl.childLines[i]?.stems).toEqual([false, true]);
+    expect(hl.halves.size).toBe(0);
   });
 });

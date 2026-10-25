@@ -2,7 +2,7 @@
  * Pure helpers for drawing the tree and moving the view (TREE-02). No DOM, so they are unit-tested.
  * The view is a CSS transform of the drawing: screen = drawing * k + (x, y).
  */
-import type { Layout, Point } from '../../core/layout';
+import type { CardBox, CoupleLine, Layout, Point } from '../../core/layout';
 import type { PersonId, Project } from '../../core/model/types';
 
 export interface View {
@@ -25,8 +25,30 @@ const FIT_MARGIN = { x: 40, y: 70 };
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
-export function pathD(points: Point[]): string {
-  return points.map((p, i) => `${i ? 'L' : 'M'}${p.x} ${p.y}`).join(' ');
+/** Half the width of the gap where another line crosses (`breaks` of the layout). */
+const BREAK = 5;
+
+/** An SVG path through the points, with a small gap at every break that lies inside one of its horizontal pieces. */
+export function pathD(points: Point[], breaks: Point[] = []): string {
+  return points
+    .map((p, i) => {
+      const prev = points[i - 1];
+      if (!prev) return `M${p.x} ${p.y}`;
+      const [lo, hi] = [Math.min(prev.x, p.x), Math.max(prev.x, p.x)];
+      const dir = Math.sign(p.x - prev.x);
+      const gaps =
+        prev.y === p.y
+          ? breaks
+              .filter((b) => b.y === p.y && b.x > lo && b.x < hi)
+              .sort((a, b) => (a.x - b.x) * dir)
+              .map((b) => {
+                const at = (x: number) => Math.min(hi, Math.max(lo, x));
+                return `L${at(b.x - dir * BREAK)} ${p.y} M${at(b.x + dir * BREAK)} ${p.y} `;
+              })
+          : [];
+      return `${gaps.join('')}L${p.x} ${p.y}`;
+    })
+    .join(' ');
 }
 
 /** The "//" of a divorced or separated couple, centred on the couple line. */
@@ -99,14 +121,21 @@ export function isOnScreen(view: View, point: Point, viewport: Size, margin = 60
 export interface Highlight {
   /** IDs of highlighted couple lines. */
   couples: Set<string>;
-  /** Per entry of `layout.childLines`: are the stems on, and which children's drops are on. */
-  childLines: { stems: boolean; drops: Set<PersonId> }[];
+  /**
+   * Couple lines lit only from one partner to the middle, because the line to their child starts there:
+   * partnership ID → that partner.
+   */
+  halves: Map<string, PersonId>;
+  /** Per entry of `layout.childLines`: which stems are on, and which children's drops are on. */
+  childLines: { stems: boolean[]; drops: Set<PersonId> }[];
 }
 
 /**
  * Which lines belong to the selected person's line (`focus`, from core `focusSet`): a couple line when both
- * partners are in focus, a child's drop when the child and one of the line's parents are, the stems when
- * any drop is. So only the focused child of a family is highlighted, not all siblings.
+ * partners are in focus, a child's drop when the child and one of the line's parents are, the stems of the
+ * parents in focus when any drop is. So only the focused child of a family is highlighted, not all siblings.
+ * When only one partner is in focus (a descendant of the selected person), their half of the couple line is
+ * lit up to where the lit line to their child starts, so the highlighted line runs through without a break.
  */
 export function highlight(project: Project, layout: Layout, focus: Set<PersonId>): Highlight {
   const partners = new Map(project.partnerships.map((r) => [r.id, r.partners]));
@@ -120,7 +149,32 @@ export function highlight(project: Project, layout: Layout, focus: Set<PersonId>
     const drops = new Set(
       parentOn ? line.drops.filter((d) => focus.has(d.childId)).map((d) => d.childId) : [],
     );
-    return { stems: drops.size > 0, drops };
+    // One stem from the middle of the couple line, or one from each parent (in the order of `parentIds`).
+    const stems = line.stems.map(
+      (_, s) => drops.size > 0 && (line.stems.length === 1 || focus.has(line.parentIds[s] ?? '')),
+    );
+    return { stems, drops };
   });
-  return { couples, childLines };
+  const halves = new Map<string, PersonId>();
+  for (const l of layout.coupleLines) {
+    const pair: PersonId[] = partners.get(l.partnershipId) ?? [];
+    const lit = pair.filter((id) => focus.has(id));
+    const fromMiddle = layout.childLines.some(
+      (line, i) =>
+        line.stems.length === 1 &&
+        line.parentIds.length === 2 &&
+        line.parentIds.every((id) => pair.includes(id)) &&
+        childLines[i]?.stems[0],
+    );
+    if (lit.length === 1 && lit[0] && fromMiddle) halves.set(l.partnershipId, lit[0]);
+  }
+  return { couples, halves, childLines };
+}
+
+/** The part of a couple line from the partner's card to its middle (for `Highlight.halves`). */
+export function halfCouple(line: CoupleLine, partner: CardBox): Point[] {
+  const { middle } = line;
+  return partner.x < middle.x
+    ? [...line.points.filter((p) => p.x < middle.x), middle]
+    : [middle, ...line.points.filter((p) => p.x > middle.x)];
 }

@@ -9,6 +9,7 @@
     centerOn,
     endMarkD,
     fitView,
+    halfCouple,
     highlight,
     isOnScreen,
     pathD,
@@ -168,7 +169,11 @@
     <svg class="edges" width={layout.width} height={layout.height} aria-hidden="true">
       {#each layout.coupleLines as line (line.partnershipId)}
         {@const cls = lineClass(!!hl?.couples.has(line.partnershipId))}
-        <path class={cls} d={pathD(line.points)} />
+        {@const half = boxes.get(hl?.halves.get(line.partnershipId) ?? '')}
+        <path class={cls} d={pathD(line.points, line.breaks)} />
+        {#if half}
+          <path class="hl" data-testid="half-couple" d={pathD(halfCouple(line, half))} />
+        {/if}
         {#if line.ended}
           <path class="gap" d={gapD(line.middle)} />
           <path class={cls} d={endMarkD(line.middle)}><title>{endWord(line.ended)}</title></path>
@@ -177,7 +182,11 @@
       {#each layout.childLines as line, i (i)}
         {@const on = hl?.childLines[i]}
         {#each line.stems as stem, s (s)}
-          <path class={lineClass(!!on?.stems)} class:dashed={line.kind} d={pathD(stem)}>
+          <path
+            class={lineClass(!!on?.stems[s])}
+            class:dashed={line.kind}
+            d={pathD(stem, line.breaks)}
+          >
             {#if line.kind}<title>{kindLabel(line.kind)}</title>{/if}
           </path>
         {/each}
@@ -185,7 +194,7 @@
           <path
             class={lineClass(!!on?.drops.has(drop.childId))}
             class:dashed={line.kind}
-            d={pathD(drop.points)}
+            d={pathD(drop.points, line.breaks)}
           >
             {#if line.kind}<title>{kindLabel(line.kind)}</title>{/if}
           </path>
