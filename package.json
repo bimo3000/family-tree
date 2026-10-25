@@ -1,6 +1,6 @@
 {
   "name": "stammbaum",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "private": true,
   "description": "Offline, self-contained family-tree web app (German, English and French UI). No data ever leaves the device.",
   "type": "module",
