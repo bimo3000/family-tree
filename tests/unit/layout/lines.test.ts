@@ -4,8 +4,16 @@ import {
   DEFAULT_SIZES,
   type ChildLine,
   type Layout,
+  type Point,
 } from '../../../src/core/layout';
-import { brandt, simple, stepFather, threePartners } from '../../fixtures/layout-families';
+import {
+  brandt,
+  mismatchedGenerations,
+  simple,
+  stepFather,
+  threePartners,
+  uncleNiece,
+} from '../../fixtures/layout-families';
 
 const card = (layout: Layout, id: string) => layout.cards.find((c) => c.id === id)!;
 const childLine = (layout: Layout, parentIds: string[], kind?: string): ChildLine =>
@@ -108,5 +116,53 @@ describe('child lines', () => {
   it('draw parents who are no couple with a line from each of them', () => {
     const layout = computeLayout(threePartners);
     expect(childLine(layout, ['alex', 'dora']).stems).toHaveLength(2);
+  });
+
+  it('pass a skipped row in a gap of their own and enter the child straight', () => {
+    const layout = computeLayout(uncleNiece);
+    const [hub, ...rest] = childLine(layout, ['gpa', 'gma']).drops.find(
+      (d) => d.childId === 'uncle',
+    )!.points;
+    const uncle = card(layout, 'uncle');
+    const inlaw = card(layout, 'inlaw');
+    // Over to the gap, then straight down past the row of the sister and her husband, into the uncle's card.
+    expect(rest[0]!.y).toBe(hub!.y);
+    expect(new Set(rest.map((p) => p.x)).size).toBe(1);
+    expect(rest.at(-1)!.y).toBe(uncle.y - uncle.height / 2);
+    expect(rest[0]!.x - (inlaw.x + inlaw.width / 2)).toBeGreaterThanOrEqual(24);
+  });
+});
+
+describe('crossings', () => {
+  it("break the horizontal line where another family's line crosses it", () => {
+    const layout = computeLayout(mismatchedGenerations);
+    const broken = layout.childLines.filter((l) => l.breaks);
+    expect(broken).toHaveLength(1);
+    const [line] = broken as [ChildLine];
+    expect(line.breaks).toHaveLength(1);
+    const point = line.breaks![0]!;
+    const on = (points: Point[], vertical: boolean) =>
+      points.slice(1).some((b, i) => {
+        const a = points[i]!;
+        return vertical
+          ? a.x === b.x &&
+              a.x === point.x &&
+              Math.min(a.y, b.y) < point.y &&
+              Math.max(a.y, b.y) > point.y
+          : a.y === b.y &&
+              a.y === point.y &&
+              Math.min(a.x, b.x) < point.x &&
+              Math.max(a.x, b.x) > point.x;
+      });
+    const paths = (l: ChildLine) => [...l.stems, ...l.drops.map((d) => d.points)];
+    expect(paths(line).some((p) => on(p, false))).toBe(true);
+    const others = layout.childLines.filter((l) => l !== line);
+    expect(others.some((l) => paths(l).some((p) => on(p, true)))).toBe(true);
+  });
+
+  it('leave no break marks in a family without crossings (TREE-04)', () => {
+    const layout = computeLayout(brandt);
+    expect(layout.childLines.some((l) => 'breaks' in l)).toBe(false);
+    expect(layout.coupleLines.some((l) => 'breaks' in l)).toBe(false);
   });
 });

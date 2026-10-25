@@ -59,6 +59,8 @@ export interface CoupleLine {
   points: Point[];
   middle: Point;
   ended?: PartnershipEndReason;
+  /** Where a line of another family crosses this one: the UI leaves a small gap here. Absent when there is none. */
+  breaks?: Point[];
 }
 
 /**
@@ -71,6 +73,11 @@ export interface ChildLine {
   kind?: Exclude<ParentChildKind, 'biological'>;
   stems: Point[][];
   drops: { childId: PersonId; points: Point[] }[];
+  /**
+   * Where a line of another family crosses a horizontal piece of this one: the UI leaves a small gap there in
+   * every stem and drop that runs through the point. Absent when there is none.
+   */
+  breaks?: Point[];
 }
 
 export interface Layout {

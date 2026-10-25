@@ -142,6 +142,45 @@ export const marriedIn = family('married-in', (f) => {
   f.children(['xg'], 'xp1');
 });
 
+/**
+ * Two branches whose generations don't line up, joined by a marriage (user report after S11): the bride's
+ * family has one generation less, so her line to her parents skips a row full of the groom's relatives.
+ * Her father's brother has a family of his own in between, and the groom's aunt and uncle stand right above her.
+ */
+export const mismatchedGenerations = family('mismatched-generations', (f) => {
+  f.persons('fgpa:1900 fgma:1902 mgpa:1903 mgma:1905');
+  f.persons('father:1930 uncle:1932 auntInlaw:1933 mother:1934 aunt:1936');
+  f.persons('cousin1:1955 cousin1p:1955 cousin2:1958 cousin2p:1957 bride:1960');
+  f.persons('cc1:1980 cc2:1982 cc3:1985');
+  f.persons('top1:1850 top2:1852 elder:1880 elderp:1881');
+  f.persons('r1:1905 r1p:1906 r2:1908 r2p:1909 groomMum:1912 groomDad:1910 r4:1915');
+  f.persons('rk1:1935 rk2:1937 rk3:1940 rk4:1942 groom:1958 groomSib:1960');
+  f.couple('fgpa', 'fgma');
+  f.couple('mgpa', 'mgma');
+  f.children(['fgpa', 'fgma'], 'father uncle');
+  f.children(['mgpa', 'mgma'], 'mother aunt');
+  f.couple('father', 'mother');
+  f.couple('uncle', 'auntInlaw');
+  f.children(['uncle', 'auntInlaw'], 'cousin1 cousin2');
+  f.couple('cousin1', 'cousin1p');
+  f.couple('cousin2', 'cousin2p');
+  f.children(['cousin1', 'cousin1p'], 'cc1 cc2');
+  f.children(['cousin2', 'cousin2p'], 'cc3');
+  f.children(['father', 'mother'], 'bride');
+  f.couple('top1', 'top2');
+  f.children(['top1', 'top2'], 'elder');
+  f.couple('elder', 'elderp');
+  f.children(['elder', 'elderp'], 'r1 r2 groomMum r4');
+  f.couple('r1', 'r1p');
+  f.couple('r2', 'r2p');
+  f.couple('groomMum', 'groomDad');
+  f.children(['r1', 'r1p'], 'rk1 rk2');
+  f.children(['r2', 'r2p'], 'rk3');
+  f.children(['r4'], 'rk4');
+  f.children(['groomMum', 'groomDad'], 'groom groomSib');
+  f.couple('bride', 'groom');
+});
+
 /** Two unrelated families and a person without any relation. */
 export const disconnected = family('disconnected', (f) => {
   f.persons('a1:1950 a2:1951 ak:1980 loner:1960 b1:1930 b2:1931 bk1:1960 bk2:1962');
@@ -207,6 +246,7 @@ export const allFamilies: Project[] = [
   uncleNiece,
   partnerIsAncestor,
   marriedIn,
+  mismatchedGenerations,
   disconnected,
   generatedFamily(100),
 ];

@@ -16,6 +16,7 @@ import {
   brandt,
   disconnected,
   generatedFamily,
+  mismatchedGenerations,
   simple,
 } from '../../fixtures/layout-families';
 
@@ -119,6 +120,35 @@ describe.each(allFamilies.map((p) => [p.name, p] as const))('layout of %s', (_, 
             ).toBe(false);
   });
 
+  it('lets a line pass a row in a gap of its own, clear of cards and other lines', () => {
+    const vertical = layout.childLines.flatMap((line) =>
+      [...line.stems, ...line.drops.map((d) => d.points)].flatMap((points, path) =>
+        points.slice(1).flatMap((b, i) => {
+          const a = points[i]!;
+          return a.x === b.x
+            ? [{ line, path, x: a.x, top: Math.min(a.y, b.y), bottom: Math.max(a.y, b.y) }]
+            : [];
+        }),
+      ),
+    );
+    const half = DEFAULT_SIZES.cardHeight / 2;
+    for (const rowY of new Set(layout.cards.map((c) => c.y)))
+      for (const v of vertical.filter((s) => s.top < rowY - half && s.bottom > rowY + half)) {
+        for (const c of layout.cards.filter((c) => c.y === rowY))
+          expect(Math.abs(v.x - c.x) - c.width / 2).toBeGreaterThanOrEqual(12 - 1e-6);
+        for (const w of vertical)
+          if (
+            (w.line !== v.line || w.path !== v.path) &&
+            w.bottom > rowY - half &&
+            w.top < rowY + half
+          )
+            expect(
+              Math.abs(w.x - v.x),
+              `${v.line.parentIds} next to ${w.line.parentIds}`,
+            ).toBeGreaterThanOrEqual(12);
+      }
+  });
+
   it('fits every card into width and height', () => {
     for (const c of layout.cards) {
       expect(c.x - c.width / 2).toBeGreaterThanOrEqual(-1e-6);
@@ -164,6 +194,12 @@ describe('layout as a whole', () => {
     project = addPartnership(project, a, b).project;
     add('Clara', [a, b]);
     expect(lineCrossings(computeLayout(project))).toBe(0);
+  });
+
+  it('counts a line that skips a row when it avoids crossings (user report after S11)', () => {
+    // The bride's family has one generation less than the groom's, so her line to her parents skips a row.
+    // It used to cross 2 lines unseen by the ordering; one is left, the line of the groom's youngest aunt.
+    expect(lineCrossings(computeLayout(mismatchedGenerations))).toBe(1);
   });
 
   it('lays out an empty project', () => {

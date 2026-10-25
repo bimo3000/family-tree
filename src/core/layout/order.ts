@@ -2,7 +2,8 @@
  * Step 2 of the layout: the left-to-right order inside each row. Partners in the same row form a block that
  * always stays together. A depth-first walk gives a natural first order (siblings by birth, every family below its
  * parents); a few barycenter sweeps then move blocks to reduce crossing lines, keeping the best order found,
- * and swapping neighbours removes what is left where it can.
+ * and swapping neighbours removes what is left where it can. When crossings remain, the same is tried from a few
+ * other first orders, and one of them wins only with fewer crossings.
  */
 import { compareByBirth, get, mean, type FamilyGraph } from './graph';
 import type { PersonId } from '../model/types';
@@ -12,18 +13,45 @@ export type RowOrder = PersonId[][][];
 
 const SWEEPS = 4;
 
+/**
+ * Ways to start the depth-first walk: from the top or from the bottom row, visiting a block's in-laws left to right
+ * or right to left. Different starts get stuck in different places, e.g. when two branches joined by a marriage
+ * must both turn towards each other.
+ */
+const STARTS = [
+  { fromBottom: false, rightFirst: false },
+  { fromBottom: false, rightFirst: true },
+  { fromBottom: true, rightFirst: false },
+  { fromBottom: true, rightFirst: true },
+];
+
 export function orderRows(graph: FamilyGraph, rowOf: Map<PersonId, number>): RowOrder {
+  let best = optimise(graph, rowOf, get(STARTS, 0));
+  for (const start of STARTS.slice(1)) {
+    if (best.count === 0) break;
+    const next = optimise(graph, rowOf, start);
+    if (next.count < best.count) best = next;
+  }
+  return best.rows;
+}
+
+function optimise(
+  graph: FamilyGraph,
+  rowOf: Map<PersonId, number>,
+  start: (typeof STARTS)[number],
+): { rows: RowOrder; count: number } {
   const blocks = buildBlocks(graph, rowOf);
   const blockOf = new Map<PersonId, number>();
   blocks.forEach((members, b) => members.forEach((id) => blockOf.set(id, b)));
   const rowCount = Math.max(...rowOf.values()) + 1;
-  let rows = initialOrder(graph, rowOf, blocks, blockOf, rowCount);
+  let rows = initialOrder(graph, rowOf, blocks, blockOf, rowCount, start);
+  const above = parentsAbove(graph, rowOf);
 
   const snapshot = () => ({ rows: rows.map((r) => [...r]), blocks: blocks.map((m) => [...m]) });
   let best = snapshot();
-  let fewest = crossings(graph, rowOf, blocks, rows);
+  let fewest = crossings(above, blocks, rows);
   const keepIfBetter = () => {
-    const count = crossings(graph, rowOf, blocks, rows);
+    const count = crossings(above, blocks, rows);
     if (count < fewest) {
       fewest = count;
       best = snapshot();
@@ -39,8 +67,8 @@ export function orderRows(graph: FamilyGraph, rowOf: Map<PersonId, number>): Row
     keepIfBetter();
   }
   rows = best.rows;
-  swapNeighbours(graph, rowOf, best.blocks, rows);
-  return rows.map((r) => r.map((b) => get(best.blocks, b)));
+  const count = swapNeighbours(above, best.blocks, rows);
+  return { rows: rows.map((r) => r.map((b) => get(best.blocks, b))), count };
 }
 
 /**
@@ -48,24 +76,31 @@ export function orderRows(graph: FamilyGraph, rowOf: Map<PersonId, number>): Row
  * because swapping them changes nothing, so they keep their birth order.
  */
 function swapNeighbours(
-  graph: FamilyGraph,
-  rowOf: Map<PersonId, number>,
+  above: Map<PersonId, PersonId[]>,
   blocks: PersonId[][],
   rows: number[][],
-): void {
-  let count = crossings(graph, rowOf, blocks, rows);
+): number {
+  // Crossings between row r - 1 and row r; a swap in row r only changes those of r and r + 1.
+  const pairs = rows.map((_, r) => (r ? rowCrossings(above, blocks, rows, r) : 0));
+  let count = pairs.reduce((sum, n) => sum + n, 0);
   for (let improved = true; improved && count > 0;) {
     improved = false;
-    for (const row of rows)
+    rows.forEach((row, r) => {
       for (let i = 0; i + 1 < row.length; i++) {
         row.splice(i, 2, get(row, i + 1), get(row, i));
-        const swapped = crossings(graph, rowOf, blocks, rows);
-        if (swapped < count) {
-          count = swapped;
+        const upper = r ? rowCrossings(above, blocks, rows, r) : 0;
+        const lower = r + 1 < rows.length ? rowCrossings(above, blocks, rows, r + 1) : 0;
+        const before = get(pairs, r) + (pairs[r + 1] ?? 0);
+        if (upper + lower < before) {
+          count -= before - upper - lower;
+          pairs[r] = upper;
+          if (r + 1 < rows.length) pairs[r + 1] = lower;
           improved = true;
         } else row.splice(i, 2, get(row, i + 1), get(row, i));
       }
+    });
   }
+  return count;
 }
 
 /**
@@ -109,8 +144,8 @@ function buildBlocks(graph: FamilyGraph, rowOf: Map<PersonId, number>): PersonId
 }
 
 /**
- * Depth-first from the top: place a block, then the parents of its members that are still missing (in-laws),
- * then all its children's blocks (in the order of their parents in the block, then by birth), then go deeper.
+ * Depth-first from the top (or bottom): place a block, then the parents of its members that are still missing
+ * (in-laws), then all its children's blocks (in the order of their parents in the block, then by birth), then go deeper.
  */
 function initialOrder(
   graph: FamilyGraph,
@@ -118,6 +153,7 @@ function initialOrder(
   blocks: PersonId[][],
   blockOf: Map<PersonId, number>,
   rowCount: number,
+  { fromBottom, rightFirst }: (typeof STARTS)[number],
 ): number[][] {
   const rows: number[][] = Array.from({ length: rowCount }, () => []);
   const placed = new Set<number>();
@@ -129,7 +165,7 @@ function initialOrder(
   };
   const visit = (b: number): void => {
     const members = get(blocks, b);
-    for (const id of members)
+    for (const id of rightFirst ? [...members].reverse() : members)
       for (const p of get(graph.parents, id)) {
         const pb = get(blockOf, p);
         if (place(pb)) visit(pb);
@@ -146,6 +182,7 @@ function initialOrder(
     .sort(
       (a, b) => get(rowOf, get(get(blocks, a), 0)) - get(rowOf, get(get(blocks, b), 0)) || a - b,
     );
+  if (fromBottom) starts.reverse();
   for (const b of starts) if (place(b)) visit(b);
   return rows;
 }
@@ -163,7 +200,7 @@ function reorderRow(
   towards: 'parents' | 'children',
   flipTies: boolean,
 ): void {
-  const pos = positions(blocks, rows);
+  const pos = new Map(rows.flatMap((row) => [...positions(blocks, row)]));
   const related = towards === 'parents' ? graph.parents : graph.children;
   const memberBary = (id: PersonId) => mean(get(related, id).map((n) => get(pos, n)));
   const row = get(rows, r);
@@ -194,38 +231,67 @@ function reorderRow(
 
 /** Lines between neighbouring rows that cross: each child is linked to the middle of its parents in the row above. */
 function crossings(
-  graph: FamilyGraph,
-  rowOf: Map<PersonId, number>,
+  above: Map<PersonId, PersonId[]>,
   blocks: PersonId[][],
   rows: number[][],
 ): number {
-  const pos = positions(blocks, rows);
   let count = 0;
-  for (let r = 1; r < rows.length; r++) {
-    const edges: [number, number][] = [];
-    for (const b of get(rows, r))
-      for (const id of get(blocks, b)) {
-        const above = mean(
-          get(graph.parents, id)
-            .filter((p) => get(rowOf, p) === r - 1)
-            .map((p) => get(pos, p)),
-        );
-        if (above !== undefined) edges.push([above, get(pos, id)]);
-      }
-    for (let i = 0; i < edges.length; i++)
-      for (let j = i + 1; j < edges.length; j++) {
-        const [a1, b1] = get(edges, i);
-        const [a2, b2] = get(edges, j);
-        if ((a1 - a2) * (b1 - b2) < 0) count++;
-      }
-  }
+  for (let r = 1; r < rows.length; r++) count += rowCrossings(above, blocks, rows, r);
+  return count;
+}
+
+/** Crossing lines between row r - 1 and row r. */
+function rowCrossings(
+  above: Map<PersonId, PersonId[]>,
+  blocks: PersonId[][],
+  rows: number[][],
+  r: number,
+): number {
+  const upper = positions(blocks, get(rows, r - 1));
+  const edges: [number, number][] = [];
+  get(rows, r)
+    .flatMap((b) => get(blocks, b))
+    .forEach((id, x) => {
+      const middle = mean(get(above, id).map((p) => get(upper, p)));
+      if (middle !== undefined) edges.push([middle, x]);
+    });
+  // Two lines cross when their order above and below differ: sort by the upper end, count pairs out of order below.
+  edges.sort(([a1, b1], [a2, b2]) => a1 - a2 || b1 - b2);
+  return descents(edges.map(([, b]) => b));
+}
+
+/** Each person's parents in the row right above (the lines that the crossing count looks at). */
+function parentsAbove(graph: FamilyGraph, rowOf: Map<PersonId, number>): Map<PersonId, PersonId[]> {
+  return new Map(
+    graph.ids.map((id) => [
+      id,
+      get(graph.parents, id).filter((p) => get(rowOf, p) === get(rowOf, id) - 1),
+    ]),
+  );
+}
+
+/** Pairs i < j with values[i] > values[j], counted while merge-sorting `values` (in place). */
+function descents(values: number[]): number {
+  if (values.length < 2) return 0;
+  const left = values.slice(0, values.length >> 1);
+  const right = values.slice(values.length >> 1);
+  let count = descents(left) + descents(right);
+  let i = 0;
+  let j = 0;
+  for (let k = 0; k < values.length; k++)
+    if (j >= right.length || (i < left.length && get(left, i) <= get(right, j)))
+      values[k] = get(left, i++);
+    else {
+      count += left.length - i;
+      values[k] = get(right, j++);
+    }
   return count;
 }
 
 /** Index of every person within their row. */
-function positions(blocks: PersonId[][], rows: number[][]): Map<PersonId, number> {
+function positions(blocks: PersonId[][], row: number[]): Map<PersonId, number> {
   const pos = new Map<PersonId, number>();
-  for (const row of rows) row.flatMap((b) => get(blocks, b)).forEach((id, i) => pos.set(id, i));
+  row.flatMap((b) => get(blocks, b)).forEach((id, i) => pos.set(id, i));
   return pos;
 }
 

@@ -3,6 +3,8 @@
  * Partners get a couple line. Children hang from the middle of their parents' couple line, or from below each
  * parent when there is no such line. Biological parents share one solid line; every other kind of parent gets
  * its own dashed line, so a child can show both (TREE-03). Special marks appear only where they apply (TREE-04).
+ * A line that still crosses another one gets a small break in its horizontal piece, so a crossing never looks
+ * like a junction.
  */
 import { get, mean } from './graph';
 import { isBiological } from '../model/queries';
@@ -24,10 +26,49 @@ const ARCH_HEIGHT = 16;
 
 type OtherKind = Exclude<ParentChildKind, 'biological'>;
 
+/** Children grouped by the parents they hang from, one group per drawn child line. */
+export interface LineGroup {
+  kind: OtherKind | undefined;
+  parentIds: PersonId[];
+  kids: PersonId[];
+}
+
+/**
+ * The child lines to draw, by key (mock-up `edgesHtml`): biological parents who are a couple share one line,
+ * every other parent gets a line of their own. The layout also uses them for the passages of long lines.
+ */
+export function lineGroups(project: Project): Map<string, LineGroup> {
+  const couples = new Set(project.partnerships.map((r) => pairKey(...r.partners)));
+  const groups = new Map<string, LineGroup>();
+  for (const person of project.persons) {
+    const byKind = new Map<OtherKind | undefined, PersonId[]>();
+    for (const l of project.parentChild) {
+      if (l.childId !== person.id) continue;
+      const kind = isBiological(l) ? undefined : (l.kind as OtherKind);
+      byKind.set(kind, [...(byKind.get(kind) ?? []), l.parentId]);
+    }
+    for (const [kind, ids] of byKind) {
+      const together = ids.length === 2 && couples.has(pairKey(get(ids, 0), get(ids, 1)));
+      for (const parentIds of together ? [ids] : ids.map((id) => [id])) {
+        const key = `${kind ?? ''}|${[...parentIds].sort().join(' ')}`;
+        const group = groups.get(key) ?? { kind, parentIds, kids: [] };
+        group.kids.push(person.id);
+        groups.set(key, group);
+      }
+    }
+  }
+  return groups;
+}
+
+/**
+ * `passages` holds, per line into a child that sits more than one row below its parents (key `group>child`),
+ * the x where the line passes each row in between (see passages.ts).
+ */
 export function drawLines(
   project: Project,
   cards: Map<PersonId, CardBox>,
   sizes: LayoutSizes,
+  passages: Map<string, number[]>,
 ): { coupleLines: CoupleLine[]; childLines: ChildLine[] } {
   const all = [...cards.values()];
   const neighbours = (a: CardBox, b: CardBox) =>
@@ -70,28 +111,7 @@ export function drawLines(
     });
   }
 
-  // Group the children by the parents they hang from (mock-up `edgesHtml`).
-  const groups = new Map<
-    string,
-    { kind: OtherKind | undefined; parentIds: PersonId[]; kids: PersonId[] }
-  >();
-  for (const person of project.persons) {
-    const byKind = new Map<OtherKind | undefined, PersonId[]>();
-    for (const l of project.parentChild) {
-      if (l.childId !== person.id) continue;
-      const kind = isBiological(l) ? undefined : (l.kind as OtherKind);
-      byKind.set(kind, [...(byKind.get(kind) ?? []), l.parentId]);
-    }
-    for (const [kind, ids] of byKind) {
-      const together = ids.length === 2 && couples.has(pairKey(get(ids, 0), get(ids, 1)));
-      for (const parentIds of together ? [ids] : ids.map((id) => [id])) {
-        const key = `${kind ?? ''}|${[...parentIds].sort().join(' ')}`;
-        const group = groups.get(key) ?? { kind, parentIds, kids: [] };
-        group.kids.push(person.id);
-        groups.set(key, group);
-      }
-    }
-  }
+  const groups = lineGroups(project);
 
   // A child with several incoming lines (e.g. biological and adoptive) gets them side by side.
   const entryX = new Map<string, number>();
@@ -102,19 +122,6 @@ export function drawLines(
     keys.forEach((key, i) =>
       entryX.set(`${key}>${kid}`, get(cards, kid).x + (i - (keys.length - 1) / 2) * ENTRY_STEP),
     );
-
-  const rowYs = [...new Set(all.map((c) => c.y))].sort((a, b) => a - b);
-  // Nearest x to `target` in the row at height `y` that doesn't run through a card.
-  const freeX = (y: number, target: number) => {
-    const row = all.filter((c) => c.y === y);
-    const blocked = (x: number) =>
-      row.some((c) => Math.abs(x - c.x) < c.width / 2 + CLEARANCE - 0.5);
-    if (!blocked(target)) return target;
-    const candidates = row
-      .flatMap((c) => [c.x - c.width / 2 - CLEARANCE, c.x + c.width / 2 + CLEARANCE])
-      .filter((x) => !blocked(x));
-    return candidates.reduce((a, b) => (Math.abs(b - target) < Math.abs(a - target) ? b : a));
-  };
 
   const plans = [...groups].map(([key, { kind, parentIds, kids }]) => {
     const parents = parentIds.map((id) => get(cards, id));
@@ -134,57 +141,110 @@ export function drawLines(
       // An only child almost right below its parents: a straight line instead of a tiny step.
       if (origins.length === 1 && kids.length === 1 && Math.abs(hubX - x) <= card.width / 4)
         x = hubX;
-      // Rows between the parents and a child further down are passed through a gap between the cards.
-      const passed = rowYs.filter((y) => y > base && y < card.y);
-      const firstX = passed.length ? freeX(get(passed, 0), x) : x;
-      return { childId, card, x, passed, firstX };
+      // Rows between the parents and a child further down are passed at the passages' x.
+      const via = passages.get(`${key}>${childId}`) ?? [];
+      const last = via.at(-1);
+      // The last passage almost right above the child's only line: straight down instead of a tiny step.
+      if (
+        last !== undefined &&
+        get(incoming, childId).length === 1 &&
+        Math.abs(last - x) <= card.width / 4
+      )
+        x = last;
+      // One horizontal piece in every gap below the passed rows, from one passage to the next (or to the child).
+      const pieces = via.map((from, i) => {
+        const to = via[i + 1] ?? x;
+        return {
+          base: base + (i + 1) * sizes.rowHeight,
+          left: Math.min(from, to),
+          right: Math.max(from, to),
+        };
+      });
+      return { childId, card, x, via, pieces };
     });
-    const xs = [...origins.map((o) => o.x), hubX, ...drops.map((d) => d.firstX)];
+    const xs = [...origins.map((o) => o.x), hubX, ...drops.map((d) => d.via[0] ?? d.x)];
     return {
       kind,
       parentIds,
       origins,
-      base,
       hubX,
       drops,
-      left: Math.min(...xs),
-      right: Math.max(...xs),
+      bar: { base, left: Math.min(...xs), right: Math.max(...xs) },
     };
   });
 
-  // Overlapping horizontal bars in the same gap get different levels, so each child's line stays traceable.
-  const lane = new Map<(typeof plans)[number], number>();
-  for (const base of new Set(plans.map((p) => p.base))) {
+  // Overlapping horizontal pieces in the same gap get different levels, so each child's line stays traceable.
+  type Bar = { base: number; left: number; right: number };
+  const bars: Bar[] = plans.flatMap((p) => [
+    p.bar,
+    ...p.drops.flatMap((d) => d.pieces.filter((piece) => piece.left < piece.right)),
+  ]);
+  const lane = new Map<Bar, number>();
+  for (const base of new Set(bars.map((b) => b.base))) {
     const ends: number[] = [];
-    for (const plan of plans.filter((p) => p.base === base).sort((a, b) => a.left - b.left)) {
-      let i = ends.findIndex((end) => end < plan.left - CLEARANCE);
+    for (const bar of bars.filter((b) => b.base === base).sort((a, b) => a.left - b.left)) {
+      let i = ends.findIndex((end) => end < bar.left - CLEARANCE);
       if (i < 0) i = ends.length;
-      ends[i] = plan.right;
-      lane.set(plan, get(LANES, Math.min(i, LANES.length - 1)) * LANE_STEP);
+      ends[i] = bar.right;
+      lane.set(bar, get(LANES, Math.min(i, LANES.length - 1)) * LANE_STEP);
     }
   }
+  const level = (bar: Bar) => bar.base + (lane.get(bar) ?? 0);
 
   const childLines: ChildLine[] = plans.map((plan) => {
-    const busY = plan.base + get(lane, plan);
+    const busY = level(plan.bar);
     const hub = { x: plan.hubX, y: busY };
     return {
       parentIds: plan.parentIds,
       ...(plan.kind ? { kind: plan.kind } : {}),
       stems: plan.origins.map((o) => path([o, { x: o.x, y: busY }, hub])),
-      drops: plan.drops.map(({ childId, card, x, passed }) => {
+      drops: plan.drops.map(({ childId, card, x, via, pieces }) => {
         const points = [hub];
         let y = busY;
-        for (const rowY of passed) {
-          const gapX = freeX(rowY, x);
-          points.push({ x: gapX, y }, { x: gapX, y: rowY + sizes.rowHeight / 2 });
-          y = rowY + sizes.rowHeight / 2;
-        }
+        via.forEach((gapX, i) => {
+          points.push({ x: gapX, y });
+          y = level(get(pieces, i));
+          points.push({ x: gapX, y });
+        });
         points.push({ x, y }, { x, y: card.y - card.height / 2 });
         return { childId, points: path(points) };
       }),
     };
   });
-  return { coupleLines: [...couples.values()], childLines };
+  const coupleLines = [...couples.values()];
+  markCrossings(coupleLines, childLines);
+  return { coupleLines, childLines };
+}
+
+/**
+ * Where a vertical piece of one line crosses a horizontal piece of another, the horizontal one gets a break
+ * there (drawn as a small gap). Lines of the same family meet at junctions, which are no crossings.
+ */
+function markCrossings(coupleLines: CoupleLine[], childLines: ChildLine[]): void {
+  const owners: { owner: CoupleLine | ChildLine; paths: Point[][] }[] = [
+    ...coupleLines.map((l) => ({ owner: l, paths: [l.points] })),
+    ...childLines.map((l) => ({ owner: l, paths: [...l.stems, ...l.drops.map((d) => d.points)] })),
+  ];
+  const pieces = owners.flatMap(({ owner, paths }) =>
+    paths.flatMap((points) => points.slice(1).map((b, i) => ({ owner, a: get(points, i), b }))),
+  );
+  const horizontal = pieces.filter(({ a, b }) => a.y === b.y && a.x !== b.x);
+  const vertical = pieces.filter(({ a, b }) => a.x === b.x && a.y !== b.y);
+  for (const h of horizontal)
+    for (const v of vertical) {
+      const { x } = v.a;
+      const { y } = h.a;
+      if (
+        h.owner !== v.owner &&
+        x > Math.min(h.a.x, h.b.x) &&
+        x < Math.max(h.a.x, h.b.x) &&
+        y > Math.min(v.a.y, v.b.y) &&
+        y < Math.max(v.a.y, v.b.y)
+      ) {
+        const breaks = (h.owner.breaks ??= []);
+        if (!breaks.some((p) => p.x === x && p.y === y)) breaks.push({ x, y });
+      }
+    }
 }
 
 function pairKey(a: PersonId, b: PersonId): string {
