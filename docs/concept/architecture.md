@@ -169,6 +169,9 @@ The UI always shows the save status ("✓ Gespeichert" / "● Nicht in Datei ges
 - `src/core/migrations/` holds one small upgrade function per version step (v1→v2, v2→v3, …). Older files are upgraded on open,
   and each step has a unit test with a stored sample file.
 - A file **newer** than the app gets the message "Diese Datei wurde mit einer neueren Version erstellt", plus a read-only view where possible.
+- **The working copy in IndexedDB has no version yet** (it is always schema 1). At the first schema bump, store the
+  new working copy under a new key (e.g. `project-v2`) or run it through `projectToJson`/`projectFromJson`: every
+  `Stammbaum.html` on a computer shares one working copy, and an older app must never load newer data unchecked.
 
 ## 6. Privacy design (PRIV-01/02) ✅
 

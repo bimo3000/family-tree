@@ -4,7 +4,7 @@
  * stored sample file (tests/fixtures/schema-v<N>.json).
  *
  * To change the format: bump CURRENT_SCHEMA_VERSION, add `MIGRATIONS[old] = (data) => …`,
- * and store a sample of the old version.
+ * and store a sample of the old version. Also version the browser's working copy (architecture §5).
  */
 import { ModelError } from '../model/validation';
 
