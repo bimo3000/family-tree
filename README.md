@@ -19,7 +19,7 @@ their history without an account, a cloud or a genealogy program.
 - Undo for everything, autosave to the browser, print or save the whole tree as a PDF, help inside the app.
 - Built for the "grandma test": large buttons, plain words, every detail optional.
 
-> Status: version 0.11.0 is a test version for family members. Next: manual checks on a real Mac and Windows
+> Status: version 0.12.0 is a test version for family members. Next: manual checks on a real Mac and Windows
 > ([docs/manual-checks.md](docs/manual-checks.md)) and feedback, then 1.0.0.
 > The current state is always in [docs/agent/HANDOVER.md](docs/agent/HANDOVER.md).
 

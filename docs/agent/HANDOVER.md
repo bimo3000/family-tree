@@ -3,38 +3,30 @@
 > Rewritten at the end of every session (skill `session-handover`). A fresh session must be able to
 > continue from this file alone. Keep it short and current. History lives in git, decisions in ADRs.
 
-**Last updated:** 2026-10-25 (session 12)
+**Last updated:** 2026-10-25 (session 13)
 
 ## Phase
 
 1. ~~Development setup~~ ✅ (session 1)
 2. ~~Concept work~~ ✅ (session 1, `docs/concept/*`, ADR-0001…0008)
 3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history before `1bfe483`)
-4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, 0.10.0 (languages), **0.11.0** (session 11 fixes, layout work of session 12, years only on the card).
+4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, 0.10.0 (languages), 0.11.0 (layout work, years only on the card), **0.12.0** (Enter in dialogs, double-click edits).
 5. **Feedback and manual checks** ← current. Then 1.0.0.
 
-## Done in session 12 (user feedback on crossing lines, not released yet)
+## Done in session 13 (user feedback, released as 0.12.0)
 
-- **Long lines get stand-ins** (`src/core/layout/passages.ts`, ADR-0006): a child more than one row below their parents
-  (married into a family with more generations) gets an invisible stand-in in every row the line passes. The ordering
-  now counts that line, and it passes each row in a gap of its own (before: squeezed between two partners, 9 px from
-  their child line, in the user's tree). Only trees with such lines get a different layout; Brandt is unchanged.
-- **More starting orders** (`order.ts`): when crossings remain, the walk also starts from the bottom and/or right to left;
-  another start wins only with fewer crossings. Crossing count per row pair by sorting. User's tree: 10 → 4 crossings.
-- **Breaks at crossings** (user's choice of three options): the horizontal line gets a 10 px gap (`breaks` in the layout,
-  `pathD(points, breaks)` in `geometry.ts`).
-- **Highlight through the couple line:** an ancestor selected → a descendant's half of the couple line is lit up to the
-  middle where the lit child line starts (`Highlight.halves`, `halfCouple`). Parents without a couple line light only
-  their own stem.
-- Tests: fixture `mismatched-generations` (fictional, the shape of the user's case), invariant "a line passing a row keeps
-  12 px from cards and other lines", `passages.test.ts`, breaks, halves, E2E half line.
-- **Card shows years only again** (user: full dates too busy); D-001 updated, symbols for vague years stay.
-- **Release 0.11.0** built (`release/Stammbaum-0.11.0.zip`), checked from the unzipped folder.
-- Previous session (11): pre-1.0 review and fixes, card dates D-001 (see git history and ADRs).
+- **Enter in a dialog** presses its highlighted button („Fertig“, „Hinzufügen“, crop „Übernehmen“, …): one `onkeydown`
+  in `Modal.svelte`, only for `input` targets (not textarea, select, buttons or a `<form>`, which submits itself).
+- **Double-click on a card** opens the person dialog (`onedit` from `PersonCard` → `TreeView` → `ProjectScreen`).
+  It no longer centres; a name in the panel still centres that person (TREE-02, E2E in `tree.spec.ts`).
+- Timing test "lays out 100 persons quickly (TREE-05)" now takes the best of 3 runs (user's OK); was flaky ~1 in 15.
+- Help text, the three guides and ui-concept §2.3/§2.5 updated; clarification logged in REQUIREMENTS.
+- **Release 0.12.0** (`release/Stammbaum-0.12.0.zip`), tag `v0.12.0` pushed.
+- Earlier sessions: 12 = crossing lines (stand-ins, breaks, highlight through the couple line), 11 = pre-1.0 review.
 
 ## Next steps
 
-- The user tries 0.11.0 (`release/Stammbaum-0.11.0.zip`).
+- The user tries 0.12.0 (`release/Stammbaum-0.12.0.zip`).
 - The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 9a, moved file). Record the
   results in that file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, regression test first).
 - Feedback rounds: each piece of feedback that changes behaviour goes through `requirement-change` first.
@@ -42,9 +34,8 @@
 
 ## Open items for the user
 
-- Push the tags `v0.11.0` / `v0.10.0` / `v0.9.0`? (Local only; optional.)
+- Push the older tags `v0.11.0` / `v0.10.0` / `v0.9.0`? (Local only; optional. `v0.9.1` and `v0.12.0` are on the remote.)
 - Run the manual checklist on a Mac and on Windows. A French reader for `fr.ts` ("divers" for the gender option).
-- Timing test flaky (see Known gaps): OK to time the best of 3 runs?
 - Look at the new crossing breaks and the highlight through the couple line in your tree; do they look right?
 
 ## Pitfalls / environment notes
@@ -104,6 +95,3 @@
 - Lines don't glide with the cards; they jump to the new layout. Some crossings remain where no simple order avoids
   them (user's tree: 4, around a family with children between two siblings); they are drawn with a break.
 - Layout time: 100 persons ~20 ms, 200 persons ~90 ms.
-- **Flaky test (pre-existing):** "lays out 100 persons quickly (TREE-05)" fails about 1 in 15 full unit runs on this
-  machine (layout ~20 ms alone, >100 ms when all test files run in parallel). The code before session 12 fails the same
-  way. Proposal for the user: time the best of 3 runs instead of one. Not changed without their OK.
