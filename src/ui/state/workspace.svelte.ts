@@ -102,9 +102,16 @@ export class Workspace {
   /** "Speichern": into the known file if allowed, else like "Speichern unter". */
   async save(): Promise<SaveResult> {
     if (this.#handle && (await mayWrite(this.#handle, true))) {
-      this.#writesToFile = true;
-      await this.#writeToFile();
-      return 'saved';
+      try {
+        this.#writesToFile = true;
+        await this.#writeToFile();
+        return 'saved';
+      } catch {
+        // The file was moved, renamed or deleted, or its stick is gone: ask for a file again.
+        this.#handle = null;
+        this.#writesToFile = false;
+        await workingCopy.saveHandle(null);
+      }
     }
     return this.saveAs();
   }

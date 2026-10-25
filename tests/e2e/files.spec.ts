@@ -301,4 +301,54 @@ test.describe('saving into the file in Chrome and Edge (DATA-09)', () => {
     await expect(status(page)).toHaveText('✓ Gespeichert', { timeout: 10_000 });
     expect(await writes()).toBe(2);
   });
+
+  test('if the file was moved or deleted, "Speichern" asks for a file again', async ({
+    app,
+    page,
+  }) => {
+    // Stand-in picker: each pick is a new file. After `gone`, the first one can't be written any more.
+    await page.addInitScript(() => {
+      const state = { picks: 0, gone: false, written: [] as string[] };
+      Object.assign(window, { state });
+      const handle = (name: string) => ({
+        kind: 'file',
+        name,
+        queryPermission: async () => 'granted',
+        requestPermission: async () => 'granted',
+        createWritable: async () => {
+          if (name === 'Brandt.stammbaum' && state.gone)
+            throw new DOMException('moved', 'NotFoundError');
+          return { write: async () => {}, close: async () => void state.written.push(name) };
+        },
+      });
+      Object.defineProperty(window, 'showSaveFilePicker', {
+        value: async () => handle(++state.picks === 1 ? 'Brandt.stammbaum' : 'Neu.stammbaum'),
+      });
+    });
+    const state = () =>
+      page.evaluate(
+        () => (window as unknown as { state: { picks: number; written: string[] } }).state,
+      );
+
+    await app.openExample();
+    const save = page.getByRole('button', { name: 'Speichern', exact: true });
+    await save.click();
+    await expect(status(page)).toHaveText('✓ Gespeichert');
+    await page.evaluate(
+      () => ((window as unknown as { state: { gone: boolean } }).state.gone = true),
+    );
+
+    await renameKarl(page, 'Carl');
+    await expect(page.getByRole('status')).toHaveText(
+      'Die Datei konnte nicht geschrieben werden. Klick auf Speichern.',
+      { timeout: 10_000 },
+    );
+    await save.click();
+    await expect(status(page)).toHaveText('✓ Gespeichert');
+    expect(await state()).toEqual({
+      picks: 2,
+      gone: true,
+      written: ['Brandt.stammbaum', 'Neu.stammbaum'],
+    });
+  });
 });
