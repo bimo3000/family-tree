@@ -15,12 +15,12 @@ import {
   partnershipDetail,
   partnerWord,
   personFacts,
-  possessive,
   shortName,
   siblingWord,
   tooltipLines,
   yearsLine,
 } from '../../../src/ui/text';
+import { de } from '../../../src/ui/i18n/de';
 import { familieBrandt } from '../../fixtures/familie-brandt';
 
 const anna: Person = {
@@ -192,9 +192,9 @@ describe('dateHint (ui-concept §2.5)', () => {
 
 describe('editing texts', () => {
   it('picks the possessive by gender', () => {
-    expect(possessive({ id: 'a', gender: 'female' })).toBe('Ihre');
-    expect(possessive({ id: 'a', gender: 'male' })).toBe('Seine');
-    expect(possessive({ id: 'a' })).toBe('Die');
+    expect(de.deleteDialog.text('female')).toMatch(/^Ihre Verbindungen/);
+    expect(de.deleteDialog.text('male')).toMatch(/^Seine Verbindungen/);
+    expect(de.deleteDialog.text(undefined)).toMatch(/^Die Verbindungen/);
   });
 
   it('explains rule violations in German', () => {

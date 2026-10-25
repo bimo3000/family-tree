@@ -1,5 +1,6 @@
 <script lang="ts">
   import { parseDate } from '../../core/dates';
+  import { t } from '../i18n/index.svelte';
   import { dateHint } from '../text';
 
   interface Props {
@@ -20,7 +21,7 @@
       type="text"
       {value}
       oninput={(e) => oninput(e.currentTarget.value)}
-      placeholder="z. B. 12.03.1923 oder ca. 1850"
+      placeholder={t.dates.placeholder}
     />
   </label>
   <div class="date-hint" class:vague={parsed && 'text' in parsed}>{dateHint(parsed)}</div>

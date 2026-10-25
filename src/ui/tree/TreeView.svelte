@@ -3,6 +3,7 @@
   import { computeLayout, type Point } from '../../core/layout';
   import { findPerson, focusSet } from '../../core/model/queries';
   import type { Person, PersonId, Project } from '../../core/model/types';
+  import { t } from '../i18n/index.svelte';
   import { endWord, kindLabel, tooltipLines } from '../text';
   import {
     centerOn,
@@ -208,9 +209,13 @@
   </div>
 
   <div class="zoom">
-    <button type="button" class="btn" title="Vergrößern" onclick={() => zoomButton(1.25)}>+</button>
-    <button type="button" class="btn" title="Verkleinern" onclick={() => zoomButton(0.8)}>−</button>
-    <button type="button" class="btn" onclick={() => fitAll()}>⤢ Alles anzeigen</button>
+    <button type="button" class="btn" title={t.tree.zoomIn} onclick={() => zoomButton(1.25)}
+      >+</button
+    >
+    <button type="button" class="btn" title={t.tree.zoomOut} onclick={() => zoomButton(0.8)}
+      >−</button
+    >
+    <button type="button" class="btn" onclick={() => fitAll()}>{t.tree.fitAll}</button>
   </div>
 </div>
 

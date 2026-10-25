@@ -1,5 +1,6 @@
 <script lang="ts">
   import { untrack } from 'svelte';
+  import { t } from '../i18n/index.svelte';
   import Modal from './Modal.svelte';
 
   /** Asks for a project name: for a new project and for "Umbenennen". */
@@ -26,12 +27,12 @@
   >
     <h2>{title}</h2>
     <label>
-      Name
-      <input type="text" bind:value placeholder="z. B. Familie Müller" />
+      {t.nameDialog.name}
+      <input type="text" bind:value placeholder={t.nameDialog.example} />
     </label>
     <div class="form-actions">
       <button type="submit" class="btn primary" disabled={!value.trim()}>{submit}</button>
-      <button type="button" class="btn" onclick={onclose}>Abbrechen</button>
+      <button type="button" class="btn" onclick={onclose}>{t.common.cancel}</button>
     </div>
   </form>
 </Modal>

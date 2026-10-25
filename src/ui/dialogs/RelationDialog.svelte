@@ -10,6 +10,7 @@
     PersonId,
     Project,
   } from '../../core/model/types';
+  import { t } from '../i18n/index.svelte';
   import { fmtDate, shortName } from '../text';
   import DateField from './DateField.svelte';
   import { lifeEvent } from './fields';
@@ -72,22 +73,17 @@
       parentLinksOf(project, l.childId).filter((x) => isBiological(x) && x.parentId !== l.parentId)
         .length < 2,
   );
-  const CHILD_KINDS: [ParentChildKind, string][] = [
-    ['biological', 'leibliches Kind'],
-    ['adoptive', 'Adoptivkind'],
-    ['step', 'Stiefkind'],
-    ['foster', 'Pflegekind'],
-  ];
+  const CHILD_KINDS: ParentChildKind[] = ['biological', 'adoptive', 'step', 'foster'];
 </script>
 
-<Modal label="Beziehung bearbeiten" {onclose}>
-  <h2>Beziehung bearbeiten</h2>
+<Modal label={t.relation.title} {onclose}>
+  <h2>{t.relation.title}</h2>
   {#if p}
-    <p class="muted">{name(p.partners[0])} und {name(p.partners[1])}</p>
+    <p class="muted">{t.relation.couple(name(p.partners[0]), name(p.partners[1]))}</p>
     <div class="form" onfocusin={onfocus}>
       <fieldset>
-        <legend>Art der Beziehung</legend>
-        {#each [['', 'Paar (keine nähere Angabe)'], ['marriage', 'Ehe'], ['partnership', 'Eingetragene Partnerschaft']] as [value, label] (value)}
+        <legend>{t.relation.kind}</legend>
+        {#each Object.entries(t.relation.kinds) as [value, label] (value)}
           <label class="radio">
             <input
               type="radio"
@@ -95,7 +91,7 @@
               {value}
               checked={f.kind === value}
               onchange={() => {
-                f.kind = value!;
+                f.kind = value;
                 applyPartner();
               }}
             />
@@ -105,7 +101,7 @@
       </fieldset>
       <div class="pair">
         <DateField
-          label="Seit"
+          label={t.relation.since}
           value={f.startDate}
           oninput={(v) => {
             f.startDate = v;
@@ -113,7 +109,7 @@
           }}
         />
         <label>
-          in
+          {t.personDialog.place}
           <input
             type="text"
             value={f.startPlace}
@@ -125,8 +121,8 @@
         </label>
       </div>
       <fieldset>
-        <legend>Getrennt?</legend>
-        {#each [['', 'nein'], ['separation', 'getrennt'], ['divorce', 'geschieden']] as [value, label] (value)}
+        <legend>{t.relation.ended}</legend>
+        {#each Object.entries(t.relation.ends) as [value, label] (value)}
           <label class="radio">
             <input
               type="radio"
@@ -134,7 +130,7 @@
               {value}
               checked={f.endReason === value}
               onchange={() => {
-                f.endReason = value!;
+                f.endReason = value;
                 applyPartner();
               }}
             />
@@ -144,7 +140,7 @@
       </fieldset>
       {#if f.endReason}
         <DateField
-          label="Seit wann?"
+          label={t.relation.endedSince}
           value={f.endDate}
           oninput={(v) => {
             f.endDate = v;
@@ -154,9 +150,9 @@
       {/if}
     </div>
   {:else if l}
-    <p class="muted">{name(l.childId)} ist für {name(l.parentId)} ein …</p>
+    <p class="muted">{t.relation.childIntro(name(l.childId), name(l.parentId))}</p>
     <fieldset>
-      {#each CHILD_KINDS as [value, label] (value)}
+      {#each CHILD_KINDS as value (value)}
         {@const disabled = value === 'biological' && !biologicalAllowed}
         <label class="radio">
           <input
@@ -170,13 +166,13 @@
               onchange((project) => setParentChildKind(project, l.parentId, l.childId, value));
             }}
           />
-          {label}
-          {#if disabled}<span class="muted small">(hat schon zwei leibliche Eltern)</span>{/if}
+          {t.relation.childKinds[value]}
+          {#if disabled}<span class="muted small">{t.relation.hasTwoParents}</span>{/if}
         </label>
       {/each}
     </fieldset>
   {/if}
   <div class="form-actions">
-    <button type="button" class="btn primary" onclick={onclose}>Fertig</button>
+    <button type="button" class="btn primary" onclick={onclose}>{t.common.done}</button>
   </div>
 </Modal>

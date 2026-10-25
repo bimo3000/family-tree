@@ -2,6 +2,7 @@
   import { type Relation, isPlaceholder } from '../../core/model/queries';
   import type { Person, PersonId, Project } from '../../core/model/types';
   import type { RelativeKind } from '../dialogs/AddRelativeDialog.svelte';
+  import { t } from '../i18n/index.svelte';
   import { usePhotos } from '../photos';
   import { fullName, initials, personFacts } from '../text';
   import { familyGroups } from './family';
@@ -18,12 +19,7 @@
   }
   let { project, person, ongoto, onclose, onedit, onadd, ondelete, onrelation }: Props = $props();
 
-  const ADD: [RelativeKind, string][] = [
-    ['parent', '+ Elternteil'],
-    ['partner', '+ Partner/in'],
-    ['child', '+ Kind'],
-    ['sibling', '+ Geschwister'],
-  ];
+  const ADD: RelativeKind[] = ['parent', 'partner', 'child', 'sibling'];
 
   const PENCIL =
     'M4 16l.9-3.6L13.3 4a1.5 1.5 0 0 1 2.1 0l.6.6a1.5 1.5 0 0 1 0 2.1L7.6 15.1 4 16zM12 5.3l2.7 2.7';
@@ -40,21 +36,19 @@
 </script>
 
 <!-- Details of the selected person (PERS-05) and the starting points for every change (ui-concept §2.4). -->
-<aside class="panel" aria-label="Details">
-  <button type="button" class="close" title="Schließen (Esc)" onclick={onclose}>×</button>
+<aside class="panel" aria-label={t.panel.label}>
+  <button type="button" class="close" title={t.panel.close} onclick={onclose}>×</button>
   {#if unknown}
     <div class="p-photo p-unknown">?</div>
-    <h2>Unbekannter Elternteil</h2>
-    <p class="muted">
-      Diese Person ist noch nicht bekannt. Sie wurde angelegt, damit Geschwister zusammengehören.
-    </p>
+    <h2>{t.person.unknownParent}</h2>
+    <p class="muted">{t.panel.unknownText}</p>
   {:else}
     <div class="p-photo">
       {#if photo}<img src={photo} alt="" />{:else}{initials(person)}{/if}
     </div>
     <h2>{fullName(person)}</h2>
-    {#if person.birthName}<div class="geb">geb. {person.birthName}</div>{/if}
-    {#if empty}<p class="muted">Noch keine Angaben. Klick auf „Bearbeiten“.</p>{/if}
+    {#if person.birthName}<div class="geb">{t.person.birthName(person.birthName)}</div>{/if}
+    {#if empty}<p class="muted">{t.panel.empty}</p>{/if}
     {#if facts.length}
       <dl class="facts">
         {#each facts as [label, value], i (i)}
@@ -64,13 +58,13 @@
       </dl>
     {/if}
     {#if person.biography}
-      <h3>Lebensgeschichte</h3>
+      <h3>{t.panel.biography}</h3>
       <p class="bio">{person.biography}</p>
     {/if}
   {/if}
 
   {#if groups.length}
-    <h3>Familie</h3>
+    <h3>{t.panel.family}</h3>
     {#each groups as group (group.title)}
       <div class="fam">
         <div class="fam-title">{group.title}</div>
@@ -95,8 +89,8 @@
                 <button
                   type="button"
                   class="fam-tool"
-                  title="Beziehung bearbeiten"
-                  aria-label="Beziehung zu {entry.name} bearbeiten"
+                  title={t.panel.editRelation}
+                  aria-label={t.panel.editRelationTo(entry.name)}
                   onclick={() => onrelation(relation, 'edit')}
                 >
                   {@render icon(PENCIL)}
@@ -104,8 +98,8 @@
                 <button
                   type="button"
                   class="fam-tool remove"
-                  title="Verbindung entfernen"
-                  aria-label="Verbindung zu {entry.name} entfernen"
+                  title={t.panel.removeRelation}
+                  aria-label={t.panel.removeRelationTo(entry.name)}
                   onclick={() => onrelation(relation, 'remove')}
                 >
                   {@render icon(CROSS)}
@@ -120,16 +114,16 @@
 
   {#if unknown}
     <div class="actions">
-      <button type="button" class="btn primary wide" onclick={onedit}>Person eintragen</button>
+      <button type="button" class="btn primary wide" onclick={onedit}>{t.panel.enterPerson}</button>
     </div>
   {:else}
     <div class="actions">
-      <button type="button" class="btn primary wide" onclick={onedit}>Bearbeiten</button>
-      {#each ADD as [kind, label] (kind)}
-        <button type="button" class="btn" onclick={() => onadd(kind)}>{label}</button>
+      <button type="button" class="btn primary wide" onclick={onedit}>{t.panel.edit}</button>
+      {#each ADD as kind (kind)}
+        <button type="button" class="btn" onclick={() => onadd(kind)}>{t.panel.add[kind]}</button>
       {/each}
     </div>
-    <button type="button" class="link danger" onclick={ondelete}>Person löschen</button>
+    <button type="button" class="link danger" onclick={ondelete}>{t.panel.delete}</button>
   {/if}
 </aside>
 

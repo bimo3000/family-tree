@@ -3,6 +3,7 @@
   import { isPlaceholder } from '../../core/model/queries';
   import type { ExtraField, Gender, Person } from '../../core/model/types';
   import type { Crop } from '../../core/photoCrop';
+  import { t } from '../i18n/index.svelte';
   import { usePhotos } from '../photos';
   import { fmtDate, initials } from '../text';
   import DateField from './DateField.svelte';
@@ -38,7 +39,8 @@
 
   // The fields as typed. They are filled once; after undo/redo the whole dialog is rebuilt (App.svelte).
   const start = untrack(() => person);
-  const title = isPlaceholder(start) ? 'Person eintragen' : 'Person bearbeiten';
+  const isNew = isPlaceholder(start);
+  const title = $derived(isNew ? t.personDialog.newTitle : t.personDialog.editTitle);
   const f = $state({
     givenNames: start.givenNames ?? '',
     surname: start.surname ?? '',
@@ -117,7 +119,7 @@
 </script>
 
 <Modal
-  label={cropping ? 'Ausschnitt wählen' : title}
+  label={cropping ? t.crop.title : title}
   wide
   onclose={cropping ? () => (cropping = undefined) : onclose}
 >
@@ -139,15 +141,19 @@
             {initials(person)}
           {/if}
         </div>
-        <button type="button" class="btn" onclick={() => photoInput?.click()}>Foto wählen …</button>
+        <button type="button" class="btn" onclick={() => photoInput?.click()}
+          >{t.personDialog.choosePhoto}</button
+        >
         {#if person.photoId}
-          <button type="button" class="link" onclick={onphotoremove}>Foto entfernen</button>
+          <button type="button" class="link" onclick={onphotoremove}
+            >{t.personDialog.removePhoto}</button
+          >
         {/if}
         <input
           bind:this={photoInput}
           type="file"
           accept="image/*"
-          aria-label="Foto"
+          aria-label={t.personDialog.photo}
           hidden
           onchange={(e) => {
             const file = e.currentTarget.files?.[0];
@@ -157,25 +163,25 @@
         />
       </div>
       <label>
-        Vornamen
+        {t.personDialog.givenNames}
         <input
           type="text"
           value={f.givenNames}
           oninput={input('givenNames')}
-          placeholder="z. B. Anna Maria"
+          placeholder={t.personDialog.givenNamesExample}
         />
       </label>
       <label>
-        Nachname (zuletzt bekannt)
+        {t.personDialog.surname}
         <input type="text" value={f.surname} oninput={input('surname')} />
       </label>
       <label>
-        Geburtsname
+        {t.personDialog.birthName}
         <input type="text" value={f.birthName} oninput={input('birthName')} />
       </label>
       <div class="pair">
         <DateField
-          label="Geboren am"
+          label={t.personDialog.born}
           value={f.birthDate}
           oninput={(v) => {
             f.birthDate = v;
@@ -183,13 +189,13 @@
           }}
         />
         <label>
-          in
+          {t.personDialog.place}
           <input type="text" value={f.birthPlace} oninput={input('birthPlace')} />
         </label>
       </div>
       <div class="pair">
         <DateField
-          label="Gestorben am"
+          label={t.personDialog.died}
           value={f.deathDate}
           oninput={(v) => {
             f.deathDate = v;
@@ -197,7 +203,7 @@
           }}
         />
         <label>
-          in
+          {t.personDialog.place}
           <input type="text" value={f.deathPlace} oninput={input('deathPlace')} />
         </label>
       </div>
@@ -210,71 +216,68 @@
             apply('deceased');
           }}
         />
-        verstorben, Datum unbekannt
+        {t.personDialog.deceased}
       </label>
 
       <details bind:open={moreOpen}>
-        <summary>Mehr Angaben</summary>
+        <summary>{t.personDialog.more}</summary>
         <label>
-          Geschlecht
+          {t.personDialog.gender}
           <select value={f.gender} onchange={input('gender')}>
-            <option value="">keine Angabe</option>
-            <option value="female">weiblich</option>
-            <option value="male">männlich</option>
-            <option value="diverse">divers</option>
+            {#each Object.entries(t.personDialog.genders) as [value, label] (value)}
+              <option {value}>{label}</option>
+            {/each}
           </select>
         </label>
         <label>
-          Beruf
+          {t.personDialog.occupation}
           <input type="text" value={f.occupation} oninput={input('occupation')} />
         </label>
         <label>
-          Wohnorte
+          {t.personDialog.residences}
           <input
             type="text"
             value={f.residences}
             oninput={input('residences')}
-            placeholder="z. B. Hamburg, ab 1960 Kiel"
+            placeholder={t.personDialog.residencesExample}
           />
         </label>
         <label>
-          Lebensgeschichte
+          {t.personDialog.biography}
           <textarea rows="6" value={f.biography} oninput={input('biography')}></textarea>
         </label>
-        <div class="extras-title">Weitere Angaben</div>
+        <div class="extras-title">{t.personDialog.extras}</div>
         {#each f.extras as extra, i (i)}
           <div class="extra-row">
             <input
               type="text"
-              aria-label="Bezeichnung"
+              aria-label={t.personDialog.extraLabel}
               value={extra.label}
               oninput={extraInput(i, 'label')}
-              placeholder="z. B. Konfession"
+              placeholder={t.personDialog.extraLabelExample}
             />
             <input
               type="text"
-              aria-label="Wert"
+              aria-label={t.personDialog.extraValue}
               value={extra.value}
               oninput={extraInput(i, 'value')}
-              placeholder="z. B. evangelisch"
+              placeholder={t.personDialog.extraValueExample}
             />
             <button
               type="button"
               class="link danger"
-              title="Feld entfernen"
+              title={t.personDialog.removeField}
               onclick={() => removeExtra(i)}>×</button
             >
           </div>
         {/each}
-        <button type="button" class="link" onclick={addExtra}>+ Feld hinzufügen</button>
+        <button type="button" class="link" onclick={addExtra}>{t.personDialog.addField}</button>
       </details>
     </div>
     <div class="form-actions">
-      <button type="button" class="btn primary" onclick={onclose}>Fertig</button>
+      <button type="button" class="btn primary" onclick={onclose}>{t.common.done}</button>
     </div>
-    <p class="muted small">
-      Änderungen werden sofort übernommen. Mit ↶ kannst du sie rückgängig machen.
-    </p>
+    <p class="muted small">{t.personDialog.instant}</p>
   {/if}
 </Modal>
 

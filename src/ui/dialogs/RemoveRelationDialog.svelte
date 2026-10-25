@@ -9,7 +9,8 @@
   } from '../../core/model/queries';
   import { cutOffBy, ends } from '../../core/model/relatives';
   import type { PersonId, Project } from '../../core/model/types';
-  import { parentWord, shortName } from '../text';
+  import { t } from '../i18n/index.svelte';
+  import { shortName } from '../text';
   import Modal from './Modal.svelte';
 
   interface Props {
@@ -25,18 +26,18 @@
   const { what, cut } = untrack(() => {
     const person = (id: PersonId) => findPerson(project, id) ?? { id };
     const [a, b] = ends(relation);
-    const [na, nb] = [a, b].map((id) => shortName(person(id)));
+    const [na, nb] = [shortName(person(a)), shortName(person(b))];
     let what: string;
     if ('partners' in relation) {
       const shared = childLinksOf(project, a).some((l) =>
         parentLinksOf(project, l.childId).some((m) => m.parentId === b),
       );
-      what = `${na} und ${nb} sind dann kein Paar mehr.`;
-      if (shared) what += ' Gemeinsame Kinder bleiben Kinder von beiden.';
+      what = t.removeRelation.noCouple(na, nb);
+      if (shared) what += ' ' + t.removeRelation.sharedChildren;
     } else if (isPlaceholder(person(a))) {
-      what = `Die Verbindung von ${nb} zum unbekannten Elternteil wird entfernt.`;
+      what = t.removeRelation.fromPlaceholder(nb);
     } else {
-      what = `${na} ist dann nicht mehr ${parentWord(person(a), relation.kind)} von ${nb}.`;
+      what = t.removeRelation.noParent(na, nb, person(a).gender, relation.kind);
     }
     return { what, cut: cutOffBy(project, relation) };
   });
@@ -44,30 +45,24 @@
   const loneName = lone ? untrack(() => shortName(findPerson(project, lone) ?? { id: lone })) : '';
 </script>
 
-<Modal label="Verbindung entfernen?" {onclose}>
-  <h2>Verbindung entfernen?</h2>
+<Modal label={t.removeRelation.title} {onclose}>
+  <h2>{t.removeRelation.title}</h2>
   <p>{what}</p>
   {#if lone}
-    <p>
-      Danach hat {loneName} keine Verbindung mehr zu anderen Personen. Du kannst {loneName} behalten (steht
-      dann allein neben dem Stammbaum) oder ganz löschen.
-    </p>
+    <p>{t.removeRelation.alone(loneName)}</p>
   {:else if cut.length > 1}
-    <p>
-      Danach hängen {cut.length} Personen nicht mehr mit dem übrigen Stammbaum zusammen. Sie bleiben erhalten
-      und stehen daneben, bis du sie wieder verbindest.
-    </p>
+    <p>{t.removeRelation.apart(cut.length)}</p>
   {/if}
-  <p class="muted small">Mit ↶ kannst du das rückgängig machen.</p>
+  <p class="muted small">{t.common.undoHint}</p>
   <div class="form-actions">
     <button type="button" class="btn primary" onclick={() => onremove(null)}>
-      {lone ? 'Nur Verbindung entfernen' : 'Verbindung entfernen'}
+      {lone ? t.removeRelation.onlyRemove : t.removeRelation.remove}
     </button>
     {#if lone}
       <button type="button" class="btn danger" onclick={() => onremove(lone)}>
-        {loneName} ganz löschen
+        {t.removeRelation.deleteToo(loneName)}
       </button>
     {/if}
-    <button type="button" class="btn" onclick={onclose}>Abbrechen</button>
+    <button type="button" class="btn" onclick={onclose}>{t.common.cancel}</button>
   </div>
 </Modal>

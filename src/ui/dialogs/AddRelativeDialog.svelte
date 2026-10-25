@@ -23,6 +23,7 @@
   } from '../../core/model/relatives';
   import type { ParentChildKind, Person, PersonId, Project } from '../../core/model/types';
   import { ModelError } from '../../core/model/validation';
+  import { language, t } from '../i18n/index.svelte';
   import { errorText, fullName, shortName, yearsLine } from '../text';
   import Modal from './Modal.svelte';
 
@@ -36,17 +37,8 @@
   }
   let { project, person, kind, onadd, onclose }: Props = $props();
 
-  const TITLES: Record<RelativeKind, string> = {
-    child: 'Kind hinzufügen',
-    partner: 'Partner/in hinzufügen',
-    parent: 'Elternteil hinzufügen',
-    sibling: 'Geschwister hinzufügen',
-  };
-  const KINDS: [Exclude<ParentChildKind, 'biological'>, string, string][] = [
-    ['adoptive', 'Adoptivkind', 'Adoptivelternteil'],
-    ['step', 'Stiefkind', 'Stiefelternteil'],
-    ['foster', 'Pflegekind', 'Pflegeelternteil'],
-  ];
+  const KINDS: Exclude<ParentChildKind, 'biological'>[] = ['adoptive', 'step', 'foster'];
+  const title = $derived(t.addRelative.titles[kind]);
 
   const name = (id: PersonId) => shortName(findPerson(project, id) ?? { id });
   // The situation when the dialog opened; the project does not change while it is open.
@@ -61,7 +53,7 @@
   const candidates = untrack(() =>
     project.persons
       .filter((p) => p.id !== id && !isPlaceholder(p))
-      .sort((a, b) => fullName(a).localeCompare(fullName(b), 'de')),
+      .sort((a, b) => fullName(a).localeCompare(fullName(b), language())),
   );
 
   let withId = $state(partners.at(-1) ?? '');
@@ -108,13 +100,13 @@
   }
 </script>
 
-<Modal label={TITLES[kind]} {onclose}>
-  <h2>{TITLES[kind]}</h2>
-  <p class="muted">zu {shortName(person)}</p>
+<Modal label={title} {onclose}>
+  <h2>{title}</h2>
+  <p class="muted">{t.addRelative.to(shortName(person))}</p>
 
   {#if kind === 'child' && partners.length > 1}
     <fieldset>
-      <legend>Mit wem?</legend>
+      <legend>{t.addRelative.withWhom}</legend>
       {#each partners as partnerId (partnerId)}
         <label class="radio">
           <input type="radio" name="with" value={partnerId} bind:group={withId} />
@@ -123,41 +115,36 @@
       {/each}
       <label class="radio">
         <input type="radio" name="with" value="" bind:group={withId} />
-        anderer oder unbekannter Elternteil
+        {t.addRelative.otherParent}
       </label>
     </fieldset>
   {:else if kind === 'child' && partners.length === 1}
-    <p class="muted">Das Kind wird auch als Kind von {name(partners[0]!)} eingetragen.</p>
+    <p class="muted">{t.addRelative.alsoChildOf(name(partners[0]!))}</p>
   {/if}
 
   {#if kind === 'parent' && biological.length >= 2}
     <fieldset>
-      <legend>
-        {shortName(person)} hat schon zwei leibliche Eltern. Was für ein Elternteil kommt dazu?
-      </legend>
-      {#each KINDS as [value, , label] (value)}
+      <legend>{t.addRelative.twoParents(shortName(person))}</legend>
+      {#each KINDS as value (value)}
         <label class="radio">
           <input type="radio" name="pkind" {value} bind:group={parentKind} />
-          {label}
+          {t.words.parent(undefined, value)}
         </label>
       {/each}
     </fieldset>
   {:else if kind === 'parent' && biological.length === 1}
-    <p class="muted">Der Elternteil wird als Partner/in von {name(biological[0]!)} eingetragen.</p>
+    <p class="muted">{t.addRelative.partnerOf(name(biological[0]!))}</p>
   {/if}
 
   {#if kind === 'sibling' && parents.length === 0}
-    <p class="muted">
-      Die Eltern sind noch unbekannt. Damit beide als Geschwister zusammengehören, wird ein
-      Platzhalter „?“ als Elternteil angelegt.
-    </p>
+    <p class="muted">{t.addRelative.placeholder}</p>
   {/if}
 
   <fieldset>
-    <legend>Wer?</legend>
+    <legend>{t.addRelative.who}</legend>
     <label class="radio">
       <input type="radio" name="who" value="new" bind:group={who} />
-      Neue Person
+      {t.addRelative.newPerson}
     </label>
     <label class="radio">
       <input
@@ -167,10 +154,10 @@
         bind:group={who}
         disabled={!candidates.length}
       />
-      Vorhandene Person auswählen
+      {t.addRelative.existing}
     </label>
     {#if who === 'existing'}
-      <select aria-label="Vorhandene Person" bind:value={existingId}>
+      <select aria-label={t.addRelative.existingLabel} bind:value={existingId}>
         {#each candidates as c (c.id)}
           <option value={c.id}>{fullName(c)} {yearsLine(c)}</option>
         {/each}
@@ -181,15 +168,11 @@
   {#if askChildKind}
     {@const n = name(existingId)}
     <fieldset>
-      <legend>
-        {n} hat schon leibliche Eltern. Was für ein Kind ist {n} für {newParents
-          .map(name)
-          .join(' und ')}?
-      </legend>
-      {#each KINDS as [value, label] (value)}
+      <legend>{t.addRelative.whatChild(n, newParents.map(name))}</legend>
+      {#each KINDS as value (value)}
         <label class="radio">
           <input type="radio" name="ckind" {value} bind:group={childKind} />
-          {label}
+          {t.words.kind(value)}
         </label>
       {/each}
     </fieldset>
@@ -197,7 +180,7 @@
 
   {#if error}<p class="error" role="alert">{error}</p>{/if}
   <div class="form-actions">
-    <button type="button" class="btn primary" onclick={confirm}>Hinzufügen</button>
-    <button type="button" class="btn" onclick={onclose}>Abbrechen</button>
+    <button type="button" class="btn primary" onclick={confirm}>{t.addRelative.add}</button>
+    <button type="button" class="btn" onclick={onclose}>{t.common.cancel}</button>
   </div>
 </Modal>

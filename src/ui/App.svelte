@@ -6,6 +6,7 @@
   import { ModelError } from '../core/model/validation';
   import { canOpenWithHandle, pickFileToOpen } from '../storage/files';
   import { hasSeen, markSeen } from '../storage/workingCopy';
+  import { startLanguage, t } from './i18n/index.svelte';
   import Modal from './dialogs/Modal.svelte';
   import NameDialog from './dialogs/NameDialog.svelte';
   import UnsavedDialog from './dialogs/UnsavedDialog.svelte';
@@ -19,9 +20,10 @@
 
   const workspace = new Workspace();
   let ready = $state(false);
-  workspace
-    .start()
-    .catch(() => showToast('Der Browser lässt das Speichern einer Arbeitskopie nicht zu.'))
+  // The language first, so even the first message is in it (GEN-05).
+  startLanguage()
+    .then(() => workspace.start())
+    .catch(() => showToast(t.app.noWorkingCopy))
     .finally(() => (ready = true));
 
   /** A new project opens straight into its first person. */
@@ -36,10 +38,8 @@
   let fileInput: HTMLInputElement;
 
   $effect(() => {
-    if (workspace.problem === 'working-copy')
-      showToast('Deine Änderungen konnten im Browser nicht gesichert werden. Bitte speichere sie.');
-    else if (workspace.problem === 'file')
-      showToast('Die Datei konnte nicht geschrieben werden. Klick auf Speichern.');
+    if (workspace.problem === 'working-copy') showToast(t.app.workingCopyFailed);
+    else if (workspace.problem === 'file') showToast(t.app.fileWriteFailed);
     workspace.problem = null;
   });
 
@@ -54,7 +54,7 @@
     try {
       result = as ? await workspace.saveAs() : await workspace.save();
     } catch {
-      showToast('Das Speichern hat nicht geklappt. Bitte versuch es noch einmal.');
+      showToast(t.app.saveFailed);
       return;
     }
     if (result === 'cancelled') return;
@@ -92,7 +92,7 @@
       const handle = await pickFileToOpen();
       if (handle) await read(await handle.getFile(), handle);
     } catch {
-      showToast('Die Datei konnte nicht geöffnet werden.');
+      showToast(t.app.openFailed);
     }
   }
 
@@ -115,10 +115,9 @@
 
   function fileError(e: unknown): string {
     const code = e instanceof ModelError ? e.code : 'invalid';
-    if (code === 'not-a-project') return 'Diese Datei ist keine Stammbaum-Datei.';
-    if (code === 'newer-version')
-      return 'Diese Datei wurde mit einer neueren Version von Stammbaum erstellt. Bitte nimm die neueste Stammbaum.html.';
-    return 'Diese Datei ist beschädigt und kann nicht geöffnet werden.';
+    if (code === 'not-a-project') return t.app.notAProject;
+    if (code === 'newer-version') return t.app.newerVersion;
+    return t.app.damaged;
   }
 
   /** A `.stammbaum` file dropped anywhere onto the window opens (ui-concept §2.1). */
@@ -175,8 +174,8 @@
 
 {#if dialog?.type === 'new'}
   <NameDialog
-    title="Neuer Stammbaum"
-    submit="Anlegen"
+    title={t.app.newTitle}
+    submit={t.app.create}
     onsubmit={(name) => {
       // A new project starts with one empty person, whose dialog opens at once.
       const { project, id } = addPerson(createProject(name, new Date()));
@@ -195,15 +194,11 @@
   />
 {:else if dialog?.type === 'downloaded'}
   {@const close = () => void next()?.()}
-  <Modal label="Gespeichert" onclose={close}>
-    <h2>Gespeichert</h2>
-    <p>Die Datei liegt jetzt in deinem Download-Ordner. Bewahre sie gut auf.</p>
-    <p>
-      Dein Browser legt bei jedem Speichern eine neue Datei an. Zum Weitermachen öffnest du am
-      besten immer die neueste.
-    </p>
+  <Modal label={t.app.downloadedTitle} onclose={close}>
+    <h2>{t.app.downloadedTitle}</h2>
+    {#each t.app.downloaded as text, i (i)}<p>{text}</p>{/each}
     <div class="form-actions">
-      <button type="button" class="btn primary" onclick={close}>Verstanden</button>
+      <button type="button" class="btn primary" onclick={close}>{t.app.understood}</button>
     </div>
   </Modal>
 {/if}

@@ -8,6 +8,7 @@
     placement,
     zoomCrop,
   } from '../../core/photoCrop';
+  import { t } from '../i18n/index.svelte';
 
   interface Props {
     file: File;
@@ -48,17 +49,15 @@
   }
 </script>
 
-<h2>Ausschnitt wählen</h2>
-<p class="muted">
-  Verschiebe das Foto mit der Maus und stelle die Größe ein. Gespeichert wird nur dieser Ausschnitt.
-</p>
+<h2>{t.crop.title}</h2>
+<p class="muted">{t.crop.intro}</p>
 <!-- A button, so the photo can also be moved with the arrow keys. -->
 <button
   type="button"
   class="frame"
   style:width="{BOX.width}px"
   style:height="{BOX.height}px"
-  aria-label="Foto verschieben"
+  aria-label={t.crop.move}
   onpointerdown={(e) => {
     dragFrom = { x: e.clientX, y: e.clientY };
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -93,7 +92,7 @@
   />
 </button>
 <label class="zoom">
-  Größe
+  {t.crop.size}
   <input
     type="range"
     min="1"
@@ -112,9 +111,9 @@
     type="button"
     class="btn primary"
     disabled={!crop}
-    onclick={() => crop && onconfirm($state.snapshot(crop))}>Übernehmen</button
+    onclick={() => crop && onconfirm($state.snapshot(crop))}>{t.crop.take}</button
   >
-  <button type="button" class="btn" onclick={oncancel}>Abbrechen</button>
+  <button type="button" class="btn" onclick={oncancel}>{t.common.cancel}</button>
 </div>
 
 <style>

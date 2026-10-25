@@ -2,6 +2,7 @@
   import type { Attachment } from 'svelte/attachments';
   import type { CardBox } from '../../core/layout';
   import type { Person } from '../../core/model/types';
+  import { t } from '../i18n/index.svelte';
   import { usePhotos } from '../photos';
   import { fullName, initials, shortName, yearsLine } from '../text';
 
@@ -48,7 +49,7 @@
   style:top="{box.y - box.height / 2}px"
   style:width="{box.width}px"
   style:height="{box.height}px"
-  aria-label={box.placeholder ? 'Unbekannter Elternteil' : fullName(person)}
+  aria-label={box.placeholder ? t.person.unknownParent : fullName(person)}
   onclick={(e) => {
     e.stopPropagation();
     onselect();

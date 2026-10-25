@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { t } from './i18n/index.svelte';
+
   /** Shown when there is no last project (ui-concept §2.1). A file can also be dropped onto it. */
   interface Props {
     onnew: () => void;
@@ -9,11 +11,11 @@
 </script>
 
 <main class="start">
-  <h1>Stammbaum</h1>
-  <p>Deine Familiengeschichte, privat auf deinem Computer.</p>
-  <button type="button" class="btn primary" onclick={onnew}>Neuen Stammbaum anlegen</button>
-  <button type="button" class="btn" onclick={onopen}>Stammbaum-Datei öffnen</button>
-  <button type="button" class="btn" onclick={onexample}>Beispiel ansehen</button>
+  <h1>{t.start.title}</h1>
+  <p>{t.start.tagline}</p>
+  <button type="button" class="btn primary" onclick={onnew}>{t.start.new}</button>
+  <button type="button" class="btn" onclick={onopen}>{t.start.open}</button>
+  <button type="button" class="btn" onclick={onexample}>{t.start.example}</button>
 </main>
 
 <style>

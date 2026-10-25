@@ -1,6 +1,6 @@
 /**
  * The "Familie" section of the detail panel (ui-concept §2.4): Eltern, Partner/in, Kinder, Geschwister,
- * each entry with its German role word and years. Empty groups are left out. Parents, partners and
+ * each entry with its role word and years. Empty groups are left out. Parents, partners and
  * children carry their relation for ✎ and ×; siblings follow from shared parents and have none.
  */
 import { dateSortKey } from '../../core/dates';
@@ -15,6 +15,7 @@ import {
   type Relation,
 } from '../../core/model/queries';
 import type { Person, PersonId, Project } from '../../core/model/types';
+import { t } from '../i18n/index.svelte';
 import {
   childWord,
   parentWord,
@@ -48,7 +49,7 @@ export function familyGroups(project: Project, personId: PersonId): FamilyGroup[
     const unknown = isPlaceholder(q);
     return {
       id: q.id,
-      name: unknown ? 'unbekannt' : shortName(q),
+      name: unknown ? t.panel.unknown : shortName(q),
       unknown,
       info: unknown ? [] : [role, yearsLine(q)].filter(Boolean),
       detail,
@@ -74,10 +75,10 @@ export function familyGroups(project: Project, personId: PersonId): FamilyGroup[
   });
 
   return [
-    { title: 'Eltern', entries: parents },
-    { title: partners.length > 1 ? 'Partner/innen' : 'Partner/in', entries: partners },
-    { title: 'Kinder', entries: children },
-    { title: 'Geschwister', entries: siblings },
+    { title: t.panel.parents, entries: parents },
+    { title: partners.length > 1 ? t.panel.partners : t.panel.partner, entries: partners },
+    { title: t.panel.children, entries: children },
+    { title: t.panel.siblings, entries: siblings },
   ].filter((g) => g.entries.length > 0);
 }
 

@@ -22,6 +22,7 @@
   import { providePhotos } from './photos';
   import { UnreadablePictureError } from '../storage/pictures';
   import { hasSeen, markSeen } from '../storage/workingCopy';
+  import { t } from './i18n/index.svelte';
   import type { Editor } from './state/editor.svelte';
   import { reminderDays } from './state/reminder';
   import type { Workspace } from './state/workspace.svelte';
@@ -49,9 +50,7 @@
       await workspace.addPhoto(id, file, crop);
     } catch (e) {
       showToast(
-        e instanceof UnreadablePictureError
-          ? 'Dieses Bild kann dein Browser nicht öffnen. Bitte speichere es als JPG und versuch es noch einmal.'
-          : 'Das Foto konnte nicht gespeichert werden.',
+        e instanceof UnreadablePictureError ? t.project.unreadablePicture : t.project.photoFailed,
       );
     }
   }
@@ -159,76 +158,72 @@
     </h1>
     {#if menuOpen}
       <div class="menu">
-        <button type="button" onclick={() => menu(onnew)}>Neuer Stammbaum</button>
-        <button type="button" onclick={() => menu(onopen)}>Öffnen …</button>
-        <button type="button" onclick={() => menu(() => onsave(true))}>Speichern unter …</button>
+        <button type="button" onclick={() => menu(onnew)}>{t.project.new}</button>
+        <button type="button" onclick={() => menu(onopen)}>{t.project.open}</button>
+        <button type="button" onclick={() => menu(() => onsave(true))}>{t.project.saveAs}</button>
         <button type="button" onclick={() => menu(() => (dialog = { type: 'rename' }))}
-          >Umbenennen</button
+          >{t.project.rename}</button
         >
         <hr />
-        <button type="button" onclick={() => menu(() => window.print())}
-          >Drucken / Als PDF speichern</button
-        >
+        <button type="button" onclick={() => menu(() => window.print())}>{t.project.print}</button>
         <hr />
-        <button type="button" onclick={() => menu(onexample)}>Beispiel ansehen</button>
-        <button type="button" onclick={() => menu(() => (dialog = { type: 'help' }))}>Hilfe</button>
+        <button type="button" onclick={() => menu(onexample)}>{t.project.example}</button>
+        <button type="button" onclick={() => menu(() => (dialog = { type: 'help' }))}
+          >{t.project.help}</button
+        >
       </div>
     {/if}
   </div>
   <button
     type="button"
     class="icon-btn"
-    title="Rückgängig (Strg+Z)"
-    aria-label="Rückgängig"
+    title={t.project.undoKey}
+    aria-label={t.project.undo}
     disabled={!editor.canUndo}
     onclick={() => editor.undo()}>↶</button
   >
   <button
     type="button"
     class="icon-btn"
-    title="Wiederholen (Strg+Y)"
-    aria-label="Wiederholen"
+    title={t.project.redoKey}
+    aria-label={t.project.redo}
     disabled={!editor.canRedo}
     onclick={() => editor.redo()}>↷</button
   >
   <div class="spacer"></div>
   {#if workspace.unsaved}
-    <span class="status dirty">● Nicht in Datei gespeichert</span>
+    <span class="status dirty">{t.project.unsaved}</span>
   {:else if workspace.file.name}
-    <span class="status">✓ Gespeichert</span>
+    <span class="status">{t.project.saved}</span>
   {/if}
-  <button type="button" class="btn primary" onclick={() => onsave(false)}>Speichern</button>
+  <button type="button" class="btn primary" onclick={() => onsave(false)}>{t.project.save}</button>
 </header>
 <p class="print-title">{project.name}</p>
 <main>
-  {#if reminderShown}
+  {#if reminderShown && remindAfter}
     <div class="note reminder">
       <span>
-        {hadFile
-          ? `Du hast seit ${remindAfter} Tagen nicht in die Datei gespeichert.`
-          : `Dein Stammbaum ist seit ${remindAfter} Tagen nicht in einer Datei gespeichert.`}
+        {hadFile ? t.project.reminderWithFile(remindAfter) : t.project.reminderNoFile(remindAfter)}
       </span>
       <button type="button" class="btn primary" onclick={() => onsave(false)}
-        >Jetzt speichern</button
+        >{t.common.saveNow}</button
       >
       <button
         type="button"
         class="close"
-        title="Ausblenden"
-        aria-label="Ausblenden"
+        title={t.common.hide}
+        aria-label={t.common.hide}
         onclick={() => (reminderClosed = true)}>×</button
       >
     </div>
   {:else if hintShown}
     <div class="note hint">
-      <span
-        >Klick auf eine Person, um Details zu sehen. Ziehen verschiebt den Baum, das Mausrad zoomt.</span
-      >
+      <span>{t.project.treeHint}</span>
       <button
         type="button"
         class="close"
-        title="Ausblenden"
-        aria-label="Ausblenden"
+        title={t.common.hide}
+        aria-label={t.common.hide}
         onclick={closeHint}>×</button
       >
     </div>
@@ -291,7 +286,7 @@
     ondelete={() => {
       editor.apply((p) => deletePerson(p, id));
       dialog = null;
-      showToast('Gelöscht. Mit ↶ kannst du das rückgängig machen.');
+      showToast(t.project.deleted);
     }}
     onclose={closeDialog}
   />
@@ -306,11 +301,7 @@
         return alsoDelete ? deletePerson(without, alsoDelete) : without;
       });
       dialog = null;
-      showToast(
-        alsoDelete
-          ? 'Person gelöscht. Mit ↶ kannst du das rückgängig machen.'
-          : 'Verbindung entfernt. Mit ↶ kannst du das rückgängig machen.',
-      );
+      showToast(alsoDelete ? t.project.personDeleted : t.project.relationRemoved);
     }}
     onclose={closeDialog}
   />
@@ -318,8 +309,8 @@
   <HelpDialog onclose={closeDialog} />
 {:else if dialog?.type === 'rename'}
   <NameDialog
-    title="Stammbaum umbenennen"
-    submit="Umbenennen"
+    title={t.project.renameTitle}
+    submit={t.project.rename}
     name={project.name}
     onsubmit={(name) => {
       editor.apply((p) => renameProject(p, name));

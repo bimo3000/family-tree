@@ -26,6 +26,7 @@ const STATE = 'state';
 const IMAGES = 'images';
 const PROJECT_KEY = 'project';
 const HANDLE_KEY = 'handle';
+const LANGUAGE_KEY = 'language';
 
 let database: Promise<IDBDatabase> | undefined;
 
@@ -146,6 +147,20 @@ export async function hasSeen(hint: string): Promise<boolean> {
 
 export function markSeen(hint: string): Promise<void> {
   return transaction('readwrite', (state) => state.put(true, `seen:${hint}`));
+}
+
+/** The chosen UI language (GEN-05): per browser, not in the project file. Null until one is chosen. */
+export async function loadLanguage(): Promise<string | null> {
+  let language: string | null = null;
+  await transaction('readonly', (state) => {
+    const get = state.get(LANGUAGE_KEY);
+    get.onsuccess = () => (language = typeof get.result === 'string' ? get.result : null);
+  });
+  return language;
+}
+
+export function saveLanguage(language: string): Promise<void> {
+  return transaction('readwrite', (state) => state.put(language, LANGUAGE_KEY));
 }
 
 function jpeg(bytes: ArrayBuffer): Blob {
