@@ -112,6 +112,18 @@ test('a long year line gets smaller instead of being cut off (PERS-04)', async (
   expect(await yr.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
 });
 
+test('a short year line keeps its full size (PERS-04)', async ({ page }) => {
+  // The fit check once read `line-height: normal` as NaN, so every year line shrank to the minimum.
+  const scale = await card(page, 'p_karl')
+    .locator('.yr')
+    .evaluate(
+      (el) =>
+        parseFloat(getComputedStyle(el).fontSize) /
+        parseFloat(getComputedStyle(document.documentElement).fontSize),
+    );
+  expect(scale).toBeCloseTo(0.9, 2); // 0.9rem in PersonCard.svelte
+});
+
 test.describe('selection and detail panel (PERS-05, PERS-07)', () => {
   test('selecting a person highlights their line and opens the panel', async ({ page }) => {
     await card(page, 'p_peter').click();

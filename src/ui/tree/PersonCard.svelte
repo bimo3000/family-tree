@@ -28,9 +28,13 @@
   function fit(texts: string[], min: number): Attachment<HTMLElement> {
     return (el) => {
       // Firefox reports a few px more than the two lines; a third line would add a whole line.
+      // `line-height: normal` (the year line) is no number: half the font size then.
+      const half = () => {
+        const cs = getComputedStyle(el);
+        return (parseFloat(cs.lineHeight) || parseFloat(cs.fontSize)) / 2;
+      };
       const fits = () =>
-        el.scrollHeight < el.clientHeight + parseFloat(getComputedStyle(el).lineHeight) / 2 &&
-        el.scrollWidth <= el.clientWidth + 1;
+        el.scrollHeight < el.clientHeight + half() && el.scrollWidth <= el.clientWidth + 1;
       for (const text of texts) {
         el.textContent = text;
         el.style.fontSize = '';
