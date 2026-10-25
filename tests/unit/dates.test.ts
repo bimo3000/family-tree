@@ -59,15 +59,21 @@ describe('parseDate', () => {
     ['juil. 1923', { y: 1923, m: 7 }],
     ['vers 1850', { y: 1850, q: 'about' }],
     ['env. 1850', { y: 1850, q: 'about' }],
-    ['v. 1850', { y: 1850, q: 'about' }],
     ['avant 1900', { y: 1900, q: 'before' }],
     ['av. 1900', { y: 1900, q: 'before' }],
     ['après 1900', { y: 1900, q: 'after' }],
     ['ap. 1900', { y: 1900, q: 'after' }],
+    ['<1900', { y: 1900, q: 'before' }],
+    ['> 1900', { y: 1900, q: 'after' }],
     ['entre 1890 et 1895', { y: 1890, q: 'between', y2: 1895 }],
     ['1890 à 1895', { y: 1890, q: 'between', y2: 1895 }],
   ])('reads %j (English, French)', (input, expected) => {
     expect(parseDate(input)).toEqual(expected);
+  });
+
+  // "v." could mean "vers" or "vor": a German "v. 1900" must not turn into "about 1900".
+  it('keeps "v. 1900" as text', () => {
+    expect(parseDate('v. 1900')).toEqual({ text: 'v. 1900' });
   });
 
   it('keeps an abbreviation that fits two months as text ("jui": juin or juillet)', () => {

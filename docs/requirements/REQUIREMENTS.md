@@ -119,9 +119,9 @@ Ideas from agents. **Not binding until the human developer approves.** On approv
 
 Deviations from an agreed requirement, approved by the human developer.
 
-| ID  | Requirement | Deviation | Reason | Approved |
-| --- | ----------- | --------- | ------ | -------- |
-| –   | –           | none yet  | –      | –        |
+| ID    | Requirement | Deviation                                                                                                                                                                                                                                                                                                                                                              | Reason                                                                | Approved         |
+| ----- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------------- |
+| D-001 | PERS-04     | The card shows **full dates when they fit** (else years only, then smaller text). Vague years use symbols, the same in every language: `~1850` (about), `<1900` (before), `>1900` (after), `1890/1895` (between). Panel, tooltip and date hints keep words. `<1900` and `>1900` can be typed; "v. 1900" is no longer read as "about" (German "vor" or French "vers"?). | Short card text in every language; the year line had grown too small. | User, 2026-10-25 |
 
 ## Clarifications log
 

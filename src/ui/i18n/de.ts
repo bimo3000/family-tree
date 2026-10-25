@@ -60,8 +60,6 @@ export const de = {
     day: (d: number, m: number, y: number) => `${pad(d)}.${pad(m)}.${y}`,
     month: (m: number, y: number) => `${pad(m)}.${y}`,
     ...QUALIFIED,
-    /** The card's year line, which must stay short in every language (user, 2026-10-25). */
-    card: QUALIFIED,
     /** The live interpretation under a date field (ui-concept §2.5). */
     hint: {
       text: '→ wird so übernommen (kann nicht zum Sortieren genutzt werden)',

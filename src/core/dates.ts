@@ -23,11 +23,11 @@ const MONTH_NAMES: string[][] = [
 
 const Y = String.raw`(\d{3,4})`;
 const ABOUT = new RegExp(
-  String.raw`^(?:ca\.?|circa|um|~|about|abt\.?|c\.|vers|env\.?|environ|v\.)\s*${Y}$`,
+  String.raw`^(?:ca\.?|circa|um|~|about|abt\.?|c\.|vers|env\.?|environ)\s*${Y}$`,
   'i',
 );
-const BEFORE = new RegExp(String.raw`^(?:vor|before|bef\.?|avant|av\.)\s*${Y}$`, 'i');
-const AFTER = new RegExp(String.raw`^(?:nach|after|aft\.?|après|apres|ap\.)\s*${Y}$`, 'i');
+const BEFORE = new RegExp(String.raw`^(?:vor|before|bef\.?|avant|av\.|<)\s*${Y}$`, 'i');
+const AFTER = new RegExp(String.raw`^(?:nach|after|aft\.?|après|apres|ap\.|>)\s*${Y}$`, 'i');
 const BETWEEN = new RegExp(
   String.raw`^(?:zw\.?|zwischen|between|bet\.?|entre)\s*${Y}\s*(?:und|and|et|-|–)\s*${Y}$`,
   'i',

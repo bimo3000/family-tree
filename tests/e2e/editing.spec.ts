@@ -29,7 +29,7 @@ test.describe('editing a person (PERS-01, PERS-06, UI-01)', () => {
     await expect(dialog(page)).toContainText('→ ungefähr 1920');
     await dialog(page).getByLabel('Gestorben am').fill('Ostern 1999');
     await expect(dialog(page)).toContainText('→ wird so übernommen');
-    await expect(card(page, 'p_karl')).toContainText('* ca. 1920 † Ostern 1999');
+    await expect(card(page, 'p_karl')).toContainText('* ~1920 † Ostern 1999');
 
     await dialog(page).getByRole('button', { name: 'Fertig' }).click();
     await expect(dialog(page)).toBeHidden();
@@ -37,7 +37,7 @@ test.describe('editing a person (PERS-01, PERS-06, UI-01)', () => {
 
     // One undo step per field.
     await undo(page).click();
-    await expect(card(page, 'p_karl')).toContainText('* ca. 1920 † 1999');
+    await expect(card(page, 'p_karl')).toContainText('* ~1920 † 1999');
     await undo(page).click();
     await undo(page).click();
     await expect(card(page, 'p_karl')).toContainText('Karl Heinrich Brandt');

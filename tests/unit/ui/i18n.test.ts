@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { parseDate } from '../../../src/core/dates';
 import type { FlexDate } from '../../../src/core/model/types';
 import { LANGUAGES, pickLanguage, setLanguage } from '../../../src/ui/i18n/index.svelte';
-import { fmtDate, yearsLine } from '../../../src/ui/text';
+import { cardLines, fmtDate } from '../../../src/ui/text';
 
 const UI = join(import.meta.dirname, '../../../src/ui');
 
@@ -95,7 +95,9 @@ describe('languages', () => {
     it('keeps the year line on the card no longer than in German', () => {
       const longest = () =>
         Math.max(
-          ...dates.map((date) => yearsLine({ id: 'a', birth: { date }, death: { date } }).length),
+          ...dates.map(
+            (date) => cardLines({ id: 'a', birth: { date }, death: { date } })[1]!.length,
+          ),
         );
       setLanguage('de');
       const german = longest();

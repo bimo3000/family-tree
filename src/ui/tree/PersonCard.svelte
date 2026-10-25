@@ -4,7 +4,7 @@
   import type { Person } from '../../core/model/types';
   import { t } from '../i18n/index.svelte';
   import { usePhotos } from '../photos';
-  import { fullName, initials, shortName, yearsLine } from '../text';
+  import { cardLines, fullName, initials, shortName } from '../text';
 
   interface Props {
     person: Person;
@@ -22,8 +22,8 @@
 
   /**
    * Fits a text into its box: the first variant that fits, else the last one smaller, down to `min` %.
-   * The name (two lines, ui-concept §2.3): all given names, else only the first, down to 70 %. The years
-   * (one line): down to 65 %, so two date ranges still show in full in every language (user, 2026-10-25).
+   * The name (two lines, ui-concept §2.3): all given names, else only the first, down to 70 %. The dates
+   * (one line): full dates, else years only, down to 65 %, so two date ranges still show (user, 2026-10-25).
    */
   function fit(texts: string[], min: number): Attachment<HTMLElement> {
     return (el) => {
@@ -34,7 +34,7 @@
         return (parseFloat(cs.lineHeight) || parseFloat(cs.fontSize)) / 2;
       };
       const fits = () =>
-        el.scrollHeight < el.clientHeight + half() && el.scrollWidth <= el.clientWidth + 1;
+        el.scrollHeight < el.clientHeight + half() && el.scrollWidth <= el.clientWidth;
       for (const text of texts) {
         el.textContent = text;
         el.style.fontSize = '';
@@ -78,7 +78,7 @@
     </span>
     <span class="txt">
       <span class="nm" {@attach fit([fullName(person), shortName(person)], 70)}></span>
-      <span class="yr" {@attach fit([yearsLine(person)], 65)}></span>
+      <span class="yr" {@attach fit(cardLines(person), 65)}></span>
     </span>
   {/if}
 </button>

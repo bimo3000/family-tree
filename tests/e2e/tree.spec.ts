@@ -21,7 +21,9 @@ test.describe('tree view (TREE-02, PERS-04)', () => {
     await expect(page.locator('.card')).toHaveCount(21);
     await expect(card(page, 'p_karl')).toContainText('Karl Heinrich Brandt');
     await expect(card(page, 'p_karl')).toContainText('* 1921 † 1999');
-    await expect(card(page, 'p_heinrich')).toContainText('* ca. 1890 † 1962');
+    await expect(card(page, 'p_heinrich')).toContainText('* ~1890 † 1962');
+    // Full dates where they fit (D-001).
+    await expect(card(page, 'p_margarete')).toContainText('* 02.06.1894 † 1971');
     await expect(card(page, 'p_unbekannt')).toHaveText('?');
   });
 
@@ -108,7 +110,7 @@ test('a long year line gets smaller instead of being cut off (PERS-04)', async (
   await dialog.getByLabel('Gestorben am').fill('zw. 1920 und 1925');
   await dialog.getByRole('button', { name: 'Fertig' }).click();
   const yr = card(page, 'p_karl').locator('.yr');
-  await expect(yr).toHaveText('* 1890 bis 1895 † 1920 bis 1925');
+  await expect(yr).toHaveText('* 1890/1895\u2002† 1920/1925');
   expect(await yr.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
 });
 

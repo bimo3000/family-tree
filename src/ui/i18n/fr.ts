@@ -61,12 +61,6 @@ export const fr: Texts = {
     before: (y: number) => `avant ${y}`,
     after: (y: number) => `après ${y}`,
     between: (y: number, y2: number) => `entre ${y} et ${y2}`,
-    card: {
-      about: (y: number) => `v. ${y}`,
-      before: (y: number) => `av. ${y}`,
-      after: (y: number) => `ap. ${y}`,
-      between: (y: number, y2: number) => `${y} à ${y2}`,
-    },
     hint: {
       text: '→ repris tel quel (ne peut pas servir au tri)',
       day: (d: number, m: number, y: number) => `→ ${d === 1 ? '1er' : d} ${MONTHS[m - 1]} ${y}`,

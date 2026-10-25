@@ -47,12 +47,6 @@ export const en: Texts = {
     before: (y) => `before ${y}`,
     after: (y) => `after ${y}`,
     between: (y, y2) => `${y} to ${y2}`,
-    card: {
-      about: (y) => `c. ${y}`,
-      before: (y) => `bef. ${y}`,
-      after: (y) => `aft. ${y}`,
-      between: (y, y2) => `${y} to ${y2}`,
-    },
     hint: {
       text: '→ kept as typed (can’t be used for sorting)',
       day: (d, m, y) => `→ ${d} ${MONTHS[m - 1]} ${y}`,

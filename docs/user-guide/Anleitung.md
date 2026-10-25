@@ -38,6 +38,8 @@ nehmen, die `.stammbaum`-Datei bleibt dieselbe.
 - **Ungenaue Daten** gehen auch: „12.03.1923“, „03.1923“, „1923“, „ca. 1850“, „vor 1900“ oder
   „nach 1900“. Unter dem Feld siehst du, wie das Programm deine Eingabe verstanden hat. Englische
   und französische Schreibweisen versteht es auch („12/03/1923“, „about 1850“, „vers 1850“).
+  Auf der Karte stehen ungenaue Jahre kurz: „~1850“ (ca.), „<1900“ (vor), „>1900“ (nach) und
+  „1890/1895“ (zwischen). „~1850“, „<1900“ und „>1900“ kannst du auch so eintippen.
 - **Verwandte hinzufügen**: Mit „+ Elternteil“, „+ Partner/in“, „+ Kind“ und „+ Geschwister“ in den
   Angaben einer Person. Du kannst eine neue Person anlegen oder eine vorhandene auswählen.
 - **Beziehungen ändern**: Bei Eltern, Partnern und Kindern steht ein ✎ (zum Beispiel für Ehe,

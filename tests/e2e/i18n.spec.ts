@@ -105,7 +105,7 @@ test.describe('English', () => {
     await expect(dialog(page)).toContainText('→ 12 March 1923');
     await dialog(page).getByLabel(en.personDialog.died).fill('before 2001');
     await expect(dialog(page)).toContainText('→ before 2001');
-    await expect(card(page, 'p_karl')).toContainText('* 1923 † bef. 2001');
+    await expect(card(page, 'p_karl')).toContainText('* 1923 † <2001');
     await dialog(page).getByRole('button', { name: en.common.done }).click();
 
     await expect(panel(page)).toContainText('12 Mar 1923');
@@ -126,7 +126,7 @@ test.describe('French', () => {
     await expect(dialog(page)).toContainText('→ 1er mars 1923');
     await dialog(page).getByLabel(fr.personDialog.died).fill('vers 2001');
     await expect(dialog(page)).toContainText('→ vers 2001');
-    await expect(card(page, 'p_karl')).toContainText('* 1923 † v. 2001');
+    await expect(card(page, 'p_karl')).toContainText('* 1923 † ~2001');
     await dialog(page).getByRole('button', { name: fr.common.done }).click();
 
     await expect(panel(page)).toContainText('01/03/1923');

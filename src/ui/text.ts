@@ -14,9 +14,19 @@ import type {
 import { isPlaceholder } from '../core/model/queries';
 import { t } from './i18n/index.svelte';
 
+/** A wider space before "†" on the card keeps the two dates apart (user, 2026-10-25). */
+const CARD_GAP = '\u2002';
+/** The card's short forms, the same in every language (user, 2026-10-25). */
+const CARD = {
+  about: (y: number) => `~${y}`,
+  before: (y: number) => `<${y}`,
+  after: (y: number) => `>${y}`,
+  between: (y: number, y2: number) => `${y}/${y2}`,
+};
+
 function qualified(d: Exclude<FlexDate, { text: string }>, plain: string, card: boolean): string {
   if (!('q' in d)) return plain;
-  const words = card ? t.dates.card : t.dates;
+  const words = card ? CARD : t.dates;
   if (d.q === 'about') return words.about(d.y);
   if (d.q === 'before') return words.before(d.y);
   if (d.q === 'after') return words.after(d.y);
@@ -48,11 +58,25 @@ export function dateHint(d: FlexDate | undefined): string {
   return hint.year(d.y);
 }
 
-/** Year only, for the card (PERS-04). */
+/** Year only, for lists (PERS-04): "1923", "ca. 1850". */
 export function fmtYear(d: FlexDate | undefined): string {
   if (!d) return '';
   if ('text' in d) return d.text;
+  return qualified(d, String(d.y), false);
+}
+
+/** Year only on the card: "1923", "~1850", "<1900", ">1925", "1890/1895". */
+function cardYear(d: FlexDate | undefined): string {
+  if (!d) return '';
+  if ('text' in d) return d.text;
   return qualified(d, String(d.y), true);
+}
+
+/** Full precision on the card, vague dates as in `cardYear`: "12.03.1923", "~1850". */
+function cardDate(d: FlexDate | undefined): string {
+  if (d && 'd' in d && d.d && d.m) return t.dates.day(d.d, d.m, d.y);
+  if (d && 'm' in d && d.m) return t.dates.month(d.m, d.y);
+  return cardYear(d);
 }
 
 /** "12.03.1923 in Lübeck", "in Lübeck", "1923". */
@@ -61,14 +85,20 @@ export function eventText(e: LifeEvent | undefined): string {
   return [fmtDate(e.date), e.place && t.person.atPlace(e.place)].filter(Boolean).join(' ');
 }
 
-/** "* 1923 † 2001" on the card. A dead person without a death date gets a bare "†". */
-export function yearsLine(p: Person): string {
+/** "* 1923 † 2001" in lists. A dead person without a death date gets a bare "†". */
+export function yearsLine(p: Person, format = fmtYear, gap = ' '): string {
   const parts: string[] = [];
-  if (p.birth?.date) parts.push(`* ${fmtYear(p.birth.date)}`);
-  if (p.death?.date) parts.push(`† ${fmtYear(p.death.date)}`);
+  if (p.birth?.date) parts.push(`* ${format(p.birth.date)}`);
+  if (p.death?.date) parts.push(`† ${format(p.death.date)}`);
   else if (p.deceased) parts.push('†');
-  return parts.join(' ');
+  return parts.join(gap);
 }
+
+/** The card's date line (PERS-04, D-001): full dates if they fit, else years, both with symbols. */
+export const cardLines = (p: Person): string[] => [
+  yearsLine(p, cardDate, CARD_GAP),
+  yearsLine(p, cardYear, CARD_GAP),
+];
 
 /** All given names plus the last known surname. */
 export function fullName(p: Person): string {

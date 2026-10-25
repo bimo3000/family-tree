@@ -35,7 +35,9 @@ Au démarrage suivant, ton arbre est tout de suite de retour.
   ferme la fenêtre.
 - **Les dates approximatives** fonctionnent aussi : « 12/03/1923 », « 03/1923 », « 1923 »,
   « vers 1850 », « avant 1900 » ou « après 1900 ». Sous le champ, tu vois comment le programme a
-  compris ta saisie.
+  compris ta saisie. Sur une carte, les années approximatives sont abrégées : « ~1850 » (vers),
+  « <1900 » (avant), « >1900 » (après) et « 1890/1895 » (entre). Tu peux aussi taper « ~1850 »,
+  « <1900 » et « >1900 ».
 - **Ajouter des proches** : avec « + Parent », « + Partenaire », « + Enfant » et « + Frère ou sœur »
   dans les informations d’une personne. Tu peux créer une nouvelle personne ou en choisir une qui
   existe déjà.

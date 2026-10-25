@@ -37,7 +37,9 @@ their own computer; the `.stammbaum` file stays the same.
   What you type applies at once. “Done” closes the window.
 - **Vague dates** work too: “12 Mar 1923”, “12/03/1923”, “March 1923”, “1923”, “about 1850”,
   “before 1900” or “after 1900”. Always write the day before the month. Below the field you see how
-  the program understood what you typed.
+  the program understood what you typed. On a card, vague years are short: “~1850” (about),
+  “<1900” (before), “>1900” (after) and “1890/1895” (between). You can type “~1850”, “<1900” and
+  “>1900” that way too.
 - **Adding relatives**: with “+ Parent”, “+ Partner”, “+ Child” and “+ Sibling” in a person’s details.
   You can create a new person or choose an existing one.
 - **Changing relationships**: parents, partners and children have a ✎ (for example for marriage,

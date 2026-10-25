@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { parseDate } from '../../../src/core/dates';
 import type { FlexDate, Partnership, Person } from '../../../src/core/model/types';
 import {
+  cardLines,
   childWord,
   dateHint,
   errorText,
@@ -53,7 +54,7 @@ describe('dates (PERS-06)', () => {
     expect(fmtDate(undefined)).toBe('');
   });
 
-  it('shows only the year on the card, keeping the qualifier', () => {
+  it('shows only the year in lists, keeping the qualifier', () => {
     expect(fmtYear({ y: 1923, m: 3, d: 12 })).toBe('1923');
     expect(fmtYear({ y: 1850, q: 'about' })).toBe('ca. 1850');
     expect(fmtYear({ text: 'Ostern 1920' })).toBe('Ostern 1920');
@@ -71,6 +72,20 @@ describe('card and names (PERS-04)', () => {
     expect(yearsLine(anna)).toBe('* 1923 † 2001');
     expect(yearsLine({ id: 'x', deceased: true })).toBe('†');
     expect(yearsLine(kim)).toBe('');
+  });
+
+  it('gives the card full dates, else years, with symbols for vague dates in every language', () => {
+    expect(cardLines(anna)).toEqual(['* 12.03.1923\u2002† 2001', '* 1923\u2002† 2001']);
+    expect(cardLines({ id: 'x', birth: { date: { y: 1923, m: 3 } } })).toEqual([
+      '* 03.1923',
+      '* 1923',
+    ]);
+    const vague = (date: FlexDate) => cardLines({ id: 'x', birth: { date } })[1];
+    expect(vague({ y: 1850, q: 'about' })).toBe('* ~1850');
+    expect(vague({ y: 1900, q: 'before' })).toBe('* <1900');
+    expect(vague({ y: 1900, q: 'after' })).toBe('* >1900');
+    expect(vague({ y: 1890, q: 'between', y2: 1895 })).toBe('* 1890/1895');
+    expect(vague({ text: 'Ostern 1920' })).toBe('* Ostern 1920');
   });
 
   it('uses all given names for the full name and the first one for the short name', () => {
