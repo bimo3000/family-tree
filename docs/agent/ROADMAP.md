@@ -9,14 +9,15 @@ Each slice ends green (`npm run verify`), committed, pushed, with requirement st
 
 ## Overview
 
-| #   | Slice                         | Status | Main requirements                                       |
-| --- | ----------------------------- | ------ | ------------------------------------------------------- |
-| S1  | Core model, dates, operations | Done   | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
-| S2  | Automatic tree layout         | Done   | TREE-01/03/04/05 (ADR-0006)                             |
-| S3  | Tree view (read-only)         | Done   | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
-| S4  | Editing                       | Done   | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
-| S5  | Working copy, files, pictures | Done   | DATA-02/03/04/07/09, PERS-03, UI-02                     |
-| S6  | Finish and release            | Done   | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| #   | Slice                         | Status      | Main requirements                                       |
+| --- | ----------------------------- | ----------- | ------------------------------------------------------- |
+| S1  | Core model, dates, operations | Done        | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
+| S2  | Automatic tree layout         | Done        | TREE-01/03/04/05 (ADR-0006)                             |
+| S3  | Tree view (read-only)         | Done        | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
+| S4  | Editing                       | Done        | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
+| S5  | Working copy, files, pictures | Done        | DATA-02/03/04/07/09, PERS-03, UI-02                     |
+| S6  | Finish and release            | Done        | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| S7  | Languages (DE, EN, FR)        | In progress | GEN-05, DEV-07 (ADR-0008)                               |
 
 Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progress` at a time.
 
@@ -97,6 +98,17 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
   the hint bar, `Beispiel.stammbaum` built by `npm run package`, guide written, `mockups/` deleted, `docs/manual-checks.md`,
   release 0.9.0. Decided on the user's behalf: the printout has a white page (cards keep their colours) and no highlight.
 
+## S7 – Languages (German, English, French; GEN-05, was P-010, ADR-0008)
+
+- Every UI text moves into `src/ui/i18n/de.ts` first, with no visible change (the German E2E suite is the safety net).
+  Then `en.ts` and `fr.ts`, typed against German so nothing can be forgotten.
+- Language choice on the start screen and in the project menu, remembered per browser (IndexedDB). Default: browser
+  language, else English.
+- Dates: input in all three languages at once (core), display per language, short qualifiers on the card so the year
+  line never gets longer than in German.
+- Help dialog translated; the zip gets `Guide.txt` (EN) and `Mode-d-emploi.txt` (FR) next to `Anleitung.txt`.
+- E2E: language from the browser, switching, reload keeps it, a person added in English and French, year line fits.
+
 ## Decisions to raise when the slice is reached
 
 | When  | Question                                                                                                                | Recommendation to give                                                   |
@@ -127,3 +139,4 @@ Anything not covered by the concept or the mock-up that changes what the user se
 | 2026-10-24 | S6 done (session 8). All slices done. Release 0.9.0. Next: manual Mac/Windows checks and the user's feedback, then 1.0.0.                                              |
 | 2026-10-24 | Session 9: photo cropping (P-009 → PERS-08) built on the user's request before the manual checks. A feedback item, no new slice.                                       |
 | 2026-10-25 | Crop preview dropped after the user's test. Release 0.9.1 (with cropping) for the manual checks. P-010 (multi-language UI) noted as an idea.                           |
+| 2026-10-25 | S7 (languages) started on the user's request: P-010 approved as the new GEN-05 (ADR-0008).                                                                             |
