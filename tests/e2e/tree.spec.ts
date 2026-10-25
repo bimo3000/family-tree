@@ -22,8 +22,9 @@ test.describe('tree view (TREE-02, PERS-04)', () => {
     await expect(card(page, 'p_karl')).toContainText('Karl Heinrich Brandt');
     await expect(card(page, 'p_karl')).toContainText('* 1921 † 1999');
     await expect(card(page, 'p_heinrich')).toContainText('* ~1890 † 1962');
-    // Full dates where they fit (D-001).
-    await expect(card(page, 'p_margarete')).toContainText('* 02.06.1894 † 1971');
+    // Years only, even where the full date would fit (D-001, user).
+    await expect(card(page, 'p_margarete')).toContainText('* 1894 † 1971');
+    await expect(card(page, 'p_margarete')).not.toContainText('02.06.1894');
     await expect(card(page, 'p_unbekannt')).toHaveText('?');
   });
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { parseDate } from '../../../src/core/dates';
 import type { FlexDate, Partnership, Person } from '../../../src/core/model/types';
 import {
-  cardLines,
+  cardLine,
   childWord,
   dateHint,
   errorText,
@@ -74,13 +74,10 @@ describe('card and names (PERS-04)', () => {
     expect(yearsLine(kim)).toBe('');
   });
 
-  it('gives the card full dates, else years, with symbols for vague dates in every language', () => {
-    expect(cardLines(anna)).toEqual(['* 12.03.1923\u2002† 2001', '* 1923\u2002† 2001']);
-    expect(cardLines({ id: 'x', birth: { date: { y: 1923, m: 3 } } })).toEqual([
-      '* 03.1923',
-      '* 1923',
-    ]);
-    const vague = (date: FlexDate) => cardLines({ id: 'x', birth: { date } })[1];
+  it('gives the card years only, with symbols for vague dates in every language', () => {
+    expect(cardLine(anna)).toBe('* 1923\u2002† 2001');
+    expect(cardLine({ id: 'x', birth: { date: { y: 1923, m: 3 } } })).toBe('* 1923');
+    const vague = (date: FlexDate) => cardLine({ id: 'x', birth: { date } });
     expect(vague({ y: 1850, q: 'about' })).toBe('* ~1850');
     expect(vague({ y: 1900, q: 'before' })).toBe('* <1900');
     expect(vague({ y: 1900, q: 'after' })).toBe('* >1900');

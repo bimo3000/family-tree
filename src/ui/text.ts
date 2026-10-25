@@ -72,13 +72,6 @@ function cardYear(d: FlexDate | undefined): string {
   return qualified(d, String(d.y), true);
 }
 
-/** Full precision on the card, vague dates as in `cardYear`: "12.03.1923", "~1850". */
-function cardDate(d: FlexDate | undefined): string {
-  if (d && 'd' in d && d.d && d.m) return t.dates.day(d.d, d.m, d.y);
-  if (d && 'm' in d && d.m) return t.dates.month(d.m, d.y);
-  return cardYear(d);
-}
-
 /** "12.03.1923 in Lübeck", "in Lübeck", "1923". */
 export function eventText(e: LifeEvent | undefined): string {
   if (!e) return '';
@@ -94,11 +87,8 @@ export function yearsLine(p: Person, format = fmtYear, gap = ' '): string {
   return parts.join(gap);
 }
 
-/** The card's date line (PERS-04, D-001): full dates if they fit, else years, both with symbols. */
-export const cardLines = (p: Person): string[] => [
-  yearsLine(p, cardDate, CARD_GAP),
-  yearsLine(p, cardYear, CARD_GAP),
-];
+/** The card's date line (PERS-04, D-001): years only, vague years with symbols. */
+export const cardLine = (p: Person): string => yearsLine(p, cardYear, CARD_GAP);
 
 /** All given names plus the last known surname. */
 export function fullName(p: Person): string {
