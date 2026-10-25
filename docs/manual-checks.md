@@ -25,6 +25,7 @@ session; it updates the requirement statuses.
 | 11  | Menu → "Drucken / Als PDF speichern", choose "Als PDF speichern" (Mac: "PDF" → "Als PDF sichern").        | One A4 landscape page with the name on top and the whole tree; no buttons, no panel.             |
 | 12  | Open `Beispiel.stammbaum` from the unzipped folder ("Öffnen …" or drag it onto the window).               | The example family opens. If the open tree had unsaved changes, the app asks first.              |
 | 13  | Open a saved file on the other machine (send it by email or USB stick).                                   | Everything, including photos, is there.                                                          |
+| 14  | Start screen → "English", then "Français"; open a tree and switch back in the menu; reload.               | All texts switch at once; the choice is still there after the reload (GEN-05).                   |
 
 ## Results
 

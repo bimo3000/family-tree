@@ -1,0 +1,100 @@
+# Stammbaum guide
+
+With this program you record your family history: people, dates, photos and how everyone is
+related. It runs in your web browser, but needs **no internet** and **no installation**. Your data
+stays on your computer. Nothing is sent anywhere.
+
+## Getting started
+
+1. Unpack the **Stammbaum** folder from the ZIP file (on Windows: right-click the ZIP file, then
+   “Extract All …”; on a Mac: double-click the ZIP file).
+2. In the folder, double-click **Stammbaum.html**.
+3. The family tree opens in your browser (Chrome, Edge, Firefox or Safari).
+
+On the first start you can choose:
+
+- **Create a new family tree**: you give it a name (for example “Miller family”) and enter the first
+  person right away.
+- **Open a Stammbaum file**: you open a `.stammbaum` file, for example one somebody sent you. You can
+  also simply drag the file into the browser window.
+- **See an example**: the made-up Brandt family to try things out. It is also in the folder as the
+  file `Beispiel.stammbaum`.
+
+The next time you start, your family tree is there again straight away.
+
+## Language
+
+The program speaks German, English and French. At the bottom of the start page you choose
+**Deutsch**, **English** or **Français**. In an open family tree, the choice is at the bottom of the
+menu (click the name of your family tree at the top left). Everyone can use a different language on
+their own computer; the `.stammbaum` file stays the same.
+
+## Entering people
+
+- **Click a person**: their details and family appear on the right.
+- **Edit**: names, birth, death, places and a photo. Under “More details” you find gender,
+  occupation, places lived, life story and your own fields. **Every detail is optional.**
+  What you type applies at once. “Done” closes the window.
+- **Vague dates** work too: “12 Mar 1923”, “12/03/1923”, “March 1923”, “1923”, “about 1850”,
+  “before 1900” or “after 1900”. Always write the day before the month. Below the field you see how
+  the program understood what you typed.
+- **Adding relatives**: with “+ Parent”, “+ Partner”, “+ Child” and “+ Sibling” in a person’s details.
+  You can create a new person or choose an existing one.
+- **Changing relationships**: parents, partners and children have a ✎ (for example for marriage,
+  divorce, adopted child, stepchild or foster child) and a × to remove the connection.
+- **Deleting a person**: at the bottom of the person’s details.
+- **Undo**: you undo every change with ↶ at the top left (or Ctrl+Z), and redo it with ↷ (or Ctrl+Y).
+
+## Photos
+
+Every person can have a photo: “Edit”, then “Choose photo …”. Then you choose the part to show: move
+the photo with the mouse and use “Size” to set how close it gets. This way you can also pick one
+person out of a group photo. Only this part is saved. To change it, choose the photo again. Large
+pictures are made smaller automatically. Not every browser can open iPhone photos (HEIC). Save them
+as JPG first in that case.
+
+## Looking at the tree
+
+- **Move**: drag with the mouse button held down.
+- **Zoom**: mouse wheel or the + and − buttons at the bottom right. “Show all” shows the whole tree.
+- **Double-click** a person to bring them to the middle. The Esc key clears the selection.
+
+## Saving
+
+Your changes are kept in the browser, even when you close it. But your family tree is only really
+safe in a **file** (`.stammbaum`). At the top right you see whether everything is in the file:
+“✓ Saved” or “● Not saved to a file”.
+
+- **Chrome and Edge**: click “Save” and choose a place for the file once. After that, every change
+  goes into the file by itself. After the browser restarts, it asks once when you save whether the
+  program may change the file. Please allow it.
+- **Firefox and Safari**: “Save” puts the file into your Downloads folder. After changes, click
+  “Save” again. The newest file is always the right one.
+
+If you haven’t saved to the file for a while, the program reminds you.
+
+## Backing up and sharing
+
+The `.stammbaum` file contains all people and photos.
+
+- **Backing up**: copy the file to a USB stick or a backup folder now and then.
+- **Sharing**: send the file by email, USB stick or cloud. The other person opens it with their own
+  copy of the Stammbaum program (“Open a Stammbaum file”), in their own language.
+- **Several family trees**: each family tree is a file of its own. The name at the top left opens the
+  menu with “New family tree”, “Open …” and “Save as …”. Before a tree that isn’t saved is replaced,
+  the program asks first.
+
+## Printing and PDF
+
+Click the name of your family tree at the top left, then **“Print / Save as PDF”**. The whole tree
+fits on **one A4 page in landscape**.
+
+- To print, choose your printer.
+- For a **PDF file**, choose “Save as PDF” as the printer (on a Mac: “PDF” at the bottom left, then
+  “Save as PDF”).
+
+With very large families the writing on one page gets small. It’s best to keep landscape selected.
+
+## Help in the program
+
+In the menu at the top left (the name of the family tree) you find “Help” with a short overview.

@@ -19,7 +19,7 @@ and the repo is clean, green and pushed.
    - Never record anything as agreed that the user did not actually agree to.
 
 3. **Docs.** README, `docs/README.md` (commands, layout, glossary), `docs/concept/*`, the ADRs and
-   `docs/user-guide/Anleitung.md` (German, end-user level) must reflect the current state. Add new terms to the glossary.
+   `docs/user-guide/Anleitung.md` (German, end-user level), `Guide.md` (English) and `Mode-d-emploi.md` (French) must reflect the current state. Add new terms to the glossary.
 
 4. **Housekeeping:**
    - Remove stale artifacts: probe files, commented-out code, unused exports/deps (`npm ls`), obsolete docs, files outside the agreed layout.

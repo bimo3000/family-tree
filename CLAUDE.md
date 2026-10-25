@@ -1,6 +1,6 @@
 # CLAUDE.md – operating manual for agents in this repo
 
-**Stammbaum** is a private, offline, self-contained family-tree web app (German UI) for desktop browsers.
+**Stammbaum** is a private, offline, self-contained family-tree web app (German, English and French UI) for desktop browsers.
 It ships as one `Stammbaum.html` in a zip that can be emailed. **No data ever leaves the device.**
 The repo is the development workspace (app + tooling + docs). Sessions get reset regularly, so the
 repo itself must carry all context. Keep it that way.
@@ -47,14 +47,15 @@ repo itself must carry all context. Keep it that way.
 
 - `src/core/`: pure TypeScript. **No browser APIs** (lint-enforced). Data model, validation, dates, layout, migrations. Fully unit-tested.
 - `src/storage/`: everything that touches files, IndexedDB and the File System Access API.
-- `src/ui/`: Svelte 5 components. German texts only here.
+- `src/ui/`: Svelte 5 components. UI texts only in `src/ui/i18n/` (`de.ts` is the master copy, ADR-0008); a unit test fails on text written anywhere else.
 - **Data ≠ logic:** family data only ever lives in project files (`*.stammbaum`) and the browser's working copy, never in the source.
 - **Privacy:** no network access of any kind. No CDNs, web fonts, analytics or update checks. This is enforced by the CSP in
   `vite.config.ts`, the ESLint rules, `scripts/check-no-external-refs.mjs` and the E2E fixture. Never weaken any of these.
 - **Agents don't read real family data either.** Whatever you read is sent to the model, so `data/` is denied in
   `.claude/settings.json`. For debugging, use the fictional data in `examples/` or ask the user for an anonymized sample.
 - New runtime dependency? Only with a good reason, pinned exact, and noted in an ADR. It gets bundled into the HTML.
-- Code, comments and dev docs are in English. The UI and the end-user guide (`docs/user-guide/`) are in German.
+- Code, comments and dev docs are in English. The UI and the end-user guides (`docs/user-guide/`) are in German, English and French.
+  A new or changed UI text goes into all three dictionaries and, if it shows up there, into all three guides.
 - Key decisions are recorded as ADRs in [docs/agent/decisions/](docs/agent/decisions/). Read them before re-opening a decision.
 
 ## 5. Testing duty

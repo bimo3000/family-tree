@@ -3,37 +3,44 @@
 > Rewritten at the end of every session (skill `session-handover`). A fresh session must be able to
 > continue from this file alone. Keep it short and current. History lives in git, decisions in ADRs.
 
-**Last updated:** 2026-10-25 (session 9)
+**Last updated:** 2026-10-25 (session 10)
 
 ## Phase
 
 1. ~~Development setup~~ ✅ (session 1)
-2. ~~Concept work~~ ✅ (session 1, `docs/concept/*`, ADR-0001…0007)
+2. ~~Concept work~~ ✅ (session 1, `docs/concept/*`, ADR-0001…0008)
 3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history before `1bfe483`)
 4. ~~Functional development~~ ✅ S1…S6 all done (sessions 3–8). **Release 0.9.0** (test version).
-   Session 9: photo cropping (PERS-08) added on request. **Release 0.9.1** (test version for the manual checks).
+   Session 9: photo cropping (PERS-08). **Release 0.9.1**. Session 10: **S7 languages** (GEN-05). **Release 0.10.0**.
 5. **Feedback and manual checks** ← current. Then 1.0.0.
 
-## Done in session 9 (photo cropping, PERS-08, was P-009)
+## Done in session 10 (slice S7, English and French, GEN-05, was P-010)
 
-- User decisions: the part is **cut out permanently** when the photo is added (best quality: cut from the original,
-  then max. 2000 px); the crop view opens **right after "Foto wählen …"**. No "Ausschnitt ändern": choose the photo again.
-- `src/core/photoCrop.ts` (7:5 part, zoom 1–5×, move, placement), `src/ui/dialogs/PhotoCropper.svelte` (drag, arrow
-  keys, "Größe" slider; 560×400 frame, no extra preview), shown inside `PersonDialog` in place of the form. `preparePicture(file, crop)`.
-- Tests: 342 unit, 53 E2E per engine (`photos.spec.ts`: 7:5 size, zoom, mouse/keys, cancel/Esc).
-- **Release 0.9.1** (`release/Stammbaum-0.9.1.zip`, 61 kB): zip checked, unzipped app opened in all three engines,
-  `Beispiel.stammbaum` opened, a photo cropped. Tag `v0.9.1` pushed (user's OK).
-- **P-010 multi-language UI** (German, English, French) noted as an idea only: app texts only; project data, `Stammbaum.html`
-  and `.stammbaum` stay as they are. No concept yet; build only after the user decides.
-- User tried it ("works nice"): the preview was dropped as redundant. "Speichern unter" with an own file name in
-  Firefox/Safari was discussed and dropped (clarifications log, 2026-10-25).
+- User decisions (2026-10-25, clarifications log): language choice on the start screen and at the bottom of the project
+  menu, remembered per browser (IndexedDB key `language`), not in the project file; no choice → browser language, else
+  English; three guides in the zip; dates DE `12.03.1923`, EN `12 Mar 1923`, FR `12/03/1923`; years must fit on the card.
+- **How texts work now (ADR-0008):** every UI text is in `src/ui/i18n/de.ts` (master copy). `en.ts` and `fr.ts` are typed
+  `Texts`, so a missing text fails the typecheck. Components read `t.section.text` from `i18n/index.svelte.ts` (a Proxy
+  over the current dictionary, reactive: switching re-renders without a reload). Grammar (relation words, articles,
+  dates) is written per language as small functions. `tests/unit/ui/i18n.test.ts` fails on text written in a `.svelte`
+  file's markup or a German string literal outside `i18n/`.
+- **Dates:** `parseDate` (core) reads German, English and French at once, always day first; `jui` stays text. Display per
+  language; the card uses short qualifiers (`dates.card`). Each language round-trips `parseDate(fmtDate(d))` (unit test).
+- **Bugs found and fixed (regression tests first):** a range shown as "1890 bis 1895" was read back as a text date when
+  any field of the person changed; a long year line ("* vor 1890 † nach 1925") was cut off on the card, also in German.
+  The year line now shrinks like the name (`fit()` in `PersonCard.svelte`, down to 65 %).
+- French texts and `Mode-d-emploi.md` were written by a helper agent and reviewed. "Annuler" is both undo and cancel
+  (usual in French apps); a step-child is "Bel-enfant"; the app keeps its name "Stammbaum" in every language.
+- **Release 0.10.0** (`release/Stammbaum-0.10.0.zip`): Anleitung.txt, Guide.txt, Mode-d-emploi.txt. Tag `v0.10.0` is
+  **local only** until the user OKs pushing it.
 
 ## Done after 0.9.1 (feedback)
 
 - **Long names on a card:** all given names if they fit, else only the first; then the name shrinks (down to 70 %), so
-  the surname is never cut off. Fitting is measured in `PersonCard.svelte` (`fitName`). Letters below the line ("g")
+  the surname is never cut off. Fitting is measured in `PersonCard.svelte` (`fit`). Letters below the line ("g")
   are no longer cut off (line height 1.3). Firefox reports a few px more height for a clamped box: the fit check allows
   half a line. The chosen name depends on the font, so engines may differ ("Heinrich Brandt" in WebKit).
+  Since session 10 the same `fit()` also shrinks the year line.
 
 ## Done in session 8 (slice S6, finish and release)
 
@@ -42,16 +49,18 @@
 
 ## Next steps
 
-- The user tries 0.9.1 and runs `docs/manual-checks.md` on a real Mac (Safari) and Windows. Record the results in that
-  file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, with a regression test first).
+- The user tries 0.10.0 (all three languages) and, ideally, a French-speaking relative reads the French texts once.
+  Wording changes are small edits in `src/ui/i18n/fr.ts` (and `Mode-d-emploi.md`).
+- The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 14, languages). Record the
+  results in that file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, regression test first).
 - Feedback rounds: each piece of feedback that changes behaviour goes through `requirement-change` first.
 - After the checks and fixes: 1.0.0 (skill `release-package`).
 
 ## Open items for the user
 
-- The tag `v0.9.0` is still local only (0.9.1 replaces it for testing; pushing it is optional).
-- Try 0.9.1: unzip `release/Stammbaum-0.9.1.zip`, double-click `Stammbaum.html`. Feedback wanted on the printout,
-  the help text, the hint bar, and everything from S5 (start screen, menu, save status, reminder).
+- Push the tag `v0.10.0`? (Local only. `v0.9.0` is also still local only; pushing it is optional.)
+- Try 0.10.0: unzip `release/Stammbaum-0.10.0.zip`, double-click `Stammbaum.html`, switch the language at the bottom of
+  the start screen. Feedback wanted on the English and French wording and the language row's look.
 - Run the manual checklist on a Mac and on Windows.
 
 ## Pitfalls / environment notes
@@ -81,6 +90,13 @@
 - The singlefile build inlines Svelte's error-doc URLs; allow-listed in `scripts/check-no-external-refs.mjs`.
 - Editing CLAUDE.md via a shell script got blocked by the auto-mode classifier. Use the Edit tool for CLAUDE.md.
 - User preferences: no over-engineering; no dashes or middle dots in UI text; UI/UX decisions are the user's (show, then ask).
+- New UI text: add it to `de.ts`, then `en.ts` and `fr.ts` (the typecheck lists what's missing). Never write text into a
+  `.svelte` file's markup (the i18n unit test fails). E2E tests stay German (`locale: 'de-DE'`); `i18n.spec.ts` imports
+  the dictionaries for English and French texts.
+- `eslint` rejects literal no-break spaces in template literals: write `\u00a0` (French « » and before ? ! : ;).
+- A `|` inside a Markdown table cell must be written `\|`, or prettier splits the row into extra columns.
+- `npm run package` overwrites `release/Stammbaum-<version>.zip`: bump the version first. An old zip is rebuilt from its
+  tag in a `git worktree` with a `node_modules` symlink.
 - WebKit system deps (`libevent-2.1-7t64 libavif16`) are installed on this machine; a new machine needs them (sudo, by the user).
 
 ## Known gaps

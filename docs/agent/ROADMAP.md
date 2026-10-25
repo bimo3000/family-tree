@@ -9,15 +9,15 @@ Each slice ends green (`npm run verify`), committed, pushed, with requirement st
 
 ## Overview
 
-| #   | Slice                         | Status      | Main requirements                                       |
-| --- | ----------------------------- | ----------- | ------------------------------------------------------- |
-| S1  | Core model, dates, operations | Done        | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
-| S2  | Automatic tree layout         | Done        | TREE-01/03/04/05 (ADR-0006)                             |
-| S3  | Tree view (read-only)         | Done        | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
-| S4  | Editing                       | Done        | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
-| S5  | Working copy, files, pictures | Done        | DATA-02/03/04/07/09, PERS-03, UI-02                     |
-| S6  | Finish and release            | Done        | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
-| S7  | Languages (DE, EN, FR)        | In progress | GEN-05, DEV-07 (ADR-0008)                               |
+| #   | Slice                         | Status | Main requirements                                       |
+| --- | ----------------------------- | ------ | ------------------------------------------------------- |
+| S1  | Core model, dates, operations | Done   | PERS-01/02/06/07, TREE-03, DATA-01/05/08                |
+| S2  | Automatic tree layout         | Done   | TREE-01/03/04/05 (ADR-0006)                             |
+| S3  | Tree view (read-only)         | Done   | TREE-02, PERS-04/05, GEN-05/06, UI-04                   |
+| S4  | Editing                       | Done   | PERS-01/02/06/07, TREE-03 (editing), UI-01              |
+| S5  | Working copy, files, pictures | Done   | DATA-02/03/04/07/09, PERS-03, UI-02                     |
+| S6  | Finish and release            | Done   | UI-03, DATA-06, GEN-01/03/04, user guide, manual checks |
+| S7  | Languages (DE, EN, FR)        | Done   | GEN-05, DEV-07 (ADR-0008)                               |
 
 Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progress` at a time.
 
@@ -108,6 +108,10 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
   line never gets longer than in German.
 - Help dialog translated; the zip gets `Guide.txt` (EN) and `Mode-d-emploi.txt` (FR) next to `Anleitung.txt`.
 - E2E: language from the browser, switching, reload keeps it, a person added in English and French, year line fits.
+- ✅ Done in session 10. Dictionaries in `src/ui/i18n/`, `LanguageChoice.svelte`, parser in `src/core/dates.ts`. Found on
+  the way: a date range read back as text after editing, and a long year line was cut off on the card (also in German).
+  Both fixed with regression tests. Decided on the user's behalf: the app keeps its name "Stammbaum" in every language;
+  a year line that is too long gets smaller (down to 65 %), like the name.
 
 ## Decisions to raise when the slice is reached
 
@@ -140,3 +144,4 @@ Anything not covered by the concept or the mock-up that changes what the user se
 | 2026-10-24 | Session 9: photo cropping (P-009 → PERS-08) built on the user's request before the manual checks. A feedback item, no new slice.                                       |
 | 2026-10-25 | Crop preview dropped after the user's test. Release 0.9.1 (with cropping) for the manual checks. P-010 (multi-language UI) noted as an idea.                           |
 | 2026-10-25 | S7 (languages) started on the user's request: P-010 approved as the new GEN-05 (ADR-0008).                                                                             |
+| 2026-10-25 | S7 done (session 10). Release 0.10.0 with English and French.                                                                                                          |

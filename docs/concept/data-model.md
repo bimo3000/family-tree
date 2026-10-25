@@ -94,7 +94,7 @@ Shown **on hover/click** (PERS-05): everything else that is filled in.
 
 - Every change is a pure operation in `operations.ts` that returns a new project (see the glossary: pure function).
 - A broken rule throws a `ModelError` with a **code** (`loop`, `too-many-biological-parents`, `self-partnership`,
-  `duplicate-partnership`, `duplicate-link`, `unknown-person`, `unknown-relation`). The UI turns the code into a German message.
+  `duplicate-partnership`, `duplicate-link`, `unknown-person`, `unknown-relation`). The UI turns the code into a message in the current language.
 - Empty values (`""`, `false`, empty lists and objects) are dropped when saving a person or partnership, and a biological
   link is stored without `kind`. So the stored data stays as simple as the family (TREE-04).
 - Siblings are derived: **full** siblings have exactly the same parents, **half** siblings share only some.
@@ -106,20 +106,24 @@ child's birth, a person older than 110 without a death date.
 
 The user types one text field. The app understands it, shows how it was read ("→ 12. März 1923"), and stores **only the
 interpreted value**, not the typed text. Reopening the field shows the tidy form (`um 1850` comes back as `ca. 1850`).
-The card shows only the year (PERS-04); hover and the detail panel show the full precision:
+The card shows only the year (PERS-04); hover and the detail panel show the full precision.
+Input is understood in **German, English and French at once**, whatever the UI language, always with the day before the
+month (GEN-05). The display follows the UI language (German shown below; English `12 Mar 1923`, `about 1850`; French
+`12/03/1923`, `vers 1850`). The card uses short qualifiers so its year line is never longer than in German
+(`ca.`/`c.`/`v.`, `vor`/`bef.`/`av.`, `nach`/`aft.`/`ap.`):
 
-| Input (examples)                        | Stored                                      | Shown in details | Sort value |
-| --------------------------------------- | ------------------------------------------- | ---------------- | ---------- |
-| `12.03.1923`, `12.3.1923`               | `{ "y": 1923, "m": 3, "d": 12 }`            | 12.03.1923       | 1923-03-12 |
-| `03.1923`, `März 1923`                  | `{ "y": 1923, "m": 3 }`                     | 03.1923          | 1923-03    |
-| `1923`                                  | `{ "y": 1923 }`                             | 1923             | 1923       |
-| `ca. 1850`, `um 1850`, `~1850`          | `{ "y": 1850, "q": "about" }`               | ca. 1850         | 1850       |
-| `vor 1900`                              | `{ "y": 1900, "q": "before" }`              | vor 1900         | 1900       |
-| `nach 1900`                             | `{ "y": 1900, "q": "after" }`               | nach 1900        | 1900       |
-| `zw. 1890 und 1895`, `1890-1895`        | `{ "y": 1890, "q": "between", "y2": 1895 }` | 1890 bis 1895    | 1890       |
-| anything unreadable, e.g. `Ostern 1923` | `{ "text": "Ostern 1923" }`                 | Ostern 1923      | none       |
+| Input (examples)                                                                                 | Stored                                      | Shown in details | Sort value |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------- | ---------------- | ---------- |
+| `12.03.1923`, `12/03/1923`, `12 Mar 1923`, `1er mars 1923`                                       | `{ "y": 1923, "m": 3, "d": 12 }`            | 12.03.1923       | 1923-03-12 |
+| `03.1923`, `März 1923`, `March 1923`, `mars 1923`                                                | `{ "y": 1923, "m": 3 }`                     | 03.1923          | 1923-03    |
+| `1923`                                                                                           | `{ "y": 1923 }`                             | 1923             | 1923       |
+| `ca. 1850`, `um 1850`, `~1850`, `about 1850`, `c. 1850`, `vers 1850`                             | `{ "y": 1850, "q": "about" }`               | ca. 1850         | 1850       |
+| `vor 1900`, `before 1900`, `bef. 1900`, `avant 1900`                                             | `{ "y": 1900, "q": "before" }`              | vor 1900         | 1900       |
+| `nach 1900`, `after 1900`, `aft. 1900`, `après 1900`                                             | `{ "y": 1900, "q": "after" }`               | nach 1900        | 1900       |
+| `zw. 1890 und 1895`, `1890-1895`, `1890 bis 1895`, `between 1890 and 1895`, `entre 1890 et 1895` | `{ "y": 1890, "q": "between", "y2": 1895 }` | 1890 bis 1895    | 1890       |
+| anything unreadable, e.g. `Ostern 1923`                                                          | `{ "text": "Ostern 1923" }`                 | Ostern 1923      | none       |
 
-Unreadable input is **kept as written** and never rejected. The app shows a gentle hint that it can't be used for sorting.
+A month abbreviation that fits two months (`jui`: juin or juillet) is not guessed. Unreadable input is **kept as written** and never rejected. The app shows a gentle hint that it can't be used for sorting.
 This maps 1:1 to GEDCOM date qualifiers (`ABT`, `BEF`, `AFT`, `BET … AND`).
 
 ## 5. The project file
@@ -182,7 +186,7 @@ bilder/
 
 - IDs are random and never reused. Links point to IDs, so renaming a person never breaks anything.
 - `view` remembers the last focused person. It is a convenience, not family data.
-- Field names are English (code convention). The UI shows German labels.
+- Field names are English (code convention). The UI shows labels in the current language.
 
 ## 6. Versioning
 

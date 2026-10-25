@@ -2,7 +2,7 @@
   "name": "stammbaum",
   "version": "0.9.1",
   "private": true,
-  "description": "Offline, self-contained family-tree web app (German UI). No data ever leaves the device.",
+  "description": "Offline, self-contained family-tree web app (German, English and French UI). No data ever leaves the device.",
   "type": "module",
   "engines": {
     "node": ">=24"

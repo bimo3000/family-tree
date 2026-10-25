@@ -4,7 +4,9 @@
 //   release/Stammbaum-<version>.zip
 //     └─ Stammbaum/
 //         ├─ Stammbaum.html        ← the whole app, double-click to start
-//         ├─ Anleitung.txt         ← German quick guide (from docs/user-guide/Anleitung.md)
+//         ├─ Anleitung.txt         ← quick guide in German, English and French
+//         ├─ Guide.txt                (from docs/user-guide/Anleitung.md, Guide.md, Mode-d-emploi.md)
+//         ├─ Mode-d-emploi.txt
 //         └─ Beispiel.stammbaum    ← fictional example family, made from examples/familie-brandt.json
 //
 // Expects `npm run build` to have run (the `package` npm script does that).
@@ -26,11 +28,11 @@ if (!existsSync(app)) {
 /** @type {{ name: string, data: Buffer }[]} */
 const entries = [{ name: 'Stammbaum/Stammbaum.html', data: readFileSync(app) }];
 
-const guide = join(root, 'docs', 'user-guide', 'Anleitung.md');
-if (existsSync(guide)) {
+for (const name of ['Anleitung', 'Guide', 'Mode-d-emploi']) {
+  const guide = join(root, 'docs', 'user-guide', `${name}.md`);
   // CRLF so that Notepad on older Windows shows line breaks correctly.
   const text = readFileSync(guide, 'utf8').replace(/\r?\n/g, '\r\n');
-  entries.push({ name: 'Stammbaum/Anleitung.txt', data: Buffer.from('﻿' + text, 'utf8') });
+  entries.push({ name: `Stammbaum/${name}.txt`, data: Buffer.from('﻿' + text, 'utf8') });
 }
 
 // Built here from the JSON the app embeds, so the two can never drift apart (DATA-06).

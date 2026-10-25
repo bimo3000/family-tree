@@ -7,7 +7,7 @@
 ## 1. Guiding principles
 
 1. **The grandma test (GEN-06):** every common task can be done without explanation, with large click targets,
-   clear German words and no technical terms.
+   clear words and no technical terms.
 2. **Simple until it needs to be complex (TREE-04):** empty fields are not shown, and rare options hide behind "Mehr Angaben".
    Special relation types only appear on screen when they exist.
 3. **Nothing gets lost:** autosave to the working copy, undo for everything (UI-01), a visible save status (UI-02)
@@ -23,6 +23,8 @@
   - **"Neuen Stammbaum anlegen"** asks for a name ("Familie Müller") and then starts with one empty person, whose dialog opens at once.
   - **"Stammbaum-Datei öffnen"** opens a file picker for `.stammbaum`. Drag & drop also works.
   - **"Beispiel ansehen"** loads the fictional example family (DATA-06). It is embedded in `Stammbaum.html`, so it needs no file.
+  - Below the buttons, the **language choice** `Deutsch | English | Français` (GEN-05). The same row sits at the bottom
+    of the project menu. The choice is remembered per browser; without one, the browser's language is used, else English.
 
 ### 2.2 Main window
 
@@ -155,9 +157,10 @@ e.g. a cousin marriage or a person added twice by mistake).
 
 ## 5. Language and wording
 
-- German only, with short and friendly sentences.
-- Address: informal **"Du"** (UI-04), friendly but not childish.
-- Dates as `12.03.1923`, `*` for birth and `†` for death.
+- German, English and French (GEN-05), with short and friendly sentences. All texts live in `src/ui/i18n/` (ADR-0008);
+  the German wording below is the master copy.
+- Address: informal **"Du"** (UI-04), friendly but not childish. French uses "tu".
+- Dates as `12.03.1923` (English `12 Mar 1923`, French `12/03/1923`), `*` for birth and `†` for death.
 - Gender-neutral defaults: "Partner/in", "Elternteil", "Kind". Gendered words (Mutter/Vater) only if a gender is set (PERS-07).
 - No technical terms in the UI: no "Datei-Handle", no "IndexedDB", no "Cache".
 - **No dashes (– or —) and no middle dots (·) as separators** in UI text (the user finds they look machine-made).

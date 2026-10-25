@@ -5,7 +5,7 @@ A private, self-contained web app to **create, edit and view family trees**.
 - Runs **fully offline** in a normal desktop browser (Chrome, Edge, Firefox, Safari) on Windows, Linux and macOS.
 - Ships as a **zip you can email**: unzip, double-click `Stammbaum.html`, done. No installation.
 - **No data ever leaves the device.** The family data stays in local project files (`*.stammbaum`).
-- App language: **German**.
+- App languages: **German, English and French** (chosen on the start screen, remembered per browser).
 
 > Status: all roadmap slices are done ([roadmap](docs/agent/ROADMAP.md)). Version 0.9.1 is a test version for family members:
 > edit the tree, photos (with cropping), save to a `.stammbaum` file, print or save as PDF, help inside the app. Next: manual checks on a

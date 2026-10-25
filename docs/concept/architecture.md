@@ -38,9 +38,9 @@ on its own, and you can open the document with any copy of the program.
 | **core**    | `src/core/`     | Data model types, operations (add person, link parent, …), validation, flexible dates, tree layout, data-format migrations, serialization to/from JSON | Pure TypeScript with **no browser APIs** (lint-enforced). Every function is unit-tested. It has no idea that a UI exists.             |
 | **storage** | `src/storage/`  | Reading/writing `.stammbaum` zip files, the browser working copy, the "last project" pointer, picture import and downscaling                           | The only layer that touches files, IndexedDB, file pickers and canvas. Hidden behind small interfaces so it can be tested with fakes. |
 | **state**   | `src/ui/state/` | The currently open project, selection, undo/redo history, save status                                                                                  | Thin glue. Every change goes through a core operation.                                                                                |
-| **ui**      | `src/ui/`       | Svelte components: tree view, person card, detail panel, forms, dialogs                                                                                | All German texts live here, and only here. User text is always rendered as text, never as HTML.                                       |
+| **ui**      | `src/ui/`       | Svelte components: tree view, person card, detail panel, forms, dialogs                                                                                | All UI texts live here, in `i18n/` (German, English, French; ADR-0008). User text is always rendered as text, never as HTML.          |
 
-Inside `core`: `model/` (types, queries, validation, operations, `relatives.ts` for the add-relative flows and the cut-off check), `dates.ts` (reading German date input),
+Inside `core`: `model/` (types, queries, validation, operations, `relatives.ts` for the add-relative flows and the cut-off check), `dates.ts` (reading date input in German, English and French),
 `migrations/` and `serialization.ts` (`data.json` in and out), `layout/` (the automatic tree layout, ADR-0006).
 
 Inside `storage`: `projectFile.ts` (the `.stammbaum` zip in and out), `workingCopy.ts` (IndexedDB), `files.ts`
@@ -51,7 +51,9 @@ Inside `ui`: `App.svelte` (start screen or open project, opening and saving, the
 `state/` (`editor.svelte.ts`: the open project with undo/redo; `workspace.svelte.ts`: working copy, file and save status),
 `tree/` (tree view, cards, drawing and pan/zoom helpers), `panel/` (detail panel), `dialogs/` (person, add relative,
 delete, relation edit/remove, all on the native `<dialog>` element),
-`text.ts` (all German display texts for dates, names and relations), `theme.css` (colours), `example.ts` (the embedded
+`i18n/` (one dictionary per language: `de.ts` is the master copy, `en.ts` and `fr.ts` are typed against it; `index.svelte.ts`
+holds the current language and the language choice), `LanguageChoice.svelte`, `text.ts` (display texts for dates, names
+and relations, built from the dictionary), `theme.css` (colours), `example.ts` (the embedded
 example from `examples/familie-brandt.json`).
 
 The dependency direction is strictly `ui → state → core` and `storage → core`. Core depends on nothing.
@@ -176,7 +178,7 @@ Agents don't read real family data either (`data/` is denied in `.claude/setting
 
 ## 7. Robustness
 
-- **Unexpected errors:** a friendly German message ("Etwas ist schiefgelaufen. Deine Daten sind sicher.") with a button to reload.
+- **Unexpected errors:** a friendly message ("Etwas ist schiefgelaufen. Deine Daten sind sicher.") with a button to reload.
   The working copy is saved before risky operations.
 - **Two tabs with the same project:** detected locally (`BroadcastChannel`, no network). The second tab warns and opens read-only.
 - **Closing with unsaved changes:** the browser's standard "Seite verlassen?" prompt (Firefox/Safari, when the file is outdated).

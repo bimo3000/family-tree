@@ -22,6 +22,13 @@ Beim ersten Start kannst du wählen:
 
 Beim nächsten Start ist dein Stammbaum sofort wieder da.
 
+## Sprache
+
+Das Programm gibt es auf Deutsch, Englisch und Französisch. Unten auf der Startseite wählst du
+**Deutsch**, **English** oder **Français**. In einem offenen Stammbaum steht die Auswahl unten im Menü
+(Klick oben links auf den Namen deines Stammbaums). Jeder kann auf seinem Computer eine andere Sprache
+nehmen, die `.stammbaum`-Datei bleibt dieselbe.
+
 ## Personen eintragen
 
 - **Klick auf eine Person**: Rechts erscheinen ihre Angaben und ihre Familie.
@@ -29,7 +36,8 @@ Beim nächsten Start ist dein Stammbaum sofort wieder da.
   Beruf, Wohnorte, Lebensgeschichte und eigene Felder. **Alle Angaben sind freiwillig.**
   Was du eintippst, gilt sofort. „Fertig“ schließt das Fenster.
 - **Ungenaue Daten** gehen auch: „12.03.1923“, „03.1923“, „1923“, „ca. 1850“, „vor 1900“ oder
-  „nach 1900“. Unter dem Feld siehst du, wie das Programm deine Eingabe verstanden hat.
+  „nach 1900“. Unter dem Feld siehst du, wie das Programm deine Eingabe verstanden hat. Englische
+  und französische Schreibweisen versteht es auch („12/03/1923“, „about 1850“, „vers 1850“).
 - **Verwandte hinzufügen**: Mit „+ Elternteil“, „+ Partner/in“, „+ Kind“ und „+ Geschwister“ in den
   Angaben einer Person. Du kannst eine neue Person anlegen oder eine vorhandene auswählen.
 - **Beziehungen ändern**: Bei Eltern, Partnern und Kindern steht ein ✎ (zum Beispiel für Ehe,
