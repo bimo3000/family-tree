@@ -111,9 +111,9 @@ This is the **contract between the human developer (product owner) and the devel
 
 Ideas from agents. **Not binding until the human developer approves.** On approval, a proposal moves into the tables above.
 
-| ID  | Proposal  | Why | Proposed |
-| --- | --------- | --- | -------- |
-| –   | none open | –   | –        |
+| ID    | Proposal                                                                                                                                                                                                                                                                                                           | Why                                                         | Proposed   |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------- |
+| P-010 | **Multi-language UI** (German, English, French), only in the app's texts. The data in project files, the app's file name (`Stammbaum.html`) and the `.stammbaum` file ending stay unchanged, so existing projects keep working. Only an idea for later: no concept yet, not to be built until the user decides so. | Family members who don't read German could use the app too. | 2026-10-25 |
 
 ## Aligned deviations
 
