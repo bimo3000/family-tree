@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { Partnership, Person } from '../../../src/core/model/types';
+import { parseDate } from '../../../src/core/dates';
+import type { FlexDate, Partnership, Person } from '../../../src/core/model/types';
 import {
   childWord,
   dateHint,
@@ -200,5 +201,22 @@ describe('editing texts', () => {
     expect(errorText('loop')).toMatch(/eigener Vorfahr/);
     expect(errorText('too-many-biological-parents')).toMatch(/zwei leibliche Eltern/);
     expect(errorText('invalid')).toBe('Das hat nicht geklappt.');
+  });
+});
+
+describe('date roundtrip', () => {
+  // The person dialog fills its date fields with fmtDate and reads them back with parseDate on every input.
+  it('reads every displayed date back unchanged', () => {
+    const dates: FlexDate[] = [
+      { y: 1923, m: 3, d: 12 },
+      { y: 1923, m: 3 },
+      { y: 1923 },
+      { y: 1850, q: 'about' },
+      { y: 1900, q: 'before' },
+      { y: 1900, q: 'after' },
+      { y: 1890, q: 'between', y2: 1895 },
+      { text: 'Ostern 1920' },
+    ];
+    for (const date of dates) expect(parseDate(fmtDate(date))).toEqual(date);
   });
 });

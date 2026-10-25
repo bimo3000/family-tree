@@ -25,6 +25,7 @@ describe('parseDate', () => {
     ['zwischen 1890 und 1895', { y: 1890, q: 'between', y2: 1895 }],
     ['1890-1895', { y: 1890, q: 'between', y2: 1895 }],
     ['1890 – 1895', { y: 1890, q: 'between', y2: 1895 }],
+    ['1890 bis 1895', { y: 1890, q: 'between', y2: 1895 }],
     ['Ostern 1923', { text: 'Ostern 1923' }],
   ])('reads %j', (input, expected) => {
     expect(parseDate(input)).toEqual(expected);

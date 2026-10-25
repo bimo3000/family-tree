@@ -43,7 +43,7 @@ export function parseDate(input: string): FlexDate | undefined {
   if ((m = s.match(/^nach\s+(\d{3,4})$/i))) return { y: +m[1]!, q: 'after' };
   if (
     (m = s.match(/^(?:zw\.?|zwischen)\s*(\d{3,4})\s*(?:und|-|–)\s*(\d{3,4})$/i)) ||
-    (m = s.match(/^(\d{3,4})\s*[-–]\s*(\d{3,4})$/))
+    (m = s.match(/^(\d{3,4})\s*(?:[-–]|\s+bis\s+)\s*(\d{3,4})$/i))
   ) {
     const [from, to] = [+m[1]!, +m[2]!];
     if (from < to) return { y: from, q: 'between', y2: to };
