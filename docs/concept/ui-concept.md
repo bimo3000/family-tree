@@ -190,8 +190,8 @@ e.g. a cousin marriage or a person added twice by mistake).
 
 1. **Address:** "Du" (UI-04).
 2. **Card dates:** years only on the card, full dates on hover and in the detail panel (PERS-04).
-   Changed 2026-10-25 (D-001): full dates on the card when they fit, else years. Vague years with symbols,
-   the same in every language: `~1850`, `<1900`, `>1900`, `1890/1895`. A wider space before `†`.
+   Changed 2026-10-25 (D-001): vague years with symbols, the same in every language: `~1850`, `<1900`, `>1900`,
+   `1890/1895`. A wider space before `†`. Full dates on the card were tried the same day and dropped (too busy).
 3. **Orientation:** top-down, with ancestors on top (TREE-02).
 4. **"+ Geschwister" with unknown parents:** an automatic placeholder, shown as a small "?" node.
 
