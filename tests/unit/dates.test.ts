@@ -31,6 +31,49 @@ describe('parseDate', () => {
     expect(parseDate(input)).toEqual(expected);
   });
 
+  // GEN-05: English and French input is understood too, whatever the UI language. Always day before month.
+  it.each([
+    ['12/03/1923', { y: 1923, m: 3, d: 12 }],
+    ['03/1923', { y: 1923, m: 3 }],
+    ['12 Mar 1923', { y: 1923, m: 3, d: 12 }],
+    ['12 March 1923', { y: 1923, m: 3, d: 12 }],
+    ['12. März 1923', { y: 1923, m: 3, d: 12 }],
+    ['May 1923', { y: 1923, m: 5 }],
+    ['Sept. 1923', { y: 1923, m: 9 }],
+    ['about 1850', { y: 1850, q: 'about' }],
+    ['abt. 1850', { y: 1850, q: 'about' }],
+    ['c. 1850', { y: 1850, q: 'about' }],
+    ['circa 1850', { y: 1850, q: 'about' }],
+    ['before 1900', { y: 1900, q: 'before' }],
+    ['bef. 1900', { y: 1900, q: 'before' }],
+    ['after 1900', { y: 1900, q: 'after' }],
+    ['aft. 1900', { y: 1900, q: 'after' }],
+    ['between 1890 and 1895', { y: 1890, q: 'between', y2: 1895 }],
+    ['1890 to 1895', { y: 1890, q: 'between', y2: 1895 }],
+    ['1er mars 1923', { y: 1923, m: 3, d: 1 }],
+    ['12 février 1923', { y: 1923, m: 2, d: 12 }],
+    ['fevrier 1923', { y: 1923, m: 2 }],
+    ['août 1923', { y: 1923, m: 8 }],
+    ['déc. 1923', { y: 1923, m: 12 }],
+    ['juin 1923', { y: 1923, m: 6 }],
+    ['juil. 1923', { y: 1923, m: 7 }],
+    ['vers 1850', { y: 1850, q: 'about' }],
+    ['env. 1850', { y: 1850, q: 'about' }],
+    ['v. 1850', { y: 1850, q: 'about' }],
+    ['avant 1900', { y: 1900, q: 'before' }],
+    ['av. 1900', { y: 1900, q: 'before' }],
+    ['après 1900', { y: 1900, q: 'after' }],
+    ['ap. 1900', { y: 1900, q: 'after' }],
+    ['entre 1890 et 1895', { y: 1890, q: 'between', y2: 1895 }],
+    ['1890 à 1895', { y: 1890, q: 'between', y2: 1895 }],
+  ])('reads %j (English, French)', (input, expected) => {
+    expect(parseDate(input)).toEqual(expected);
+  });
+
+  it('keeps an abbreviation that fits two months as text ("jui": juin or juillet)', () => {
+    expect(parseDate('jui 1923')).toEqual({ text: 'jui 1923' });
+  });
+
   it('trims surrounding spaces', () => {
     expect(parseDate('  1923 ')).toEqual({ y: 1923 });
   });
@@ -49,6 +92,8 @@ describe('parseDate', () => {
     '12.03.23', // two-digit years are ambiguous
     'Mai', // no year
     'Ma 1923', // too short to tell Mai from März
+    '30 February 1923', // no such day
+    'entre 1895 et 1890', // range backwards
     '1895-1890', // range backwards
     '1890-1890',
   ])('keeps %j as text instead of guessing', (input) => {

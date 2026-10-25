@@ -1,27 +1,43 @@
 /**
  * Flexible dates (PERS-06, data-model §4): reading what the user typed and sorting.
- * Display strings ("ca. 1850", "→ ungefähr 1850") are German text and live in src/ui/.
+ * Input is understood in German, English and French at once, whatever the UI language (GEN-05),
+ * always with the day before the month. Display strings live in src/ui/i18n/.
  */
 import type { FlexDate } from './model/types';
 
-/** Month names the parser understands, e.g. "März 1923", "Mär. 1923", "Maerz 1923". */
-const MONTH_NAMES = [
-  'januar',
-  'februar',
-  'märz',
-  'april',
-  'mai',
-  'juni',
-  'juli',
-  'august',
-  'september',
-  'oktober',
-  'november',
-  'dezember',
+/** Month names without accents. A typed name may be shortened to 3 letters or more: "Mär.", "Sept", "juil". */
+const MONTH_NAMES: string[][] = [
+  ['januar', 'january', 'janvier'],
+  ['februar', 'february', 'fevrier'],
+  ['maerz', 'marz', 'march', 'mars'],
+  ['april', 'avril'],
+  ['mai', 'may'],
+  ['juni', 'june', 'juin'],
+  ['juli', 'july', 'juillet'],
+  ['august', 'aout'],
+  ['september', 'septembre'],
+  ['oktober', 'october', 'octobre'],
+  ['november', 'novembre'],
+  ['dezember', 'december', 'decembre'],
 ];
 
+const Y = String.raw`(\d{3,4})`;
+const ABOUT = new RegExp(
+  String.raw`^(?:ca\.?|circa|um|~|about|abt\.?|c\.|vers|env\.?|environ|v\.)\s*${Y}$`,
+  'i',
+);
+const BEFORE = new RegExp(String.raw`^(?:vor|before|bef\.?|avant|av\.)\s*${Y}$`, 'i');
+const AFTER = new RegExp(String.raw`^(?:nach|after|aft\.?|après|apres|ap\.)\s*${Y}$`, 'i');
+const BETWEEN = new RegExp(
+  String.raw`^(?:zw\.?|zwischen|between|bet\.?|entre)\s*${Y}\s*(?:und|and|et|-|–)\s*${Y}$`,
+  'i',
+);
+const RANGE = new RegExp(String.raw`^${Y}\s*(?:[-–]|\s+(?:bis|to|à|a)\s+)\s*${Y}$`, 'i');
+/** "März 1923", "12. März 1923", "12 March 1923", "1er mars 1923". */
+const NAMED = new RegExp(String.raw`^(?:(\d{1,2})(?:\.|er)?\s*)?(\p{L}{3,})\.?\s+${Y}$`, 'iu');
+
 /**
- * Reads a German date input. Returns `undefined` for empty input. Input it can't read is kept
+ * Reads a date input. Returns `undefined` for empty input. Input it can't read is kept
  * as `{ text }` and never rejected.
  */
 export function parseDate(input: string): FlexDate | undefined {
@@ -29,26 +45,32 @@ export function parseDate(input: string): FlexDate | undefined {
   if (!s) return undefined;
   let m: RegExpMatchArray | null;
 
-  if ((m = s.match(/^(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{3,4})$/)))
+  if ((m = s.match(/^(\d{1,2})[./]\s*(\d{1,2})[./]\s*(\d{3,4})$/)))
     return exact(+m[3]!, +m[2]!, +m[1]!) ?? { text: s };
-  if ((m = s.match(/^(\d{1,2})\.(\d{3,4})$/))) return exact(+m[2]!, +m[1]!) ?? { text: s };
-  if ((m = s.match(/^([a-zäA-ZÄ]{3,})\.?\s+(\d{3,4})$/))) {
-    const typed = umlautsToAscii(m[1]!.toLowerCase());
-    const month = MONTH_NAMES.findIndex((name) => umlautsToAscii(name).startsWith(typed));
-    if (month >= 0) return { y: +m[2]!, m: month + 1 };
-  }
+  if ((m = s.match(/^(\d{1,2})[./](\d{3,4})$/))) return exact(+m[2]!, +m[1]!) ?? { text: s };
   if ((m = s.match(/^(\d{3,4})$/))) return { y: +m[1]! };
-  if ((m = s.match(/^(?:ca\.?|um|~)\s*(\d{3,4})$/i))) return { y: +m[1]!, q: 'about' };
-  if ((m = s.match(/^vor\s+(\d{3,4})$/i))) return { y: +m[1]!, q: 'before' };
-  if ((m = s.match(/^nach\s+(\d{3,4})$/i))) return { y: +m[1]!, q: 'after' };
-  if (
-    (m = s.match(/^(?:zw\.?|zwischen)\s*(\d{3,4})\s*(?:und|-|–)\s*(\d{3,4})$/i)) ||
-    (m = s.match(/^(\d{3,4})\s*(?:[-–]|\s+bis\s+)\s*(\d{3,4})$/i))
-  ) {
+  if ((m = s.match(ABOUT))) return { y: +m[1]!, q: 'about' };
+  if ((m = s.match(BEFORE))) return { y: +m[1]!, q: 'before' };
+  if ((m = s.match(AFTER))) return { y: +m[1]!, q: 'after' };
+  if ((m = s.match(BETWEEN)) || (m = s.match(RANGE))) {
     const [from, to] = [+m[1]!, +m[2]!];
     if (from < to) return { y: from, q: 'between', y2: to };
+    return { text: s };
+  }
+  if ((m = s.match(NAMED))) {
+    const month = monthOf(m[2]!);
+    if (month) return exact(+m[3]!, month, m[1] ? +m[1] : undefined) ?? { text: s };
   }
   return { text: s };
+}
+
+/** The month a typed name stands for, or `undefined` if it fits none or several ("jui": juin or juillet). */
+function monthOf(typed: string): number | undefined {
+  const t = typed.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '');
+  const months = MONTH_NAMES.flatMap((names, i) =>
+    names.some((n) => n.startsWith(t)) ? [i + 1] : [],
+  );
+  return months.length === 1 ? months[0] : undefined;
 }
 
 /**
@@ -68,8 +90,4 @@ function exact(y: number, m: number, d?: number): FlexDate | undefined {
   // Day 0 of the next month is the last day of this month.
   const daysInMonth = new Date(Date.UTC(y, m, 0)).getUTCDate();
   return d >= 1 && d <= daysInMonth ? { y, m, d } : undefined;
-}
-
-function umlautsToAscii(s: string): string {
-  return s.replace('ä', 'ae');
 }
