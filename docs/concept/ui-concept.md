@@ -1,7 +1,7 @@
 # UI concept (text level)
 
 > Status: **aligned with the user** (2026-10-24), including two mock-up rounds. Nothing is open.
-> The clickable mock-up was deleted in S6 (git history before commit `1bfe483`); the running app is now the reference.
+> The clickable mock-up was deleted in S6 (still in git history, see `git log --diff-filter=D -- mockups`); the running app is now the reference.
 > The final look and feel is the **user's decision** (DEV-09). This document describes structure and behaviour, not design.
 
 ## 1. Guiding principles

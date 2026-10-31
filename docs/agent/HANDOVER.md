@@ -9,7 +9,7 @@
 
 1. ~~Development setup~~ ✅ (session 1)
 2. ~~Concept work~~ ✅ (session 1, `docs/concept/*`, ADR-0001…0008)
-3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history before `1bfe483`)
+3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history, see `git log --diff-filter=D -- mockups`)
 4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, 0.10.0 (languages), 0.11.0 (layout work, years only on the card), **0.12.0** (Enter in dialogs, double-click edits).
 5. **Feedback and manual checks** ← current. Then 1.0.0.
 
@@ -80,7 +80,6 @@
 - `fit()` in `PersonCard.svelte`: `line-height: normal` is not a number; the half-line tolerance falls back to the font size.
 - Quick layout experiments without vitest: `node --import <loader>` with a resolve hook that appends `.ts` / `/index.ts`
   (Node 24 strips types itself), e.g. to count crossings of a project file. Keep such scripts in the scratchpad.
-- `data_x.json` (repo root, untracked) is the user's anonymized tree from session 12. Never commit it.
 - WebKit system deps (`libevent-2.1-7t64 libavif16`) are installed on this machine; a new machine needs them (sudo, by the user).
 
 ## Known gaps

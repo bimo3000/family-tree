@@ -38,7 +38,7 @@ repo itself must carry all context. Keep it that way.
 - Work proactively on the agreed scope. Do not silently expand the scope.
 - **No over-engineering** (the user's explicit preference). Build the simplest solution that meets the requirements.
   No speculative abstractions, options or "might need it later" code. If a simpler variant exists, recommend it.
-- The mock-up phase is done and `mockups/` was deleted in S6 (still in git history before commit `1bfe483`).
+- The mock-up phase is done and `mockups/` was deleted in S6 (still in git history, see `git log --diff-filter=D -- mockups`).
   The **running app** and [docs/concept/ui-concept.md](docs/concept/ui-concept.md) are the look-and-feel reference.
   Functional development runs autonomously along the roadmap (approved 2026-10-24). New UI/UX questions that the
   concept and the app don't answer still go to the user first.

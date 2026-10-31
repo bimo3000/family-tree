@@ -25,7 +25,7 @@ Status values: `Todo` → `In progress` → `Done`. Only one slice is `In progre
 
 - What to build: `docs/requirements/REQUIREMENTS.md`. How it behaves: `docs/concept/ui-concept.md`, `data-model.md`, `architecture.md`.
 - How it looks and feels: the running app and `src/ui/theme.css`. The clickable mock-up (`mockups/`) was deleted in S6; it is
-  in git history before commit `1bfe483`.
+  in git history: `git log --diff-filter=D -- mockups`.
 - Mock-up logic that was ported to TypeScript (with tests): `parseDate`/`fmtDate`/`dateHint`, the wording helpers
   (`parentWord`, `childWord`, `partnerWord`), sibling detection, `focusSet`, `component()` (cut-off check), the edge drawing rules.
 
