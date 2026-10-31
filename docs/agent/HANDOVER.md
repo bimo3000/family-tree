@@ -3,7 +3,7 @@
 > Rewritten at the end of every session (skill `session-handover`). A fresh session must be able to
 > continue from this file alone. Keep it short and current. History lives in git, decisions in ADRs.
 
-**Last updated:** 2026-10-31 (session 14)
+**Last updated:** 2026-11-01 (session 15)
 
 ## Phase
 
@@ -12,6 +12,16 @@
 3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history, see `git log --diff-filter=D -- mockups`)
 4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, 0.10.0 (languages), 0.11.0 (layout work, years only on the card), **0.12.0** (Enter in dialogs, double-click edits).
 5. **Feedback and manual checks** ← current. Then 1.0.0.
+
+## Done in session 15 (distribution as a committed folder)
+
+- **No release zip any more** (user, clarification 2026-11-01; ADR-0002 updated). The repo carries a ready-to-use
+  **`Stammbaum/`** folder (app, three guides, `LICENSES.txt`, `Beispiel.stammbaum`), refreshed by `npm run release`
+  (skill `release`, was `release-package`) only when a version is released. `dist/` stays the ignored build output.
+  `tests/unit/release-folder.test.ts` checks the folder is complete, has the current version and the example matches.
+- README: a "Try it" section (download `Stammbaum/Stammbaum.html` from GitHub) and the note that the app is made for
+  local use; hosting should work but is untested. Guides: step 1 only unpacks "if you received a ZIP file".
+- **P-011** proposed: GitHub Pages once the repo is public (live app, no download). Waiting for the user.
 
 ## Done in session 14 (getting ready to publish on GitHub)
 
@@ -22,31 +32,19 @@
   (our licence + Svelte, clsx, fflate via Vite's `build.license`). E2E `smoke.spec.ts` checks the build output.
 - Docs point to the deleted mock-ups by `git log --diff-filter=D -- mockups` instead of a commit ID.
 
-## Done in session 13 (user feedback, released as 0.12.0)
-
-- **Enter in a dialog** presses its highlighted button („Fertig“, „Hinzufügen“, crop „Übernehmen“, …): one `onkeydown`
-  in `Modal.svelte`, only for `input` targets (not textarea, select, buttons or a `<form>`, which submits itself).
-- **Double-click on a card** opens the person dialog (`onedit` from `PersonCard` → `TreeView` → `ProjectScreen`).
-  It no longer centres; a name in the panel still centres that person (TREE-02, E2E in `tree.spec.ts`).
-- Timing test "lays out 100 persons quickly (TREE-05)" now takes the best of 3 runs (user's OK); was flaky ~1 in 15.
-- Help text, the three guides and ui-concept §2.3/§2.5 updated; clarification logged in REQUIREMENTS.
-- **Release 0.12.0** (`release/Stammbaum-0.12.0.zip`), tag `v0.12.0` pushed.
-- Earlier sessions: 12 = crossing lines (stand-ins, breaks, highlight through the couple line), 11 = pre-1.0 review.
-
 ## Next steps
 
-- **GitHub:** the user deletes the old repo on github.com (it still holds the old history). Then the agent runs
-  `gh repo create bimo3000/family-tree --private --description "…"`, `git remote add origin git@github.com:bimo3000/family-tree.git`,
-  `git push -u origin main` and `git push origin --tags`. Making it public is the user's call later.
-- The user tries 0.12.0 (`release/Stammbaum-0.12.0.zip`).
+- **GitHub:** the new private repo `bimo3000/family-tree` holds `main` and the tags. Making it public is the user's
+  call; then decide P-011 (GitHub Pages).
+- The user tries 0.12.0 (`Stammbaum/` folder).
 - The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 9a, moved file). Record the
   results in that file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, regression test first).
 - Feedback rounds: each piece of feedback that changes behaviour goes through `requirement-change` first.
-- After the checks and fixes: 1.0.0 (skill `release-package`).
+- After the checks and fixes: 1.0.0 (skill `release`).
 
 ## Open items for the user
 
-- Delete the old GitHub repo (see Next steps). Delete `~/family-tree-backup-before-rewrite.bundle` once happy (old history).
+- P-011: GitHub Pages once the repo is public? Delete `~/family-tree-backup-before-rewrite.bundle` once happy (old history).
 - Run the manual checklist on a Mac and on Windows. A French reader for `fr.ts` ("divers" for the gender option).
 - Look at the new crossing breaks and the highlight through the couple line in your tree; do they look right?
 
@@ -85,8 +83,8 @@
   the dictionaries for English and French texts.
 - `eslint` rejects literal no-break spaces in template literals: write `\u00a0` (French « » and before ? ! : ;).
 - A `|` inside a Markdown table cell must be written `\|`, or prettier splits the row into extra columns.
-- `npm run package` overwrites `release/Stammbaum-<version>.zip`: bump the version first. An old zip is rebuilt from its
-  tag in a `git worktree` with a `node_modules` symlink.
+- `npm run release` rewrites the committed `Stammbaum/` folder: only on a release, after the version bump (the unit
+  test fails if the folder's version differs from `package.json`). `.gitattributes` keeps the guides' CRLF there.
 - Never keep a version of the project in a `$state` object (e.g. the dialog): Svelte wraps it in a proxy, and identity
   checks against the history fail. `ProjectScreen` keeps `beforeAdd` in a plain variable for that reason.
 - `fit()` in `PersonCard.svelte`: `line-height: normal` is not a number; the half-line tolerance falls back to the font size.

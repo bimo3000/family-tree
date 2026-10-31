@@ -2,7 +2,7 @@
 
 The automated tests run the app in Chromium, Firefox and WebKit on Linux. A few things only a person on a real machine
 can check: the real file picker, the browser's permission question, Safari itself, and whether the app is easy to use
-(GEN-02, DATA-09, GEN-06). Do this list once per release zip, on **Windows (Edge or Chrome)** and on a **Mac (Safari)**.
+(GEN-02, DATA-09, GEN-06). Do this list once per release, on **Windows (Edge or Chrome)** and on a **Mac (Safari)**.
 Firefox on either one is a bonus.
 
 Note the date, machine, browser and version, and anything odd (a screenshot helps). Then tell the agent in the next
@@ -12,7 +12,7 @@ session; it updates the requirement statuses.
 
 | #   | Do this                                                                                                   | Expected                                                                                                                                       |
 | --- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Unzip `Stammbaum-<version>.zip`, double-click `Stammbaum.html`.                                           | The start screen opens in the browser. No warning, no internet needed (try with Wi-Fi off).                                                    |
+| 1   | Copy the `Stammbaum/` folder (or unzip it, if you got it as a zip), double-click `Stammbaum.html`.        | The start screen opens in the browser. No warning, no internet needed (try with Wi-Fi off).                                                    |
 | 2   | "Beispiel ansehen". Drag the tree, zoom with the wheel, double-click a person, click a person.            | Smooth, the panel opens. The hint bar at the top goes away after the first click.                                                              |
 | 3   | Menu (name at the top left) → "Hilfe".                                                                    | The help dialog opens at the top; "Schließen" and Esc close it.                                                                                |
 | 4   | Menu → "Neuer Stammbaum", enter a name, add a person, a partner, a child, a parent.                       | Every step works without explanation (grandma test, GEN-06). Undo ↶ and redo ↷ work.                                                           |
@@ -24,7 +24,7 @@ session; it updates the requirement statuses.
 | 9a  | **Edge/Chrome:** rename the saved file in Explorer/Finder, change something, click "Speichern".           | A message says the file can't be written; "Speichern" then asks for a file again. If instead a file with the old name shows up again, note it. |
 | 10  | **Safari/Firefox:** "Speichern".                                                                          | The file lands in Downloads; the first time a hint says so.                                                                                    |
 | 11  | Menu → "Drucken / Als PDF speichern", choose "Als PDF speichern" (Mac: "PDF" → "Als PDF sichern").        | One A4 landscape page with the name on top and the whole tree; no buttons, no panel.                                                           |
-| 12  | Open `Beispiel.stammbaum` from the unzipped folder ("Öffnen …" or drag it onto the window).               | The example family opens. If the open tree had unsaved changes, the app asks first.                                                            |
+| 12  | Open `Beispiel.stammbaum` from the `Stammbaum/` folder ("Öffnen …" or drag it onto the window).           | The example family opens. If the open tree had unsaved changes, the app asks first.                                                            |
 | 13  | Open a saved file on the other machine (send it by email or USB stick).                                   | Everything, including photos, is there.                                                                                                        |
 | 14  | Start screen → "English", then "Français"; open a tree and switch back in the menu; reload.               | All texts switch at once; the choice is still there after the reload (GEN-05).                                                                 |
 

@@ -7,6 +7,6 @@ Fictional example data only. **Never put real family data here.** This folder is
   as their main fixture (`tests/fixtures/familie-brandt.ts`). It covers four generations, remarriage (Karl), divorce
   (Peter and Sabine), adoption (Jonas), an unknown parent (Michael and Stefan), a couple without a kind (Thomas and
   Julia) and a person without gender (Kim). Any resemblance to real persons is coincidental.
-- `Beispiel.stammbaum` (not in git): the same family as a project file. `npm run package` builds it from
-  `familie-brandt.json` and puts it into the release zip, so the two never differ (tested in
-  `tests/unit/storage/projectFile.test.ts`).
+- `Stammbaum/Beispiel.stammbaum` (in the app folder at the repo root): the same family as a project file.
+  `npm run release` builds it from `familie-brandt.json`, so the two never differ (tested in
+  `tests/unit/release-folder.test.ts`).

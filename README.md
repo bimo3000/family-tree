@@ -6,10 +6,20 @@ their history without an account, a cloud or a genealogy program.
 ![Demo: the example family tree opens, a person is selected, a child is added, then the tree is zoomed and panned](docs/assets/demo.gif)
 
 - Runs **fully offline** in a normal desktop browser (Chrome, Edge, Firefox, Safari) on Windows, Linux and macOS.
-- Ships as a **zip you can email**: unzip, double-click `Stammbaum.html`, done. No installation.
 - **No data ever leaves the device.** The whole tree, photos included, lives in one project file (`*.stammbaum`)
   that you save, copy and pass on like any document.
 - App languages: **German, English and French** (chosen on the start screen, remembered per browser).
+
+## Try it
+
+- **Quickest:** open [`Stammbaum/Stammbaum.html`](Stammbaum/Stammbaum.html), click "Download raw file" (the download
+  icon), then double-click the downloaded file. "Beispiel ansehen" on the start screen shows an example family.
+- **For families:** the [`Stammbaum/`](Stammbaum/) folder is the finished product: the app, short guides in German,
+  English and French, an example project and the licences. Copy it, or zip it and email it. No installation.
+
+Stammbaum is made for **local use**: open the file from your own disk. Serving it from a website (HTTPS) should also
+work and keeps the privacy guarantee as long as the server delivers the file unchanged, but this is untested; on plain
+HTTP, saving falls back to downloads.
 
 ## What it can do
 
@@ -47,12 +57,12 @@ nvm use            # select the pinned Node version
 npm install        # install dev tools + activate the git pre-push hook
 npm run dev        # live-reloading dev server for development
 npm run verify     # everything the pre-push hook checks (types, lint, tests, build)
-npm run package    # build the distributable zip into release/
+npm run release    # refresh the Stammbaum/ folder (only when releasing a version)
 ```
 
 See [docs/README.md](docs/README.md) for the full list of commands.
 
 ## Licence and contact
 
-[MIT](LICENSE). The bundled libraries (Svelte, fflate) are MIT-licensed too; their licence texts ship in the zip as
-`LICENSES.txt`. Questions or ideas: bimo3000@posteo.com.
+[MIT](LICENSE). The bundled libraries (Svelte, fflate) are MIT-licensed too; their licence texts ship in the
+`Stammbaum/` folder as `LICENSES.txt`. Questions or ideas: bimo3000@posteo.com.

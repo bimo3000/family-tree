@@ -1,7 +1,7 @@
 # CLAUDE.md – operating manual for agents in this repo
 
 **Stammbaum** is a private, offline, self-contained family-tree web app (German, English and French UI) for desktop browsers.
-It ships as one `Stammbaum.html` in a zip that can be emailed. **No data ever leaves the device.**
+It ships as one `Stammbaum.html` in the committed `Stammbaum/` folder, which can be zipped and emailed. **No data ever leaves the device.**
 The repo is the development workspace (app + tooling + docs). Sessions get reset regularly, so the
 repo itself must carry all context. Keep it that way.
 
@@ -72,7 +72,8 @@ repo itself must carry all context. Keep it that way.
 - Small, well-scoped commits with conventional messages (`feat:`, `fix:`, `test:`, `docs:`, `chore:`, `build:`, `refactor:`).
 - Commit and **push to `main` after each green, coherent step**. Don't let work pile up. Bigger experiments go on a feature branch.
 - The pre-push hook runs `npm run verify` (~25 s). **Never** use `--no-verify`. If the hook fails, fix the cause.
-- Never commit real family data, secrets, build output (`dist/`, `release/`) or test reports.
+- Never commit real family data, secrets, build output (`dist/`) or test reports. `Stammbaum/` is committed, but only
+  refreshed on a release (skill `release`).
 
 ## 7. Housekeeping
 
@@ -85,7 +86,7 @@ repo itself must carry all context. Keep it that way.
 
 - Node is installed via nvm (version in `.nvmrc`). If `node` is not found in the Bash tool, run
   `source ~/.nvm/nvm.sh` first, or prefix commands with `export PATH=$HOME/.nvm/versions/node/$(cat .nvmrc)/bin:$PATH`.
-- Commands: `npm run dev` (dev server), `npm run build`, `npm run verify`, `npm run package` (zip into `release/`). All of them are listed in [docs/README.md](docs/README.md).
+- Commands: `npm run dev` (dev server), `npm run build`, `npm run verify`, `npm run release` (refresh `Stammbaum/`). All of them are listed in [docs/README.md](docs/README.md).
 - Playwright browsers live in `~/.cache/ms-playwright`. After a Playwright upgrade, run `npx playwright install chromium firefox webkit`.
   WebKit needs the system packages `libevent-2.1-7t64 libavif16`. The user installs them with sudo.
 
@@ -103,7 +104,7 @@ repo itself must carry all context. Keep it that way.
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
 | [`session-handover`](.claude/skills/session-handover/SKILL.md)     | Ending a session or reaching a milestone: update the handover, docs and statuses, clean up, verify, push.   |
 | [`requirement-change`](.claude/skills/requirement-change/SKILL.md) | Proposing, approving or recording a requirement change or deviation.                                        |
-| [`release-package`](.claude/skills/release-package/SKILL.md)       | Building and checking the distributable zip for end users.                                                  |
+| [`release`](.claude/skills/release/SKILL.md)                       | Releasing a version: refreshing and checking the `Stammbaum/` folder for end users.                         |
 | [`next-slice`](.claude/skills/next-slice/SKILL.md)                 | Starting a session without a specific task, or finishing a slice: build the next roadmap slice on your own. |
 
 ## 10. End of every session

@@ -13,29 +13,29 @@ Start here if you want to understand the project. Agents keep these documents up
 | [agent/HANDOVER.md](agent/HANDOVER.md)                       | Current status, next steps, open questions, pitfalls                  | Agents (readable for humans) |
 | [agent/ROADMAP.md](agent/ROADMAP.md)                         | The slices of functional development, their order and status          | Both                         |
 | [agent/decisions/](agent/decisions/)                         | Architecture Decision Records: why things are the way they are        | Both                         |
-| [user-guide/Anleitung.md](user-guide/Anleitung.md)           | Guide for end users, shipped in the zip (German)                      | End users                    |
+| [user-guide/Anleitung.md](user-guide/Anleitung.md)           | Guide for end users, shipped in `Stammbaum/` (German)                 | End users                    |
 | [user-guide/Guide.md](user-guide/Guide.md)                   | The same guide in English                                             | End users                    |
 | [user-guide/Mode-d-emploi.md](user-guide/Mode-d-emploi.md)   | The same guide in French                                              | End users                    |
-| [manual-checks.md](manual-checks.md)                         | Checklist for a real Mac and Windows machine, once per release zip    | Human developer              |
+| [manual-checks.md](manual-checks.md)                         | Checklist for a real Mac and Windows machine, once per release        | Human developer              |
 | [../CLAUDE.md](../CLAUDE.md)                                 | Operating manual for Claude Code in this repo                         | Agents                       |
 
 ## Commands (developer machine)
 
 Run these in the repo folder. Prerequisite: `nvm use` (selects the Node version from `.nvmrc`).
 
-| Command             | What it does                                                                                           |
-| ------------------- | ------------------------------------------------------------------------------------------------------ |
-| `npm install`       | Installs the dev tools and activates the pre-push hook. Run once after cloning.                        |
-| `npm run dev`       | Starts a local dev server with live reload (browser at `http://localhost:5173`). For development only. |
-| `npm run build`     | Produces `dist/Stammbaum.html` (the whole app in one file) and checks it has no external references.   |
-| `npm run typecheck` | TypeScript/Svelte type check.                                                                          |
-| `npm run lint`      | Code style and rule checks (ESLint + Prettier).                                                        |
-| `npm run format`    | Auto-fixes formatting.                                                                                 |
-| `npm run test:unit` | Fast unit tests of the pure logic (Vitest).                                                            |
-| `npm run test:e2e`  | Browser tests of the built app in Chromium, Firefox and WebKit (Playwright). Needs `build` first.      |
-| `npm run verify`    | Everything above in order. This is exactly what the pre-push hook runs.                                |
-| `npm run package`   | Builds `release/Stammbaum-<version>.zip`, ready to email.                                              |
-| `npm run demo-gif`  | Records the README demo `docs/assets/demo.gif` (Chromium, English). Needs Python 3 with Pillow.        |
+| Command             | What it does                                                                                            |
+| ------------------- | ------------------------------------------------------------------------------------------------------- |
+| `npm install`       | Installs the dev tools and activates the pre-push hook. Run once after cloning.                         |
+| `npm run dev`       | Starts a local dev server with live reload (browser at `http://localhost:5173`). For development only.  |
+| `npm run build`     | Produces `dist/Stammbaum.html` (the whole app in one file) and checks it has no external references.    |
+| `npm run typecheck` | TypeScript/Svelte type check.                                                                           |
+| `npm run lint`      | Code style and rule checks (ESLint + Prettier).                                                         |
+| `npm run format`    | Auto-fixes formatting.                                                                                  |
+| `npm run test:unit` | Fast unit tests of the pure logic (Vitest).                                                             |
+| `npm run test:e2e`  | Browser tests of the built app in Chromium, Firefox and WebKit (Playwright). Needs `build` first.       |
+| `npm run verify`    | Everything above in order. This is exactly what the pre-push hook runs.                                 |
+| `npm run release`   | Builds and rewrites the committed `Stammbaum/` folder. Only when releasing a version (skill `release`). |
+| `npm run demo-gif`  | Records the README demo `docs/assets/demo.gif` (Chromium, English). Needs Python 3 with Pillow.         |
 
 To view the latest browser-test report: `npx playwright show-report`.
 
@@ -90,6 +90,6 @@ docs/                  this documentation
 | **Svelte**                        | The UI framework the app is written in. It turns components into small, plain JavaScript.                                                                                                                                                                        |
 | **TypeScript**                    | JavaScript with type annotations. It catches many mistakes before the code ever runs.                                                                                                                                                                            |
 | **`.stammbaum` file**             | One family-tree project: a zip file containing `data.json` (the data) and `bilder/` (the pictures).                                                                                                                                                              |
-| **MIT licence**                   | A short open-source licence: anyone may use, change and share the code, as long as the licence text travels with it. It also says "no warranty". The app and the libraries inside it use it (`LICENSE`, `LICENSES.txt` in the zip).                              |
+| **MIT licence**                   | A short open-source licence: anyone may use, change and share the code, as long as the licence text travels with it. It also says "no warranty". The app and the libraries inside it use it (`LICENSE`, `Stammbaum/LICENSES.txt`).                               |
 | **Undo step**                     | One entry in the undo history. Typing into one field counts as a single step, so ↶ takes back the whole word, not letter by letter.                                                                                                                              |
 | **Modal dialog**                  | A window on top of the tree that has to be closed (Fertig, Abbrechen, Esc) before the tree can be used again.                                                                                                                                                    |

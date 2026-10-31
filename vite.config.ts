@@ -73,7 +73,7 @@ export default defineConfig({
     emptyOutDir: true,
     // Everything is inlined into one HTML file; a large chunk is expected.
     chunkSizeWarningLimit: 5000,
-    // Licence texts of the bundled libraries (Svelte, fflate, …); the release zip ships them in LICENSES.txt.
+    // Licence texts of the bundled libraries (Svelte, fflate, …); Stammbaum/LICENSES.txt ships them.
     license: { fileName: 'licenses.md' },
   },
   test: {
