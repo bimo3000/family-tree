@@ -50,7 +50,7 @@ describe('packProject / unpackProject (DATA-04)', () => {
   });
 });
 
-describe('Beispiel.stammbaum in the release zip (DATA-06)', () => {
+describe('Beispiel.stammbaum (DATA-06)', () => {
   it('opens as the example family', () => {
     const json = readFileSync(new URL('../../../examples/familie-brandt.json', import.meta.url));
     const { project, images } = unpackProject(new Uint8Array(createProjectFile(json)));

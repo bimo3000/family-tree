@@ -20,7 +20,7 @@ export default ts.config(
   {
     ignores: [
       'dist/',
-      'release/',
+      'Stammbaum/',
       'coverage/',
       'test-results/',
       'playwright-report/',

@@ -1,12 +1,14 @@
-// Minimal dependency-free ZIP writer, unit-tested in tests/unit/zip.test.ts.
+// Minimal dependency-free ZIP writer for the example project file, unit-tested in tests/unit/zip.test.ts.
 import { crc32, deflateRawSync } from 'node:zlib';
 
 /**
  * A project file (`.stammbaum`, ADR-0005) without pictures: a zip holding just `data.json`.
+ * Fixed timestamp, so the same JSON always gives the same bytes (the committed `Stammbaum/Beispiel.stammbaum`
+ * only changes when the example family does).
  * @param {Buffer} dataJson
  */
 export function createProjectFile(dataJson) {
-  return createZip([{ name: 'data.json', data: dataJson }]);
+  return createZip([{ name: 'data.json', data: dataJson }], new Date(2000, 0, 1));
 }
 
 /**

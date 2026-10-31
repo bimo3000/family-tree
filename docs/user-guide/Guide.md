@@ -6,8 +6,8 @@ stays on your computer. Nothing is sent anywhere.
 
 ## Getting started
 
-1. Unpack the **Stammbaum** folder from the ZIP file (on Windows: right-click the ZIP file, then
-   “Extract All …”; on a Mac: double-click the ZIP file).
+1. If you received the family tree as a ZIP file: unpack the **Stammbaum** folder first (on Windows:
+   right-click the ZIP file, then “Extract All …”; on a Mac: double-click the ZIP file).
 2. In the folder, double-click **Stammbaum.html**.
 3. The family tree opens in your browser (Chrome, Edge, Firefox or Safari).
 

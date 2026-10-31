@@ -10,9 +10,9 @@ node_modules/
 .vite/
 .svelte-kit/
 
-# --- Build & release output (always reproducible via npm scripts) ---
+# --- Build output (always reproducible via npm scripts) ---
+# The app folder Stammbaum/ IS committed: `npm run release` refreshes it when a version is released (ADR-0002).
 dist/
-release/
 
 # --- Test output ---
 test-results/
@@ -24,8 +24,9 @@ coverage/
 # --- Real family data: NEVER commit (privacy, see PRIV-03 in docs/requirements) ---
 # Local working folder for your own family-tree projects:
 data/
-# Any project file anywhere in the repo (the example file is built at packaging time):
+# Any project file anywhere in the repo, except the fictional example built by `npm run release`:
 *.stammbaum
+!/Stammbaum/Beispiel.stammbaum
 # Loose photos dropped into the repo root by accident
 /*.jpg
 /*.jpeg

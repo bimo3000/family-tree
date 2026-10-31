@@ -6,8 +6,9 @@ und muss **nicht installiert** werden. Deine Daten bleiben auf deinem Computer. 
 
 ## Starten
 
-1. Den Ordner **Stammbaum** aus der ZIP-Datei auspacken (unter Windows: Rechtsklick auf die
-   ZIP-Datei, dann „Alle extrahieren …“; auf dem Mac: Doppelklick auf die ZIP-Datei).
+1. Falls du den Stammbaum als ZIP-Datei bekommen hast: zuerst den Ordner **Stammbaum** auspacken
+   (unter Windows: Rechtsklick auf die ZIP-Datei, dann „Alle extrahieren …“; auf dem Mac: Doppelklick
+   auf die ZIP-Datei).
 2. Im Ordner doppelt auf **Stammbaum.html** klicken.
 3. Der Stammbaum öffnet sich in deinem Browser (Chrome, Edge, Firefox oder Safari).
 

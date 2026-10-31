@@ -3,4 +3,7 @@
 *.jpg binary
 *.jpeg binary
 *.stammbaum binary
-*.zip binary
+# The committed app folder (ADR-0002): stored byte for byte (the guides keep CRLF for Windows Notepad),
+# marked as generated so GitHub collapses its diffs and leaves it out of the language statistics.
+/Stammbaum/** -text linguist-generated=true
+/Stammbaum/Stammbaum.html -diff

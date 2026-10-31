@@ -6,8 +6,9 @@ d’Internet** et **ne s’installe pas**. Tes données restent sur ton ordinate
 
 ## Démarrer
 
-1. Extraire le dossier **Stammbaum** du fichier ZIP (sous Windows : clic droit sur le fichier ZIP,
-   puis « Extraire tout… » ; sur Mac : double-clic sur le fichier ZIP).
+1. Si tu as reçu l’arbre sous forme de fichier ZIP : extraire d’abord le dossier **Stammbaum** (sous
+   Windows : clic droit sur le fichier ZIP, puis « Extraire tout… » ; sur Mac : double-clic sur le
+   fichier ZIP).
 2. Dans le dossier, double-cliquer sur **Stammbaum.html**.
 3. L’arbre s’ouvre dans ton navigateur (Chrome, Edge, Firefox ou Safari).
 
