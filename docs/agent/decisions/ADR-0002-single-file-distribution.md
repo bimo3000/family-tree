@@ -14,7 +14,8 @@ modules (a security rule), so a normal multi-file web build would not work offli
 - `vite-plugin-singlefile` inlines all JavaScript and CSS into **`dist/Stammbaum.html`**.
   Images used by the app's own UI are inlined as `data:` URLs or as SVG.
 - `npm run package` builds `release/Stammbaum-<version>.zip` with a `Stammbaum/` folder that contains
-  `Stammbaum.html`, `Anleitung.txt` (German guide) and the example project.
+  `Stammbaum.html`, the guides, `LICENSES.txt` (MIT licences of the app and the bundled libraries, GEN-08) and the
+  example project.
   The zip writer is dependency-free (`scripts/lib/zip.mjs`, Node's zlib).
 - `scripts/check-no-external-refs.mjs` fails the build if the HTML references any external resource.
 

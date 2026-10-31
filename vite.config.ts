@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
@@ -48,6 +49,13 @@ function offlineSingleFile(): Plugin {
       const index = bundle['index.html'];
       if (index) index.fileName = OUTPUT_FILE;
     },
+    // The inlined JS/CSS stay in the bundle until Vite has collected their licences (build.license),
+    // then they are removed from dist/ so only the HTML and the licence file remain.
+    writeBundle(options, bundle) {
+      for (const file of Object.keys(bundle)) {
+        if (/\.(js|css)$/.test(file)) rmSync(join(options.dir ?? 'dist', file));
+      }
+    },
   };
 }
 
@@ -55,12 +63,18 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
   },
-  plugins: [svelte(), viteSingleFile({ removeViteModuleLoader: true }), offlineSingleFile()],
+  plugins: [
+    svelte(),
+    viteSingleFile({ removeViteModuleLoader: true, deleteInlinedFiles: false }),
+    offlineSingleFile(),
+  ],
   build: {
     outDir: 'dist',
     emptyOutDir: true,
     // Everything is inlined into one HTML file; a large chunk is expected.
     chunkSizeWarningLimit: 5000,
+    // Licence texts of the bundled libraries (Svelte, fflate, …); the release zip ships them in LICENSES.txt.
+    license: { fileName: 'licenses.md' },
   },
   test: {
     include: ['tests/unit/**/*.test.ts'],

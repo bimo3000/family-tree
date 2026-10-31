@@ -51,3 +51,8 @@ npm run package    # build the distributable zip into release/
 ```
 
 See [docs/README.md](docs/README.md) for the full list of commands.
+
+## Licence and contact
+
+[MIT](LICENSE). The bundled libraries (Svelte, fflate) are MIT-licensed too; their licence texts ship in the zip as
+`LICENSES.txt`. Questions or ideas: bimo3000@posteo.com.

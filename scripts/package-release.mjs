@@ -7,6 +7,7 @@
 //         ├─ Anleitung.txt         ← quick guide in German, English and French
 //         ├─ Guide.txt                (from docs/user-guide/Anleitung.md, Guide.md, Mode-d-emploi.md)
 //         ├─ Mode-d-emploi.txt
+//         ├─ LICENSES.txt          ← MIT licence of the app + licences of the bundled libraries (dist/licenses.md)
 //         └─ Beispiel.stammbaum    ← fictional example family, made from examples/familie-brandt.json
 //
 // Expects `npm run build` to have run (the `package` npm script does that).
@@ -34,6 +35,15 @@ for (const name of ['Anleitung', 'Guide', 'Mode-d-emploi']) {
   const text = readFileSync(guide, 'utf8').replace(/\r?\n/g, '\r\n');
   entries.push({ name: `Stammbaum/${name}.txt`, data: Buffer.from('﻿' + text, 'utf8') });
 }
+
+// MIT asks that the licence texts travel with every copy: ours plus those Vite collected at build time.
+const licenses = [
+  readFileSync(join(root, 'LICENSE'), 'utf8'),
+  readFileSync(join(root, 'dist', 'licenses.md'), 'utf8'),
+]
+  .join('\n\n')
+  .replace(/\r?\n/g, '\r\n');
+entries.push({ name: 'Stammbaum/LICENSES.txt', data: Buffer.from(licenses, 'utf8') });
 
 // Built here from the JSON the app embeds, so the two can never drift apart (DATA-06).
 const example = readFileSync(join(root, 'examples', 'familie-brandt.json'));

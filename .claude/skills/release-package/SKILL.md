@@ -1,6 +1,6 @@
 ---
 name: release-package
-description: Build and check the distributable Stammbaum zip (Stammbaum.html + guides in German, English and French + example project) that end users receive by email. Use when the user wants a version to share/test, or before tagging a release.
+description: Build and check the distributable Stammbaum zip (Stammbaum.html + guides in German, English and French + licences + example project) that end users receive by email. Use when the user wants a version to share/test, or before tagging a release.
 ---
 
 # Release package
@@ -14,6 +14,8 @@ description: Build and check the distributable Stammbaum zip (Stammbaum.html + g
    - `Stammbaum/Stammbaum.html`, the whole app
    - `Stammbaum/Anleitung.txt`, `Guide.txt` and `Mode-d-emploi.txt`, generated from `docs/user-guide/Anleitung.md`,
      `Guide.md` and `Mode-d-emploi.md` (UTF-8 with BOM, CRLF)
+   - `Stammbaum/LICENSES.txt`, our MIT `LICENSE` plus the licences of the bundled libraries (`dist/licenses.md`,
+     collected by Vite's `build.license`, GEN-08)
    - `Stammbaum/Beispiel.stammbaum`, the example family, built from `examples/familie-brandt.json`
 4. **Check the result:**
    - `python3 -c "import zipfile,sys; z=zipfile.ZipFile(sys.argv[1]); print(z.testzip(), z.namelist())" release/Stammbaum-<version>.zip`
