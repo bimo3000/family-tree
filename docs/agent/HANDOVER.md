@@ -3,7 +3,7 @@
 > Rewritten at the end of every session (skill `session-handover`). A fresh session must be able to
 > continue from this file alone. Keep it short and current. History lives in git, decisions in ADRs.
 
-**Last updated:** 2026-10-25 (session 13)
+**Last updated:** 2026-10-31 (session 14)
 
 ## Phase
 
@@ -12,6 +12,15 @@
 3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history, see `git log --diff-filter=D -- mockups`)
 4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, 0.10.0 (languages), 0.11.0 (layout work, years only on the card), **0.12.0** (Enter in dialogs, double-click edits).
 5. **Feedback and manual checks** ← current. Then 1.0.0.
+
+## Done in session 14 (getting ready to publish on GitHub)
+
+- **Git history rewritten** (git-filter-repo with a mailmap; one private surname in the long-name test was replaced): every commit
+  and tag is by `bimo3000 <bimo3000@posteo.com>`; no real name or old email anywhere. All commit IDs changed.
+  Global git config on this machine is now `bimo3000 <bimo3000@posteo.com>`.
+- **MIT licence** (`LICENSE`, `package.json`, README "Licence and contact"). **GEN-08**: the zip ships `LICENSES.txt`
+  (our licence + Svelte, clsx, fflate via Vite's `build.license`). E2E `smoke.spec.ts` checks the build output.
+- Docs point to the deleted mock-ups by `git log --diff-filter=D -- mockups` instead of a commit ID.
 
 ## Done in session 13 (user feedback, released as 0.12.0)
 
@@ -26,6 +35,9 @@
 
 ## Next steps
 
+- **GitHub:** the user deletes the old repo on github.com (it still holds the old history). Then the agent runs
+  `gh repo create bimo3000/family-tree --private --description "…"`, `git remote add origin git@github.com:bimo3000/family-tree.git`,
+  `git push -u origin main` and `git push origin --tags`. Making it public is the user's call later.
 - The user tries 0.12.0 (`release/Stammbaum-0.12.0.zip`).
 - The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 9a, moved file). Record the
   results in that file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, regression test first).
@@ -34,7 +46,7 @@
 
 ## Open items for the user
 
-- Push the older tags `v0.11.0` / `v0.10.0` / `v0.9.0`? (Local only; optional. `v0.9.1` and `v0.12.0` are on the remote.)
+- Delete the old GitHub repo (see Next steps). Delete `~/family-tree-backup-before-rewrite.bundle` once happy (old history).
 - Run the manual checklist on a Mac and on Windows. A French reader for `fr.ts` ("divers" for the gender option).
 - Look at the new crossing breaks and the highlight through the couple line in your tree; do they look right?
 
@@ -80,6 +92,10 @@
 - `fit()` in `PersonCard.svelte`: `line-height: normal` is not a number; the half-line tolerance falls back to the font size.
 - Quick layout experiments without vitest: `node --import <loader>` with a resolve hook that appends `.ts` / `/index.ts`
   (Node 24 strips types itself), e.g. to count crossings of a project file. Keep such scripts in the scratchpad.
+- **History was rewritten on 2026-10-31.** Any clone made before that must be deleted and cloned again; pushing from
+  it would bring the old author data back.
+- `vite.config.ts`: the single-file plugin keeps the inlined chunks (`deleteInlinedFiles: false`) so Vite's
+  `build.license` can see them; our plugin deletes them in `writeBundle`. `dist/` = `Stammbaum.html` + `licenses.md`.
 - WebKit system deps (`libevent-2.1-7t64 libavif16`) are installed on this machine; a new machine needs them (sudo, by the user).
 
 ## Known gaps
