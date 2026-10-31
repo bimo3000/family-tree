@@ -3,6 +3,8 @@
   "version": "0.12.0",
   "private": true,
   "description": "Offline, self-contained family-tree web app (German, English and French UI). No data ever leaves the device.",
+  "license": "MIT",
+  "author": "bimo3000 <bimo3000@posteo.com>",
   "type": "module",
   "engines": {
     "node": ">=24"
