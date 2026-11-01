@@ -30,6 +30,8 @@
 - **TREE-06: pinch to zoom** on touch screens (user tried the app on a phone). `pinchView` in `geometry.ts`, pointer
   tracking in `TreeView.svelte` (one finger left after a pinch pans on). E2E sends synthetic touch `PointerEvent`s
   (Playwright has no multi-touch). Phones as a whole stay FUT-02.
+- **Phones: view only and untested** (user, 2026-11-01): said in GEN-07, README and the three guides, no code.
+  On the user's phone, saving gave an XML file instead of a `.stammbaum`: noted under FUT-02, not investigated.
 
 ## Done in session 14 (getting ready to publish on GitHub)
 
@@ -42,6 +44,8 @@
 
 ## Next steps
 
+- **The user tries pinch (TREE-06) on the live site** (0.12.1). If it fails: revert 43f2f14 and the TREE-06 doc lines,
+  and log TREE-06 as dropped in the Clarifications log. No further digging (user's call).
 - **Next release** (e.g. 0.12.1, skill `release`) brings the tab icon (GEN-10) and pinch zoom (TREE-06) to `Stammbaum/` and the live app.
 - The user tries 0.12.0 (`Stammbaum/` folder).
 - The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 9a, moved file). Record the

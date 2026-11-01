@@ -2,7 +2,8 @@
 
 With this program you record your family history: people, dates, photos and how everyone is
 related. It runs in your web browser, but needs **no internet** and **no installation**. Your data
-stays on your computer. Nothing is sent anywhere.
+stays on your computer. Nothing is sent anywhere. It is made for a computer. On a phone you can look at a
+family tree, but this is untested and saving may not work there.
 
 ## Getting started
 

@@ -6,6 +6,7 @@ their history without an account, a cloud or a genealogy program.
 ![Demo: the example family tree opens, a person is selected, a child is added, then the tree is zoomed and panned](docs/assets/demo.gif)
 
 - Runs **fully offline** in a normal desktop browser (Chrome, Edge, Firefox, Safari) on Windows, Linux and macOS.
+  On a phone you can look at a tree, but phones are untested and saving may not work.
 - **No data ever leaves the device.** The whole tree, photos included, lives in one project file (`*.stammbaum`)
   that you save, copy and pass on like any document.
 - App languages: **German, English and French** (chosen on the start screen, remembered per browser).

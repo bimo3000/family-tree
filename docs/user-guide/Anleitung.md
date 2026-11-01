@@ -3,6 +3,8 @@
 Mit diesem Programm hältst du deine Familiengeschichte fest: Personen, Daten, Fotos und wie alle
 miteinander verwandt sind. Es läuft in deinem Internet-Browser, braucht aber **kein Internet**
 und muss **nicht installiert** werden. Deine Daten bleiben auf deinem Computer. Es wird nichts verschickt.
+Gedacht ist es für den Computer. Auf dem Handy kannst du einen Stammbaum anschauen, das ist aber nicht
+getestet und Speichern klappt dort vielleicht nicht.
 
 ## Starten
 

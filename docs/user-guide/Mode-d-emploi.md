@@ -3,6 +3,8 @@
 Avec ce programme, tu notes l’histoire de ta famille : les personnes, les dates, les photos et les
 liens de parenté entre tous. Il fonctionne dans ton navigateur Internet, mais il n’a **pas besoin
 d’Internet** et **ne s’installe pas**. Tes données restent sur ton ordinateur. Rien n’est envoyé.
+Il est conçu pour l’ordinateur. Sur un téléphone, tu peux regarder un arbre, mais ce n’est pas testé et
+l’enregistrement risque de ne pas fonctionner.
 
 ## Démarrer
 
