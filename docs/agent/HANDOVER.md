@@ -10,7 +10,7 @@
 1. ~~Development setup~~ ✅ (session 1)
 2. ~~Concept work~~ ✅ (session 1, `docs/concept/*`, ADR-0001…0008)
 3. ~~Mock-ups~~ ✅ (session 2; `mockups/` deleted in S6, still in git history, see `git log --diff-filter=D -- mockups`)
-4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, 0.10.0 (languages), 0.11.0 (layout work, years only on the card), **0.12.0** (Enter in dialogs, double-click edits).
+4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, 0.10.0 (languages), 0.11.0 (layout work, years only on the card), 0.12.0 (Enter in dialogs, double-click edits), **0.13.0** (tab icon, pinch zoom, phone note).
 5. **Feedback and manual checks** ← current. Then 1.0.0.
 
 ## Done in session 15 (distribution as a committed folder)
@@ -44,10 +44,9 @@
 
 ## Next steps
 
-- **The user tries pinch (TREE-06) on the live site** (0.12.1). If it fails: revert 43f2f14 and the TREE-06 doc lines,
+- **The user tries pinch (TREE-06) on the live site** (0.13.0). If it fails: revert 43f2f14 and the TREE-06 doc lines,
   and log TREE-06 as dropped in the Clarifications log. No further digging (user's call).
-- **Next release** (e.g. 0.12.1, skill `release`) brings the tab icon (GEN-10) and pinch zoom (TREE-06) to `Stammbaum/` and the live app.
-- The user tries 0.12.0 (`Stammbaum/` folder).
+- The user tries 0.13.0 (`Stammbaum/` folder or the live site).
 - The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 9a, moved file). Record the
   results in that file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, regression test first).
 - Feedback rounds: each piece of feedback that changes behaviour goes through `requirement-change` first.
