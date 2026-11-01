@@ -150,3 +150,4 @@ Anything not covered by the concept or the mock-up that changes what the user se
 | 2026-10-25 | Session 13: Enter presses a dialog's main button, double-click opens the person (no longer centres), timing test takes the best of 3 runs. Release 0.12.0, tag pushed.                             |
 | 2026-10-31 | Session 14: getting ready to publish on GitHub. Git history rewritten to `bimo3000`, MIT licence, `LICENSES.txt` in the zip (GEN-08). No new slice.                                                |
 | 2026-11-01 | Session 15: the committed `Stammbaum/` folder replaces the release zip; README "Try it" and hosting note. P-011 (GitHub Pages) proposed. No new slice.                                             |
+| 2026-11-01 | Session 16: tab icon (GEN-10), pinch zoom (TREE-06), phones documented as view only and untested. Release 0.13.0. No new slice.                                                                    |

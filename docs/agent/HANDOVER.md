@@ -3,7 +3,7 @@
 > Rewritten at the end of every session (skill `session-handover`). A fresh session must be able to
 > continue from this file alone. Keep it short and current. History lives in git, decisions in ADRs.
 
-**Last updated:** 2026-11-01 (session 15)
+**Last updated:** 2026-11-01 (session 16)
 
 ## Phase
 
@@ -13,39 +13,25 @@
 4. ~~Functional development~~ ✅ S1…S7 all done (sessions 3–10). Releases 0.9.0, 0.9.1, 0.10.0 (languages), 0.11.0 (layout work, years only on the card), 0.12.0 (Enter in dialogs, double-click edits), **0.13.0** (tab icon, pinch zoom, phone note).
 5. **Feedback and manual checks** ← current. Then 1.0.0.
 
-## Done in session 15 (distribution as a committed folder)
+## Done in session 16 (tab icon, pinch, phones; release 0.13.0)
 
-- **No release zip any more** (user, clarification 2026-11-01; ADR-0002 updated). The repo carries a ready-to-use
-  **`Stammbaum/`** folder (app, three guides, `LICENSES.txt`, `Beispiel.stammbaum`), refreshed by `npm run release`
-  (skill `release`, was `release-package`) only when a version is released. `dist/` stays the ignored build output.
-  `tests/unit/release-folder.test.ts` checks the folder is complete, has the current version and the example matches.
-- README: a "Try it" section (download `Stammbaum/Stammbaum.html` from GitHub) and the note that the app is made for
-  local use; hosting should work but is untested. Guides: step 1 only unpacks "if you received a ZIP file".
-- Repo is **public**. **GEN-09 (was P-011): the app runs live on GitHub Pages**, https://bimo3000.github.io/family-tree/.
-  `.github/workflows/pages.yml` publishes only `Stammbaum/` (plus a copy as `index.html`) when a release changes it.
-  `tests/e2e/hosted.spec.ts` runs the app on that https address (the fixture's `openHosted` answers it in the browser).
-- Found by that test: on a website, Firefox asked for `/favicon.ico` (blocked by the CSP, logged as an error). Fixed with
-  an inline icon in `index.html`, which is now the real tab icon: **GEN-10, the round tree** (user's pick from ten drafts,
-  2026-11-01; olive `#86a33a` crown, trunk `#8f6b0c`). Not in `Stammbaum/` yet: it goes live with the next release.
-- **TREE-06: pinch to zoom** on touch screens (user tried the app on a phone). `pinchView` in `geometry.ts`, pointer
-  tracking in `TreeView.svelte` (one finger left after a pinch pans on). E2E sends synthetic touch `PointerEvent`s
-  (Playwright has no multi-touch). Phones as a whole stay FUT-02.
+- **GEN-10 tab icon**: the round tree (user's pick from ten drafts; olive `#86a33a` crown, trunk `#8f6b0c`), an inline
+  SVG `data:` URI in `index.html`, so nothing is loaded. `smoke.spec.ts` checks it is drawn under the CSP.
+- **TREE-06 pinch to zoom** on touch screens: `pinchView` in `geometry.ts`, pointer tracking in `TreeView.svelte`
+  (one finger left after a pinch pans on). E2E sends synthetic touch `PointerEvent`s (Playwright has no multi-touch).
+  The user confirmed it works on their phone (0.13.0, live site).
 - **Phones: view only and untested** (user, 2026-11-01): said in GEN-07, README and the three guides, no code.
   On the user's phone, saving gave an XML file instead of a `.stammbaum`: noted under FUT-02, not investigated.
+- **Release 0.13.0** (tag pushed), live on GitHub Pages.
 
-## Done in session 14 (getting ready to publish on GitHub)
+## Done in session 15 (distribution as a committed folder)
 
-- **Git history rewritten** (git-filter-repo with a mailmap; one private surname in the long-name test was replaced): every commit
-  and tag is by `bimo3000 <bimo3000@posteo.com>`; no real name or old email anywhere. All commit IDs changed.
-  Global git config on this machine is now `bimo3000 <bimo3000@posteo.com>`.
-- **MIT licence** (`LICENSE`, `package.json`, README "Licence and contact"). **GEN-08**: the zip ships `LICENSES.txt`
-  (our licence + Svelte, clsx, fflate via Vite's `build.license`). E2E `smoke.spec.ts` checks the build output.
-- Docs point to the deleted mock-ups by `git log --diff-filter=D -- mockups` instead of a commit ID.
+- No release zip any more (ADR-0002): the committed **`Stammbaum/`** folder, refreshed only by `npm run release`.
+- Repo is public. **GEN-09: the app runs live on GitHub Pages**, https://bimo3000.github.io/family-tree/
+  (`.github/workflows/pages.yml` publishes `Stammbaum/` when a release changes it; `tests/e2e/hosted.spec.ts`).
 
 ## Next steps
 
-- **The user tries pinch (TREE-06) on the live site** (0.13.0). If it fails: revert 43f2f14 and the TREE-06 doc lines,
-  and log TREE-06 as dropped in the Clarifications log. No further digging (user's call).
 - The user tries 0.13.0 (`Stammbaum/` folder or the live site).
 - The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 9a, moved file). Record the
   results in that file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, regression test first).
@@ -59,6 +45,9 @@
 - Look at the new crossing breaks and the highlight through the couple line in your tree; do they look right?
 
 ## Pitfalls / environment notes
+
+- `npm run verify` now takes ~3 min (not ~25 s; the E2E suite grew). In session 16 the pre-push hook failed once without a
+  visible cause and passed on the next run: if it happens again, keep the full log (`git push > log 2>&1`) and find the test.
 
 - **README demo GIF** (`docs/assets/demo.gif`): recorded by `npm run demo-gif` (storyline `scripts/demo-gif/demo.spec.ts`,
   frames → GIF with Python/Pillow in `make-gif.py`). Re-run it after visible UI changes and look at the result before committing.
