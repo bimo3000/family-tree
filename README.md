@@ -12,8 +12,9 @@ their history without an account, a cloud or a genealogy program.
 
 ## Try it
 
-- **Live, no download:** [bimo3000.github.io/family-tree](https://bimo3000.github.io/family-tree/). "Beispiel ansehen"
-  on the start screen shows an example family. What you enter stays in your browser; nothing is sent anywhere.
+- **Live, no download:** [bimo3000.github.io/family-tree](https://bimo3000.github.io/family-tree/). The app starts in your
+  browser's language (English, German or French; switch on the start screen). "See an example" shows an example
+  family. What you enter stays in your browser; nothing is sent anywhere.
 - **As a file:** open [`Stammbaum/Stammbaum.html`](Stammbaum/Stammbaum.html), click "Download raw file" (the download
   icon), then double-click the downloaded file.
 - **For families:** the [`Stammbaum/`](Stammbaum/) folder is the finished product: the app, short guides in German,
