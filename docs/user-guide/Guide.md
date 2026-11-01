@@ -58,7 +58,7 @@ as JPG first in that case.
 ## Looking at the tree
 
 - **Move**: drag with the mouse button held down.
-- **Zoom**: mouse wheel or the + and − buttons at the bottom right. “Show all” shows the whole tree.
+- **Zoom**: mouse wheel or the + and − buttons at the bottom right, or two fingers on a touch screen. “Show all” shows the whole tree.
 - **Double-click** a person to open them for editing. The Esc key clears the selection.
 
 ## Saving

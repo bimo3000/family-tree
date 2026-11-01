@@ -100,6 +100,23 @@ export function zoomAt(view: View, factor: number, cx: number, cy: number): View
   };
 }
 
+/**
+ * Two-finger pinch (TREE-06): fingers that started at a0/b0 (with the view `start`) are now at a1/b1.
+ * The zoom follows the finger distance, and the drawing point under the fingers' midpoint stays under it.
+ */
+export function pinchView(start: View, a0: Point, b0: Point, a1: Point, b1: Point): View {
+  const d0 = Math.hypot(b0.x - a0.x, b0.y - a0.y);
+  if (d0 === 0) return start;
+  const k = clamp((start.k * Math.hypot(b1.x - a1.x, b1.y - a1.y)) / d0, MIN_ZOOM, MAX_ZOOM);
+  const m0 = { x: (a0.x + b0.x) / 2, y: (a0.y + b0.y) / 2 };
+  const m1 = { x: (a1.x + b1.x) / 2, y: (a1.y + b1.y) / 2 };
+  return {
+    k,
+    x: m1.x - ((m0.x - start.x) / start.k) * k,
+    y: m1.y - ((m0.y - start.y) / start.k) * k,
+  };
+}
+
 /** Moves the view so the drawing point sits in the middle of the viewport. */
 export function centerOn(view: View, point: Point, viewport: Size): View {
   return {

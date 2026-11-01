@@ -27,6 +27,9 @@
 - Found by that test: on a website, Firefox asked for `/favicon.ico` (blocked by the CSP, logged as an error). Fixed with
   an inline icon in `index.html`, which is now the real tab icon: **GEN-10, the round tree** (user's pick from ten drafts,
   2026-11-01; olive `#86a33a` crown, trunk `#8f6b0c`). Not in `Stammbaum/` yet: it goes live with the next release.
+- **TREE-06: pinch to zoom** on touch screens (user tried the app on a phone). `pinchView` in `geometry.ts`, pointer
+  tracking in `TreeView.svelte` (one finger left after a pinch pans on). E2E sends synthetic touch `PointerEvent`s
+  (Playwright has no multi-touch). Phones as a whole stay FUT-02.
 
 ## Done in session 14 (getting ready to publish on GitHub)
 
@@ -39,7 +42,7 @@
 
 ## Next steps
 
-- **Next release** (e.g. 0.12.1, skill `release`) brings the tab icon (GEN-10) to `Stammbaum/` and the live app.
+- **Next release** (e.g. 0.12.1, skill `release`) brings the tab icon (GEN-10) and pinch zoom (TREE-06) to `Stammbaum/` and the live app.
 - The user tries 0.12.0 (`Stammbaum/` folder).
 - The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 9a, moved file). Record the
   results in that file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, regression test first).

@@ -60,7 +60,7 @@ vorher als JPG.
 ## Den Baum ansehen
 
 - **Verschieben**: mit gedrückter Maustaste ziehen.
-- **Zoomen**: Mausrad oder die Knöpfe + und − unten rechts. „Alles anzeigen“ zeigt den ganzen Baum.
+- **Zoomen**: Mausrad oder die Knöpfe + und − unten rechts, auf einem Touchscreen mit zwei Fingern. „Alles anzeigen“ zeigt den ganzen Baum.
 - **Doppelklick** auf eine Person öffnet sie zum Bearbeiten. Die Taste Esc hebt die Auswahl auf.
 
 ## Speichern

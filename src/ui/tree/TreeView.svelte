@@ -13,6 +13,7 @@
     highlight,
     isOnScreen,
     pathD,
+    pinchView,
     PRINT_AREA,
     printView,
     zoomAt,
@@ -94,11 +95,36 @@
   let panning = $state(false);
   let suppressClick = false;
 
+  // Pinch (TREE-06): the pointers that are down (screen positions), and the pinch once a second finger touches.
+  let fingers: Record<number, Point> = {};
+  let pinch: { ids: [number, number]; view: typeof view; a: Point; b: Point } | null = null;
+  function local(p: Point): Point {
+    const r = viewport.getBoundingClientRect();
+    return { x: p.x - r.left, y: p.y - r.top };
+  }
+
   function onPointerDown(e: PointerEvent) {
     if (e.button !== 0 || (e.target as Element).closest('.zoom')) return;
-    drag = { sx: e.clientX, sy: e.clientY, vx: view.x, vy: view.y, moved: false };
+    fingers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    const ids = Object.keys(fingers).map(Number);
+    if (ids.length === 2 && drag) {
+      const [i, j] = ids as [number, number];
+      pinch = { ids: [i, j], view, a: local(fingers[i]!), b: local(fingers[j]!) };
+      drag.moved = true;
+      panning = true;
+      tip = null;
+      return;
+    }
+    if (ids.length === 1)
+      drag = { sx: e.clientX, sy: e.clientY, vx: view.x, vy: view.y, moved: false };
   }
   function onPointerMove(e: PointerEvent) {
+    if (e.pointerId in fingers) fingers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    if (pinch) {
+      const [a, b] = [fingers[pinch.ids[0]], fingers[pinch.ids[1]]];
+      if (a && b) setView(pinchView(pinch.view, pinch.a, pinch.b, local(a), local(b)), false);
+      return;
+    }
     if (!drag) return;
     const dx = e.clientX - drag.sx;
     const dy = e.clientY - drag.sy;
@@ -108,7 +134,17 @@
     tip = null;
     setView({ ...view, x: drag.vx + dx, y: drag.vy + dy }, false);
   }
-  function onPointerUp() {
+  function onPointerUp(e: PointerEvent) {
+    delete fingers[e.pointerId];
+    const rest = Object.values(fingers)[0];
+    if (pinch && rest) {
+      // One finger stays down: it pans on from here, without a jump.
+      pinch = null;
+      drag = { sx: rest.x, sy: rest.y, vx: view.x, vy: view.y, moved: true };
+      return;
+    }
+    if (rest) return;
+    pinch = null;
     if (drag?.moved) {
       suppressClick = true;
       setTimeout(() => (suppressClick = false), 0);
@@ -142,7 +178,11 @@
   const gapD = ({ x, y }: Point) => `M${x - 5} ${y} H${x + 5}`;
 </script>
 
-<svelte:window onpointermove={onPointerMove} onpointerup={onPointerUp} />
+<svelte:window
+  onpointermove={onPointerMove}
+  onpointerup={onPointerUp}
+  onpointercancel={onPointerUp}
+/>
 
 <!-- The tree is one big pannable drawing. The cards inside are buttons (keyboard: Tab, Enter, Esc);
      dragging and clicking the background is a mouse-only extra, hence the ignore. -->

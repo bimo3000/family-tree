@@ -9,6 +9,41 @@ async function view(page: Page) {
 }
 
 const card = (page: Page, id: string) => page.locator(`.card[data-id="${id}"]`);
+type Finger = [number, number];
+/** Two fingers on a touch screen (TREE-06). Playwright has no multi-touch, so this sends the pointer events itself. */
+async function pinch(page: Page, from: [Finger, Finger], to: [Finger, Finger]) {
+  await page.evaluate(
+    ({ from, to }) => {
+      const fire = (type: string, id: number, [x, y]: [number, number]) =>
+        (document.elementFromPoint(x, y) ?? document.body).dispatchEvent(
+          new PointerEvent(type, {
+            pointerId: id,
+            pointerType: 'touch',
+            isPrimary: id === 1,
+            clientX: x,
+            clientY: y,
+            button: type === 'pointermove' ? -1 : 0,
+            buttons: type === 'pointerup' ? 0 : 1,
+            bubbles: true,
+          }),
+        );
+      const at = (a: [number, number], b: [number, number], t: number): [number, number] => [
+        a[0] + (b[0] - a[0]) * t,
+        a[1] + (b[1] - a[1]) * t,
+      ];
+      fire('pointerdown', 1, from[0]);
+      fire('pointerdown', 2, from[1]);
+      for (let i = 1; i <= 5; i++) {
+        fire('pointermove', 1, at(from[0], to[0], i / 5));
+        fire('pointermove', 2, at(from[1], to[1], i / 5));
+      }
+      fire('pointerup', 1, to[0]);
+      fire('pointerup', 2, to[1]);
+    },
+    { from, to },
+  );
+}
+
 const panel = (page: Page) => page.getByRole('complementary', { name: 'Details' });
 
 test.beforeEach(async ({ app }) => {
@@ -221,6 +256,49 @@ test.describe('pan and zoom (TREE-02)', () => {
     await page.mouse.move(400, 300);
     await page.mouse.wheel(0, -300);
     await expect.poll(async () => (await view(page)).k).toBeGreaterThan(start.k);
+  });
+
+  test('two fingers spread apart zoom in, around the middle between them (TREE-06)', async ({
+    page,
+  }) => {
+    const start = await view(page);
+    await pinch(
+      page,
+      [
+        [380, 300],
+        [420, 300],
+      ],
+      [
+        [360, 300],
+        [440, 300],
+      ],
+    );
+    const zoomed = await view(page);
+    expect(zoomed.k).toBeCloseTo(start.k * 2);
+    // The drawing point between the fingers is still there.
+    const box = (await page.locator('.viewport').boundingBox())!;
+    const mid = 400 - box.x;
+    expect((mid - zoomed.x) / zoomed.k).toBeCloseTo((mid - start.x) / start.k);
+    await expect(panel(page)).toBeHidden();
+  });
+
+  test('two fingers pinched together zoom out (TREE-06)', async ({ page }) => {
+    const fitted = await view(page);
+    await page.getByRole('button', { name: '+' }).click();
+    await expect.poll(async () => (await view(page)).k).toBeCloseTo(fitted.k * 1.25);
+    const start = await view(page);
+    await pinch(
+      page,
+      [
+        [300, 300],
+        [500, 300],
+      ],
+      [
+        [350, 300],
+        [450, 300],
+      ],
+    );
+    expect((await view(page)).k).toBeCloseTo(start.k / 2);
   });
 
   test('a name in the panel centres that person, next to the open panel', async ({ page }) => {

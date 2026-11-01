@@ -11,6 +11,7 @@ import {
   MAX_ZOOM,
   MIN_ZOOM,
   pathD,
+  pinchView,
   PRINT_AREA,
   printView,
   zoomAt,
@@ -119,6 +120,35 @@ describe('view (TREE-02)', () => {
     expect((100 - view.x) / view.k).toBe(100);
     expect(zoomAt({ x: 0, y: 0, k: 2 }, 10, 0, 0).k).toBe(MAX_ZOOM);
     expect(zoomAt({ x: 0, y: 0, k: 0.3 }, 0.1, 0, 0).k).toBe(MIN_ZOOM);
+  });
+
+  it('pinches: spread fingers zoom around their midpoint (TREE-06)', () => {
+    const start = { x: 0, y: 0, k: 1 };
+    const view = pinchView(
+      start,
+      { x: 90, y: 50 },
+      { x: 110, y: 50 },
+      { x: 80, y: 50 },
+      { x: 120, y: 50 },
+    );
+    expect(view).toEqual({ x: -100, y: -50, k: 2 });
+    // The drawing point under the midpoint stays under the midpoint.
+    expect((100 - view.x) / view.k).toBe(100);
+  });
+
+  it('pinches: moving both fingers moves the view, and the zoom limits hold (TREE-06)', () => {
+    const start = { x: 10, y: 20, k: 1 };
+    const a = { x: 0, y: 0 };
+    const b = { x: 100, y: 0 };
+    expect(pinchView(start, a, b, { x: 30, y: 40 }, { x: 130, y: 40 })).toEqual({
+      x: 40,
+      y: 60,
+      k: 1,
+    });
+    expect(pinchView(start, a, b, { x: -1000, y: 0 }, { x: 1000, y: 0 }).k).toBe(MAX_ZOOM);
+    expect(pinchView(start, a, b, { x: 50, y: 0 }, { x: 51, y: 0 }).k).toBe(MIN_ZOOM);
+    // Two fingers on the same spot: no division by zero.
+    expect(pinchView(start, a, a, a, b)).toEqual(start);
   });
 
   it('centres a point and tells whether it is on screen', () => {

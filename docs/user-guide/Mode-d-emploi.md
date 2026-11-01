@@ -61,7 +61,7 @@ alors d’abord en JPG.
 ## Regarder l’arbre
 
 - **Déplacer** : faire glisser en gardant le bouton de la souris enfoncé.
-- **Zoomer** : la molette de la souris ou les boutons + et − en bas à droite. « Tout afficher »
+- **Zoomer** : la molette de la souris ou les boutons + et − en bas à droite, ou deux doigts sur un écran tactile. « Tout afficher »
   montre l’arbre entier.
 - **Double-clic** sur une personne : elle s’ouvre pour être modifiée. La touche Échap annule la sélection.
 
