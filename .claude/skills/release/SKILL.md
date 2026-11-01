@@ -5,8 +5,8 @@ description: Refresh the committed Stammbaum/ folder (Stammbaum.html + guides in
 
 # Release
 
-The `Stammbaum/` folder at the repo root is what people get: they download `Stammbaum.html` from GitHub, or the
-user zips the folder and emails it (ADR-0002). It only changes on a release, so it always holds a tested version.
+The `Stammbaum/` folder at the repo root is what people get: they use it live on GitHub Pages, download
+`Stammbaum.html` from GitHub, or the user zips the folder and emails it (ADR-0002). It only changes on a release, so it always holds a tested version.
 `dist/` is the git-ignored build output that every build and test run writes.
 
 ## Steps
@@ -27,7 +27,9 @@ user zips the folder and emails it (ADR-0002). It only changes on a release, so 
    - The folder must stay small enough for email (warn the user if it is > 10 MB).
 5. Make sure **no real family data** went into the folder: only files from `examples/` and `docs/user-guide/`.
 6. Commit `chore(release): v<version>` (the folder and the version bump together), tag `v<version>`, push.
-   Ask the user before pushing tags.
+   Ask the user before pushing tags. The push also updates the live app on GitHub Pages (GEN-09): check that the
+   "Pages" workflow is green (`gh run list --workflow pages.yml -L 1`) and that https://bimo3000.github.io/family-tree/
+   shows the new version.
 7. Tell the user what to check manually (`docs/manual-checks.md`, ideally a real Windows and macOS/Safari machine).
 
 ## Notes

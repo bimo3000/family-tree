@@ -1,0 +1,37 @@
+# Publishes the committed Stammbaum/ folder on GitHub Pages (GEN-09): https://bimo3000.github.io/family-tree/
+# Nothing is built here: the folder is the released app (ADR-0002). Only that folder goes online, never the rest of
+# the repo. It runs when a release changes the folder, or by hand (Actions → Pages → Run workflow).
+# The official GitHub actions are pinned to full commit IDs, so a moved tag can't change what runs.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['Stammbaum/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: The app opens at the site's root address too
+        run: cp Stammbaum/Stammbaum.html Stammbaum/index.html
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: Stammbaum
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

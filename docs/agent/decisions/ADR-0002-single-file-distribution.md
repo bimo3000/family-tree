@@ -18,6 +18,10 @@ modules (a security rule), so a normal multi-file web build would not work offli
   project `Beispiel.stammbaum`. It runs only when a version is released, so the folder always holds a released,
   tested version. Visitors of the repo download `Stammbaum.html` from there without cloning; whoever emails the app
   zips the folder.
+- GitHub Pages publishes the same folder (GEN-09, `.github/workflows/pages.yml`, triggered when `Stammbaum/` changes):
+  `https://bimo3000.github.io/family-tree/` opens the app (a copy named `index.html`). Nothing is built on GitHub, and
+  only this folder goes online. The CSP inside the file applies there too; `tests/e2e/hosted.spec.ts` runs the app on
+  that https address.
 - `dist/` stays the git-ignored build output. Every build and every test run writes it, so it can't be committed
   without making git show changes after each test run.
 - `scripts/check-no-external-refs.mjs` fails the build if the HTML references any external resource.
@@ -27,6 +31,8 @@ modules (a security rule), so a normal multi-file web build would not work offli
 - There is no code splitting. The whole app loads at once, which is fine for this size.
 - The user's family data is **not** in this file. It lives in separate `*.stammbaum` project files (see the concept).
 - A read-only website version (FUT-01) can reuse the same build.
+- The live app shares the browser storage of `bimo3000.github.io` with any other GitHub Pages site of that account.
+  Don't publish another Pages site under this account, or it could read visitors' working copies.
 
 ## Alternatives considered
 

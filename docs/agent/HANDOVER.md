@@ -21,7 +21,11 @@
   `tests/unit/release-folder.test.ts` checks the folder is complete, has the current version and the example matches.
 - README: a "Try it" section (download `Stammbaum/Stammbaum.html` from GitHub) and the note that the app is made for
   local use; hosting should work but is untested. Guides: step 1 only unpacks "if you received a ZIP file".
-- **P-011** proposed: GitHub Pages once the repo is public (live app, no download). Waiting for the user.
+- Repo is **public**. **GEN-09 (was P-011): the app runs live on GitHub Pages**, https://bimo3000.github.io/family-tree/.
+  `.github/workflows/pages.yml` publishes only `Stammbaum/` (plus a copy as `index.html`) when a release changes it.
+  `tests/e2e/hosted.spec.ts` runs the app on that https address (the fixture's `openHosted` answers it in the browser).
+- Found by that test: on a website, Firefox asked for `/favicon.ico` (blocked by the CSP, logged as an error). Fixed with
+  an empty inline icon in `index.html`. Not in `Stammbaum/` yet: it goes live with the next release.
 
 ## Done in session 14 (getting ready to publish on GitHub)
 
@@ -34,8 +38,7 @@
 
 ## Next steps
 
-- **GitHub:** the new private repo `bimo3000/family-tree` holds `main` and the tags. Making it public is the user's
-  call; then decide P-011 (GitHub Pages).
+- **Next release** (e.g. 0.12.1, skill `release`) brings the favicon fix to `Stammbaum/` and the live app.
 - The user tries 0.12.0 (`Stammbaum/` folder).
 - The user runs `docs/manual-checks.md` on a real Mac (Safari) and Windows (now with check 9a, moved file). Record the
   results in that file's table, then set GEN-02, GEN-06 and DATA-09 to `Verified` (or fix what failed, regression test first).
@@ -44,7 +47,7 @@
 
 ## Open items for the user
 
-- P-011: GitHub Pages once the repo is public? Delete `~/family-tree-backup-before-rewrite.bundle` once happy (old history).
+- Delete `~/family-tree-backup-before-rewrite.bundle` once happy (old history).
 - Run the manual checklist on a Mac and on Windows. A French reader for `fr.ts` ("divers" for the gender option).
 - Look at the new crossing breaks and the highlight through the couple line in your tree; do they look right?
 
@@ -83,6 +86,8 @@
   the dictionaries for English and French texts.
 - `eslint` rejects literal no-break spaces in template literals: write `\u00a0` (French « » and before ? ! : ;).
 - A `|` inside a Markdown table cell must be written `\|`, or prettier splits the row into extra columns.
+- **Never publish another GitHub Pages site under `bimo3000`**: it would share the browser storage of
+  `bimo3000.github.io` with the live app and could read visitors' working copies (ADR-0002).
 - `npm run release` rewrites the committed `Stammbaum/` folder: only on a release, after the version bump (the unit
   test fails if the folder's version differs from `package.json`). `.gitattributes` keeps the guides' CRLF there.
 - Never keep a version of the project in a `$state` object (e.g. the dialog): Svelte wraps it in a proxy, and identity

@@ -43,16 +43,18 @@ To view the latest browser-test report: `npx playwright show-report`.
 
 ```
 CLAUDE.md              agent operating manual
+Stammbaum/             the released app for end users (committed; `npm run release`), also live on GitHub Pages
 src/core/              pure logic (no browser APIs): data model, dates, layout …
 src/storage/           reading/writing project files, browser working copy
 src/ui/                Svelte components; all UI texts in src/ui/i18n/ (German, English, French)
 tests/unit/            unit tests (Vitest)
 tests/e2e/             browser tests of the built app (Playwright)
-scripts/               build/package/check helper scripts
+scripts/               build/release/check helper scripts
 examples/              fictional example family (committed)
 data/                  YOUR real family projects (git-ignored, never committed)
 docs/                  this documentation
 .githooks/pre-push     runs `npm run verify` before every push
+.github/workflows/     pages.yml: publishes Stammbaum/ on GitHub Pages when a release changes it
 .claude/               Claude Code settings and skills
 ```
 
@@ -90,6 +92,7 @@ docs/                  this documentation
 | **Svelte**                        | The UI framework the app is written in. It turns components into small, plain JavaScript.                                                                                                                                                                        |
 | **TypeScript**                    | JavaScript with type annotations. It catches many mistakes before the code ever runs.                                                                                                                                                                            |
 | **`.stammbaum` file**             | One family-tree project: a zip file containing `data.json` (the data) and `bilder/` (the pictures).                                                                                                                                                              |
+| **GitHub Pages**                  | GitHub's free website hosting. Our workflow `.github/workflows/pages.yml` puts only the `Stammbaum/` folder online at https://bimo3000.github.io/family-tree/, so the app runs there without a download. Data still stays in the visitor's browser.              |
 | **MIT licence**                   | A short open-source licence: anyone may use, change and share the code, as long as the licence text travels with it. It also says "no warranty". The app and the libraries inside it use it (`LICENSE`, `Stammbaum/LICENSES.txt`).                               |
 | **Undo step**                     | One entry in the undo history. Typing into one field counts as a single step, so ↶ takes back the whole word, not letter by letter.                                                                                                                              |
 | **Modal dialog**                  | A window on top of the tree that has to be closed (Fertig, Abbrechen, Esc) before the tree can be used again.                                                                                                                                                    |

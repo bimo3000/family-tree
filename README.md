@@ -12,14 +12,16 @@ their history without an account, a cloud or a genealogy program.
 
 ## Try it
 
-- **Quickest:** open [`Stammbaum/Stammbaum.html`](Stammbaum/Stammbaum.html), click "Download raw file" (the download
-  icon), then double-click the downloaded file. "Beispiel ansehen" on the start screen shows an example family.
+- **Live, no download:** [bimo3000.github.io/family-tree](https://bimo3000.github.io/family-tree/). "Beispiel ansehen"
+  on the start screen shows an example family. What you enter stays in your browser; nothing is sent anywhere.
+- **As a file:** open [`Stammbaum/Stammbaum.html`](Stammbaum/Stammbaum.html), click "Download raw file" (the download
+  icon), then double-click the downloaded file.
 - **For families:** the [`Stammbaum/`](Stammbaum/) folder is the finished product: the app, short guides in German,
   English and French, an example project and the licences. Copy it, or zip it and email it. No installation.
 
-Stammbaum is made for **local use**: open the file from your own disk. Serving it from a website (HTTPS) should also
-work and keeps the privacy guarantee as long as the server delivers the file unchanged, but this is untested; on plain
-HTTP, saving falls back to downloads.
+Stammbaum is made for **local use**. The live version on GitHub Pages runs the very same file with the same privacy
+guarantee (tested in all three browser engines), and any other HTTPS server should work too as long as it delivers the
+file unchanged; on plain HTTP, saving falls back to downloads.
 
 ## What it can do
 
