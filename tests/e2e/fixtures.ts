@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { test as base, expect, type Dialog, type Request } from '@playwright/test';
@@ -8,10 +8,18 @@ const APP_FILE = resolve(import.meta.dirname, '../../dist/Stammbaum.html');
 /** file:// URL of the built app, the way end users open it by double-click. */
 export const APP_URL = pathToFileURL(APP_FILE).href;
 
+/**
+ * Where GitHub Pages serves the app (GEN-09). `openHosted` answers this one address with the built file inside the
+ * browser, so the app runs on a real https origin without any server or network.
+ */
+export const HOSTED_URL = 'https://bimo3000.github.io/family-tree/';
+
 type Fixtures = {
   /** Opens the built app and records any network activity and console errors. */
   app: {
     open: () => Promise<void>;
+    /** Opens the app as if loaded from GitHub Pages (HOSTED_URL). */
+    openHosted: () => Promise<void>;
     /** Opens the app and, from the start screen, the embedded example family. */
     openExample: () => Promise<void>;
     /** Reloads, confirming the browser's "Seite verlassen?" question. Tells whether it was asked. */
@@ -33,7 +41,8 @@ export const test = base.extend<Fixtures>({
 
     const networkRequests: string[] = [];
     const consoleErrors: string[] = [];
-    const isLocal = (r: Request) => /^(file|data|blob|about):/.test(r.url());
+    const isLocal = (r: Request) =>
+      /^(file|data|blob|about):/.test(r.url()) || r.url() === HOSTED_URL;
 
     page.on('request', (r) => {
       if (!isLocal(r)) networkRequests.push(r.url());
@@ -48,6 +57,14 @@ export const test = base.extend<Fixtures>({
     await use({
       open: async () => {
         await page.goto(APP_URL);
+      },
+      openHosted: async () => {
+        // Registered after the abort-all route, so it wins for exactly this address.
+        const html = readFileSync(APP_FILE);
+        await page.route(HOSTED_URL, (route) =>
+          route.fulfill({ body: html, contentType: 'text/html; charset=utf-8' }),
+        );
+        await page.goto(HOSTED_URL);
       },
       reload: async () => {
         let asked = false;
