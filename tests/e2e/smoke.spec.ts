@@ -18,6 +18,25 @@ test.describe('built app opened from file://', () => {
     expect(csp).toContain("connect-src 'none'");
   });
 
+  test('has its own tab icon, built into the file (GEN-10)', async ({ app, page }) => {
+    await app.open();
+    const href = (await page.locator('link[rel="icon"]').getAttribute('href')) ?? '';
+    expect(href).toMatch(/^data:image\/svg\+xml,/);
+    expect(decodeURIComponent(href)).toContain('<circle');
+    // The CSP lets the browser draw it (a blocked image would not load).
+    const width = await page.evaluate(
+      (src) =>
+        new Promise<number>((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(img.naturalWidth);
+          img.onerror = () => resolve(0);
+          img.src = src;
+        }),
+      href,
+    );
+    expect(width).toBe(32);
+  });
+
   test('browser blocks an attempted network request (CSP is effective)', async ({ app, page }) => {
     await app.open();
     // Simulate a bug/compromised dependency trying to phone home.
